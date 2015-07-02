@@ -1,17 +1,22 @@
+
+var titleSep = ' - ';
+var pageTitle = 'Cronometrei';
+var exitMessage = 'Seu cronometro será perdido, deseja mesmo sair?';
+
+
 var doing;
 var time;
 var currentTimer;
 var loop;
 var needToConfirm = false;
 
+
 window.onbeforeunload = confirmExit;
 
-// prevent user from closing or exiting the page when timer is running
 function confirmExit(){
 	if(needToConfirm)
-		return "message to display in dialog box";
+		return exitMessage;
 }
-
 
 $(document).ready(function(){
 	$(document).bind('keyup', 'space', startStopTimer);
@@ -104,6 +109,6 @@ function format_seconds(seconds) {
 	else if (milliseconds < 100)
 		milliseconds = "0" + milliseconds;
 
-	//document.title = minutes + ":" + seconds + ":" + milliseconds + " - Cronometrei";
+	document.title = minutes + ":" + seconds + ":" + milliseconds + titleSep + pageTitle;
 	return minutes + ":" + seconds + ":" + milliseconds;
 }

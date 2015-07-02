@@ -2,15 +2,26 @@
 @import url(http://fonts.googleapis.com/css?family=Fredoka+One|Source+Code+Pro:400,700|Raleway:400,700,900|Scada:700italic,400|Roboto+Mono:400,700italic);
 
 /*
-font-family: 'Fredoka One', cursive;
-font-family: 'Source Code Pro', ;
-font-family: 'Raleway', sans-serif;
-font-family: 'Scada', sans-serif;
-font-family: 'Roboto Mono', ;
+	font-family: 'Fredoka One', cursive;
+	font-family: 'Source Code Pro', ;
+	font-family: 'Raleway', sans-serif;
+	font-family: 'Scada', sans-serif;
+	font-family: 'Roboto Mono', ;
 */
 
-
-div#timer{
-	font-family: 'Source Code Pro' ;
-	font-size: 20px;
+div#timer {
+	position: absolute;
+	overflow: hidden;
+	width: 800px;
+	left: 50%;
+	margin-left: -400px;
+	font-family: 'Scada', sans-serif;
+	font-size: 80px;
+	font-weight: bold;
+	text-align: left;
+	text-indent: 210px;
+	color: #666;
+	background-color: #FFF;
+	border: solid 1px #666;
+	padding: 40px 0;
 }
