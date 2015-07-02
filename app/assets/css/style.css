@@ -1,6 +1,6 @@
 
-@import url(http://fonts.googleapis.com/css?family=Fredoka+One|Source+Code+Pro:400,700|Raleway:400,700,900|Scada:700italic,400|Roboto+Mono:400,700italic);
-
+/*@import url(http://fonts.googleapis.com/css?family=Fredoka+One|Source+Code+Pro:400,700|Raleway:400,700,900|Scada:700italic,400|Roboto+Mono:400,700italic);
+*/
 /*
 	font-family: 'Fredoka One', cursive;
 	font-family: 'Source Code Pro', ;
@@ -9,12 +9,18 @@
 	font-family: 'Roboto Mono', ;
 */
 
+body{
+	background: #ccc;
+}
+
+
 div#timer {
 	position: absolute;
 	overflow: hidden;
 	width: 800px;
 	left: 50%;
 	margin-left: -400px;
+	margin-top: 100px;
 	font-family: 'Scada', sans-serif;
 	font-size: 80px;
 	font-weight: bold;
@@ -24,4 +30,8 @@ div#timer {
 	background-color: #FFF;
 	border: solid 1px #666;
 	padding: 40px 0;
+
+	-webkit-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
+	-moz-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
+	box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 }
