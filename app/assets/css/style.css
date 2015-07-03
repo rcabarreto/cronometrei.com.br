@@ -1,16 +1,31 @@
 
-/*@import url(http://fonts.googleapis.com/css?family=Fredoka+One|Source+Code+Pro:400,700|Raleway:400,700,900|Scada:700italic,400|Roboto+Mono:400,700italic);
-*/
+@import url(http://fonts.googleapis.com/css?family=Dosis|Lobster|Titillium+Web|Sigmar+One|Pacifico|Luckiest+Guy|Oxygen|Satisfy|Titillium+Web|Bangers|Courgette|Rock+Salt|Architects+Daughter|Lobster+Two|Playball);
+
 /*
-	font-family: 'Fredoka One', cursive;
-	font-family: 'Source Code Pro', ;
-	font-family: 'Raleway', sans-serif;
-	font-family: 'Scada', sans-serif;
-	font-family: 'Roboto Mono', ;
+	font-family: 'Dosis', sans-serif;
+	font-family: 'Lobster', cursive;
+	font-family: 'Lobster Two', cursive;
+	font-family: 'Titillium Web', sans-serif;
+	font-family: 'Indie Flower', cursive;
+	font-family: 'Playball', cursive;
+	font-family: 'Sigmar One', cursive;
+	font-family: 'Pacifico', cursive;
+	font-family: 'Luckiest Guy', cursive;
+	font-family: 'Oxygen', sans-serif;
+	font-family: 'Satisfy', cursive;
+	font-family: 'Titillium Web', sans-serif;
+	font-family: 'Bangers', cursive;
+	font-family: 'Courgette', cursive;
+	font-family: 'Rock Salt', cursive;
+	font-family: 'Architects Daughter', cursive;
+
 */
 
+
 body{
-	background: url('../images/fundo-de-tela_7865_1.jpg') no-repeat center center fixed;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -18,40 +33,64 @@ body{
 }
 
 
-
-
 .row {
 	margin-top: 20px;
 }
 
-.row div{	
+div#timer,
+div#startStop,
+div#clear{	
 	font-family: 'Scada', sans-serif;
 	font-weight: bold;
-	color: #666;
+	color: #333;
 	border: solid 1px #666;
 	padding: 20px 0;
-
 	-webkit-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 	-moz-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 	box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
+	opacity: 0.9;
+}
+
+h1#appTitle{
+	font-family: 'Lobster Two', cursive;
+	font-size: 20px;
+	text-align: center;
+	color: #FFF;
+	font-size: 100px;
 }
 
 div#timer{
 	font-size: 80px;
 	text-align: left;
 	text-indent: 160px;
-	background-color: #FFF;
-	opacity: 0.8;
-	filter: alpha(opacity=80);
+	text-shadow: 2px 2px #999;
+	background-color: #EFEFEF;
+}
+
+div.button{
+	font-size: 35px;
+	text-align: center;
 }
 
 div#startStop{
-	font-size: 20px;
-	text-align: center;
+	background: #009E1F;
+	color: #EFEFEF;
 }
 
 div#clear{
-	font-size: 20px;
-	text-align: center;
+	background: #B10000;
+	color: #EFEFEF;
+}
 
+
+
+
+
+
+.button{
+	cursor: pointer;
+}
+
+.instructions{
+	font-size: 12px;
 }

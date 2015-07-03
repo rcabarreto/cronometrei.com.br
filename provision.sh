@@ -46,9 +46,9 @@ apt-get -y install ruby-compass
 # install phpmyadmin
 if [ ! -d /vagrant/pma ]; then
 	cd /tmp
-	wget -O ./pma.zip -q http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/4.3.11.1/phpMyAdmin-4.3.11.1-all-languages.zip
+	wget -O ./pma.zip -q https://files.phpmyadmin.net/phpMyAdmin/4.3.13.1/phpMyAdmin-4.3.13.1-all-languages.zip
 	unzip *.zip
-	mv ./phpMyAdmin-4.3.11.1-all-languages /vagrant/pma
+	mv ./phpMyAdmin-4.3.13.1-all-languages /vagrant/pma
 fi
 
 # config pma to access dbase
