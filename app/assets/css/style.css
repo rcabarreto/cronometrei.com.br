@@ -1,10 +1,9 @@
 
-@import url(http://fonts.googleapis.com/css?family=Dosis|Lobster|Titillium+Web|Sigmar+One|Pacifico|Luckiest+Guy|Oxygen|Satisfy|Titillium+Web|Bangers|Courgette|Rock+Salt|Architects+Daughter|Lobster+Two|Playball);
+@import url(http://fonts.googleapis.com/css?family=Dosis|Lobster|Titillium+Web|Sigmar+One|Pacifico|Luckiest+Guy|Oxygen|Satisfy|Titillium+Web|Bangers|Courgette|Rock+Salt|Architects+Daughter|Playball);
 
 /*
 	font-family: 'Dosis', sans-serif;
 	font-family: 'Lobster', cursive;
-	font-family: 'Lobster Two', cursive;
 	font-family: 'Titillium Web', sans-serif;
 	font-family: 'Indie Flower', cursive;
 	font-family: 'Playball', cursive;
@@ -18,9 +17,7 @@
 	font-family: 'Courgette', cursive;
 	font-family: 'Rock Salt', cursive;
 	font-family: 'Architects Daughter', cursive;
-
 */
-
 
 body{
 	background-repeat: no-repeat;
@@ -32,14 +29,11 @@ body{
 	background-size: cover;
 }
 
-
-.row {
-	margin-top: 20px;
-}
+.row{ margin-top: 20px; }
 
 div#timer,
 div#startStop,
-div#clear{	
+div#clear{
 	font-family: 'Scada', sans-serif;
 	font-weight: bold;
 	color: #333;
@@ -52,7 +46,7 @@ div#clear{
 }
 
 h1#appTitle{
-	font-family: 'Lobster Two', cursive;
+	font-family: 'Lobster', cursive;
 	font-size: 20px;
 	text-align: center;
 	color: #FFF;
