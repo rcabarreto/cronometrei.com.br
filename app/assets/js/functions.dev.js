@@ -18,11 +18,20 @@ function confirmExit(){
 		return exitMessage;
 }
 
+
 $(document).ready(function(){
+
+	init();
+
 	$(document).bind('keyup', 'space', startStopTimer);
 	$(document).bind('keyup', 'esc', clearTimer);
 });
 
+
+function init(){
+	$('#timer').html('00:00:00:000');
+	return false;
+}
 
 function startStopTimer() {
 	if (doing)
@@ -43,7 +52,7 @@ function startTimer(currentTimer) {
 		time = (new Date() - currentTimer);
 	}
 
-	loop = window.setInterval("update()", 1);
+	loop = window.setInterval("update()", 10);
 }
 
 
@@ -95,10 +104,13 @@ function format_seconds(seconds) {
 		seconds = 0;
 
 	var diff = new Date(seconds);
+	var hours = diff.getUTCHours();
 	var minutes = diff.getMinutes();
 	var seconds = diff.getSeconds();
 	var milliseconds = diff.getMilliseconds();
 
+	if (hours < 10)
+		hours = "0" + hours;
 	if (minutes < 10)
 		minutes = "0" + minutes;
 	if (seconds < 10)
@@ -109,6 +121,6 @@ function format_seconds(seconds) {
 	else if (milliseconds < 100)
 		milliseconds = "0" + milliseconds;
 
-	document.title = minutes + ":" + seconds + ":" + milliseconds + titleSep + pageTitle;
-	return minutes + ":" + seconds + ":" + milliseconds;
+	document.title = hours + ":" + minutes + ":" + seconds + titleSep + pageTitle;
+	return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 }
