@@ -1,7 +1,7 @@
 
 var app = {
 	settings: {
-		debug: true,
+		debug: false,
 		titleSep: ' - ',
 		pageTitle: 'Cronometrei',
 		homeTitleFull: 'O tempo, sob controle',
