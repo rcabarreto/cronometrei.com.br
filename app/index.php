@@ -4,7 +4,6 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 	<meta name="description" content="Cronômetro online">
 	<meta name="keywords" content="Cronômetro, Contador, Relógio, Tempo, Timer, Cronometer">
@@ -25,29 +24,17 @@
 
 <body>
 
-	<!-- <div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
-	<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
-	<div id="status"></div> -->
+    <script type="text/javascript" src="assets/js/facebook.js"></script>
 
-	<div class="container">
+	<!-- app container -->
+	<div id="application" class="container"></div>
 	
-		<div class="row">
-			<h1 id="appTitle"></h1>
-			<div id="timer" class="col-md-8 col-md-offset-2"></div>
-		</div>
-
-		<div class="row">
-			<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();">
-				<div id="startStopLabel"></div>
-				<div id="startStopInstruction" class="instructions"></div>
-			</div>
-			<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();">
-				<div id="clearLabel"></div>
-				<div id="clearInstruction" class="instructions"></div>
-			</div>
-		</div>
-
-	</div>
+	<!-- footer -->
+	<footer class="container">
+		<div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
+		<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+		<div id="status"></div>
+	</footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="assets/js/functions.dev.js"></script>

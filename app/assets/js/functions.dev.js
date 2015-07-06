@@ -12,6 +12,7 @@ var app = {
 		startInstruction: 'Barra de Espaço',
 		clearInstruction: 'Esc',
 		exitMessage: 'Seu cronometro será perdido, deseja mesmo sair?',
+		clearMessage: 'Deseja mesmo zerar seu cronometro?',
 		doing: false,
 		time: 0,
 		currentTimer: 0,
@@ -23,29 +24,48 @@ var app = {
 		if(app.settings.debug)
 			console.log('Initializing app');
 
+		// set unload function to prevent users from closing the crono window
 		window.onbeforeunload = app.confirmExit;
 
+		// create body divs
+		app.createAppCanvas();
+		// erase the timer
 		app.settings.needToConfirm = false;
 		app.settings.time = 0;
 		app.settings.currentTimer = 0;
-		$('#timer').text(app.format_seconds(0));
+		app.sendToScreen(app.format_seconds(0));
 
+		// set page title and background
 		app.setPageTitle();
 		app.setBackground();
 
 		if(app.settings.debug)
 			console.log('Binding keyboard shortcuts');
 
-		// key bindings
+		// set key bindings
 		$(document).keydown(function(event){
 			app.keyDefaults( event );
 		}).keyup(function(event){
 			app.keyHandler( event );
 		});
 
-		return false;
+		return false; // done
 	},
-
+	createAppCanvas: function(){
+		$("#application").append('<div id="titleRow" class="row"></div>');
+		$("#application").append('<div id="controlRow" class="row"></div>');
+		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
+		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
+		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
+	},
+	setPageTitle: function(){
+		document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
+		$('h1#appTitle').html(app.settings.pageTitle);
+		$('#startStopLabel').html(app.settings.startButton);
+		$('#startStopInstruction').html(app.settings.startInstruction);
+		$('#clearLabel').html(app.settings.clearButton);
+		$('#clearInstruction').html(app.settings.clearInstruction);
+	},
 	keyDefaults: function(event){
 		switch(event.keyCode) {
 			case 32: // SPACE
@@ -58,7 +78,6 @@ var app = {
 				return false;
 		}
 	},
-
 	keyHandler: function(event){
 		switch(event.keyCode) {
 			case 32: // SPACE
@@ -71,21 +90,10 @@ var app = {
 				return false;
 		}
 	},
-
 	confirmExit: function(){
 		if(app.settings.needToConfirm)
 			return app.settings.exitMessage;
 	},
-
-	setPageTitle: function(){
-		document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
-		$('h1#appTitle').html(app.settings.pageTitle);
-		$('#startStopLabel').html(app.settings.startButton);
-		$('#startStopInstruction').html(app.settings.startInstruction);
-		$('#clearLabel').html(app.settings.clearButton);
-		$('#clearInstruction').html(app.settings.clearInstruction);
-	},
-
 	setBackground: function(){
 		if(app.settings.debug)
 			console.log('Setting background image');
@@ -93,10 +101,8 @@ var app = {
 		// get randon image
 		var imageName = 'gallery_2_557_212946-1600x900.jpg';
 
-
 		$('body').css('background-image', 'url("assets/images/'+imageName+'")');
 	},
-
 	startStopTimer: function() {
 		if(app.settings.debug)
 			console.log('Call start/stop timer');
@@ -107,7 +113,6 @@ var app = {
 			app.startTimer(app.settings.currentTimer);
 		return false;
 	},
-
 	startTimer: function(currentTimer) {
 		if(app.settings.debug)
 			console.log('Starting timer');
@@ -126,7 +131,6 @@ var app = {
 		// set button label do PAUSE
 		$('#startStopLabel').html(app.settings.pauseButton);
 	},
-
 	stopTimer: function() {
 		if(app.settings.debug)
 			console.log('Stopping timer');
@@ -135,7 +139,6 @@ var app = {
 		clearInterval(app.settings.loop);
 		$('#startStopLabel').html(app.settings.startButton);
 	},
-
 	pauseTimer: function(){
 		if(app.settings.debug)
 			console.log('Pausing timer');
@@ -147,32 +150,27 @@ var app = {
 		// set button label to START
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
-
 	clearTimer: function(){
 		if(app.settings.debug)
 			console.log('Clear timer');
 
-		if(confirm('Zerar?')){
+		if(confirm(app.settings.clearMessage)){
 			app.stopTimer();
 			app.settings.needToConfirm = false;
 			app.settings.time = 0;
 			app.settings.currentTimer = 0;
-			$('#timer').text(app.format_seconds(0));
+			app.sendToScreen(app.format_seconds(0));
 		}
 	},
-
 	update: function(){
-		app.printTime(app.format_seconds(app.getTime()));
+		app.sendToScreen(app.format_seconds(app.getTime()));
 	},
-
-	printTime: function(time){
-		$('#timer').text(time);
+	sendToScreen: function(output){
+		$('#timer').text(output);
 	},
-
 	getTime: function(){
 		return (new Date() - app.settings.time);
 	},
-
 	format_seconds: function(seconds){
 		if(isNaN(seconds))
 			seconds = 0;
@@ -198,11 +196,11 @@ var app = {
 		document.title = hours + ":" + minutes + ":" + seconds + app.settings.titleSep + app.settings.pageTitle;
 		return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 	},
-
 }
 
 
+
 $(document).ready(function(){
-	app.init();
+	//app.init();
 });
 
