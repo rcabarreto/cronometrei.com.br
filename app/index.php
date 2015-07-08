@@ -42,9 +42,9 @@
 
 <body>
 
-    <script type="text/javascript" src="assets/js/facebook.js"></script>
 	
-	<div>
+	<!-- SITE AD -->
+	<div class="sitead">
 		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 		<!-- Cronometrei home banner -->
 		<ins class="adsbygoogle"
