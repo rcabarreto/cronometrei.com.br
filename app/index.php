@@ -43,18 +43,7 @@
 <body>
 
 	
-	<!-- SITE AD -->
-	<div class="sitead">
-		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-		<!-- Cronometrei home banner -->
-		<ins class="adsbygoogle"
-		     style="display:inline-block;width:728px;height:90px"
-		     data-ad-client="ca-pub-5385380754980188"
-		     data-ad-slot="4898522148"></ins>
-		<script>
-		(adsbygoogle = window.adsbygoogle || []).push({});
-		</script>
-	</div>
+
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
