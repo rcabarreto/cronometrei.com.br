@@ -60,7 +60,7 @@
 	</footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
+	<script type="text/javascript" src="assets/js/functions.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
