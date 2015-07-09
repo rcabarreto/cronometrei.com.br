@@ -12,7 +12,7 @@
 	<meta property="og:url"                content="http://www.cronometrei.com.br/" />
 	<meta property="og:type"               content="website" />
 	<meta property="og:title"              content="Cronometrei" />
-	<meta property="og:description"        content="O tempo passa, o tempo vôa" />
+	<meta property="og:description"        content="O tempo sob controle" />
 	<meta property="og:image"              content="http://www.cronometrei.com.br/assets/images/crono-trans250.png" />
 
 	<link rel="apple-touch-icon" sizes="57x57" href="/assets/favicon/apple-icon-57x57.png">
@@ -51,26 +51,18 @@
 
     <script type="text/javascript" src="assets/js/facebook.js"></script>
 
-	<header>
-		<div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
+	<header class="container">
+		<div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
 	</header>
 
 	<!-- app container -->
-	<div id="application" class="container">
-		<div id="titleRow" class="row">
-			<h1 id="appTitle">Cronometrei</h1><div id="timer" class="col-md-8 col-md-offset-2">00:00:00:000</div>
-		</div>
-		<div id="controlRow" class="row">
-			<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>
-			<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>
-		</div>
-	</div>
+	<div id="application" class="container"></div>
 
 	<!-- footer -->
-	<footer></footer>
+	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
+	<script type="text/javascript" src="assets/js/functions.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

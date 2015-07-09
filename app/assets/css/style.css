@@ -56,7 +56,7 @@ div#timer{
 	text-align: center;
 	text-shadow: 2px 2px #999;
 	background: rgba(239, 239, 239, 0.9);
-	font-size: 11rem;
+	font-size: 10.5rem;
 }
 
 div.button{
@@ -109,7 +109,7 @@ div.sitead{
 
 	h1#appTitle{ font-size: 10rem; }
 
-	div#timer{ font-size: 9rem; }
+	div#timer{ font-size: 8.5rem; }
 
 }
 
@@ -120,7 +120,7 @@ div.sitead{
 
 	h1#appTitle{ font-size: 8rem; }
 
-	div#timer{ font-size: 7rem; }
+	div#timer{ font-size: 6.5rem; }
 
 }  
 
@@ -130,6 +130,6 @@ div.sitead{
 
 	h1#appTitle{ font-size: 6rem; }
 
-	div#timer{ font-size: 5rem; }
+	div#timer{ font-size: 4.5rem; }
 
 }

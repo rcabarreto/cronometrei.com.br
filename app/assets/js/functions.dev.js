@@ -52,15 +52,15 @@ var app = {
 		return false; // done
 	},
 	createAppCanvas: function(){
-		//$("#application").append('<div id="titleRow" class="row"></div>');
-		//$("#application").append('<div id="controlRow" class="row"></div>');
-		//$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
-		//$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
-		//$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
+		$("#application").append('<div id="titleRow" class="row"></div>');
+		$("#application").append('<div id="controlRow" class="row"></div>');
+		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
+		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
+		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
 	},
 	setPageTitle: function(){
 		document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
-		//$('h1#appTitle').html(app.settings.pageTitle);
+		$('h1#appTitle').html(app.settings.pageTitle);
 		$('#startStopLabel').html(app.settings.startButton);
 		$('#startStopInstruction').html(app.settings.startInstruction);
 		$('#clearLabel').html(app.settings.clearButton);
