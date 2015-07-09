@@ -9,6 +9,12 @@
 	<meta name="keywords" content="Cronômetro, Contador, Relógio, Tempo, Timer, Cronometer">
 	<meta name="author" content="R3 Web Solutions">
 
+	<meta property="og:url"                content="http://www.cronometrei.com.br/" />
+	<meta property="og:type"               content="website" />
+	<meta property="og:title"              content="Cronometrei" />
+	<meta property="og:description"        content="O tempo passa, o tempo vôa" />
+	<meta property="og:image"              content="http://www.cronometrei.com.br/assets/images/crono-trans250.png" />
+
 	<link rel="apple-touch-icon" sizes="57x57" href="/assets/favicon/apple-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="/assets/favicon/apple-icon-60x60.png">
 	<link rel="apple-touch-icon" sizes="72x72" href="/assets/favicon/apple-icon-72x72.png">
