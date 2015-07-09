@@ -1,10 +1,9 @@
 
-@import url(http://fonts.googleapis.com/css?family=Dosis|Lobster|Titillium+Web|Sigmar+One|Pacifico|Luckiest+Guy|Oxygen|Satisfy|Titillium+Web|Bangers|Courgette|Rock+Salt|Architects+Daughter|Playball);
+@import url(http://fonts.googleapis.com/css?family=Lobster|Titillium+Web|Luckiest+Guy|Oxygen|Satisfy|Rock+Salt|Architects+Daughter|Playball);
 
 /*
 	font-family: 'Dosis', sans-serif;
 	font-family: 'Lobster', cursive;
-	font-family: 'Titillium Web', sans-serif;
 	font-family: 'Indie Flower', cursive;
 	font-family: 'Playball', cursive;
 	font-family: 'Sigmar One', cursive;
@@ -42,23 +41,22 @@ div#clear{
 	-webkit-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 	-moz-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 	box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
-	opacity: 0.9;
+	/*opacity: 0.9;*/
 }
 
 h1#appTitle{
 	font-family: 'Lobster', cursive;
-	font-size: 20px;
 	text-align: center;
 	color: #FFF;
-	font-size: 100px;
+	font-size: 12rem;
 }
 
 div#timer{
 	font-size: 80px;
-	text-align: left;
-	text-indent: 160px;
+	text-align: center;
 	text-shadow: 2px 2px #999;
-	background-color: #EFEFEF;
+	background: rgba(239, 239, 239, 0.9);
+	font-size: 11rem;
 }
 
 div.button{
@@ -102,4 +100,36 @@ footer {
 
 div.sitead{
 	text-align: center;
+}
+
+
+
+
+@media only screen and (max-width: 1100px) {
+
+	h1#appTitle{ font-size: 10rem; }
+
+	div#timer{ font-size: 9rem; }
+
+}
+
+
+
+
+@media only screen and (max-width: 800px) {
+
+	h1#appTitle{ font-size: 8rem; }
+
+	div#timer{ font-size: 7rem; }
+
+}  
+
+
+
+@media only screen and (max-width: 400px) {
+
+	h1#appTitle{ font-size: 6rem; }
+
+	div#timer{ font-size: 5rem; }
+
 }
