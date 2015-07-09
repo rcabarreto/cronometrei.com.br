@@ -38,21 +38,25 @@
 	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 
 <body>
 
-	
+    <script type="text/javascript" src="assets/js/facebook.js"></script>
 
+	<header>
+		<div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
+		
+	</header>
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
-	
+
 	<!-- footer -->
-	<footer class="container">
-		<div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
-		<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
-		<div id="status"></div>
+	<footer>
+
+
 	</footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
