@@ -21,12 +21,49 @@ var app = {
 		needToConfirm: false,
 	},
 
+	user: {
+		id: "",
+		email: "",
+		first_name: "",
+		last_name: "",
+		gender: "",
+		link: "",
+		locale: "",
+		name: "",
+		timezone: 0,
+		updated_time: "",
+		verified: false,
+		options: {},
+	},
+
 	init: function(){
 		if(app.settings.debug)
 			console.log('Initializing app');
 
+		if(app.settings.debug)
+			console.log('Starting facebook integration');
+
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId      : '387506448107274',
+				cookie     : true,  // enable cookies to allow the server to access the session
+				xfbml      : true,  // parse social plugins on this page
+				version    : 'v2.2' // use version 2.2
+			});
+
+			FB.getLoginStatus(function(response) {
+				app.statusChangeCallback(response);
+			});
+
+		};
+
 		// set unload function to prevent users from closing the crono window
 		window.onbeforeunload = app.confirmExit;
+
+		return false;
+	},
+
+	loadCronometer: function(){
 
 		// create body divs
 		app.createAppCanvas();
@@ -52,6 +89,67 @@ var app = {
 
 		return false;
 	},
+
+	checkLoginState: function(){
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+	},
+
+	statusChangeCallback: function(response){
+		if (response.status === 'connected') {
+			// Logged into your app and Facebook.
+			console.log('User logged in! Fetching information.... ');
+			FB.api('/me', function(user) {
+				var json = JSON.stringify(user);
+				// send this data to database on an ajax call
+				// load app with user profile settings
+				console.log("Loading custom user view for this app.")
+				if(app.loadUserInformation(user)){
+					// message?
+				}else{
+					console.log("Error loading user info object! Continuing with default user view instead...")
+				}
+				app.loadCronometer();
+
+			});
+
+		}else if(response.status === 'not_authorized'){
+			// The person is logged into Facebook, but not your app.
+			console.log("User is logged into Facebook, but not your app.");
+			console.log("Loading default user view for this app.")
+			app.loadCronometer();
+
+		}else{
+			// The person is not logged into Facebook, so we're not sure if
+			// they are logged into this app or not.
+			console.log("User is not logged into Facebook, so we're not sure if they are logged into this app or not..... ");
+			console.log("Loading default user view for this app.")
+			app.loadCronometer();
+
+		}
+
+	},
+
+	loadUserInformation: function(user){
+		if(app.settings.debug)
+			console.log('Loading user information...');
+
+		app.user.id 		  = user.id;
+		app.user.email 		  = user.email;
+		app.user.first_name   = user.first_name;
+		app.user.last_name 	  = user.last_name;
+		app.user.gender 	  = user.gender;
+		app.user.link 		  = user.link;
+		app.user.locale 	  = user.locale;
+		app.user.name 		  = user.name;
+		app.user.timezone 	  = user.timezone;
+		app.user.updated_time = user.updated_time;
+		app.user.verified 	  = user.verified;
+
+		return true;
+	},
+
 	createAppCanvas: function(){
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
@@ -100,13 +198,23 @@ var app = {
 			console.log('Setting background image');
 
 		var imageName = '';
-		$.ajax( "bg.php" ).done(function(data) {
+
+		if(app.settings.debug)
+			console.log('Trying the API...');
+
+		$.ajax({
+			url: "http://api.cronometrei.com.br/images/background",
+			method: "POST",
+			data: { userid : app.user.id },
+			crossDomain: true
+		}).done(function(data) {
 			var image = JSON.parse(data);
 
 			if(app.settings.debug)
-				console.log('Loaded random background: '+ image.name);
+				console.log('Loaded random background from api: '+ image.image_name);
 
-			imageName = image.name;
+			imageName = image.image_name;
+
 		}).fail(function() {
 			if(app.settings.debug)
 				console.log('Ajax failed! Using default background: '+ app.settings.defaultBG);
@@ -114,6 +222,8 @@ var app = {
 		}).always(function() {
 			$('body').css('background-image', 'url("assets/images/background/'+imageName+'")');
 		});
+
+
 	},
 	startStopTimer: function() {
 		if(app.settings.debug)

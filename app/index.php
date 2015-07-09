@@ -48,6 +48,7 @@
 </head>
 
 <body>
+
 	<div id="fb-root"></div>
     <script type="text/javascript" src="assets/js/facebook.js"></script>
 
@@ -57,6 +58,10 @@
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
+
+	<div id="login" class="container">
+
+	</div>
 
 	<!-- footer -->
 	<footer class="container"></footer>

@@ -143,6 +143,17 @@ location ~ \.php\$ {
 	include fastcgi_params;
 }" > /etc/nginx/global/codeigniter.conf
 
+echo "# CODEIGNITER : Rewrite rules, sends everything through index.php and keeps the appended query string intact
+location / {
+	try_files \$uri \$uri/ /index.php;
+}
+location ~ \.php\$ {
+	fastcgi_split_path_info ^(.+\.php)(/.+)\$;
+	fastcgi_pass unix:/var/run/php5-fpm.sock;
+	fastcgi_index index.php;
+	include fastcgi_params;
+	add_header Access-Control-Allow-Origin *;
+}" > /etc/nginx/global/codeigniterapi.conf
 
 echo "# WORDPRESS : Rewrite rules, sends everything through index.php and keeps the appended query string intact
 location / {
@@ -194,18 +205,27 @@ echo "server {
 }" > /etc/nginx/sites-available/pma
 
 echo "server {
+	server_name api.$domain;
+	root /vagrant/api;
+	access_log /var/log/nginx/api.access.log;
+	error_log /var/log/nginx/api.error.log;
+	include global/common.conf;
+	include global/codeigniterapi.conf;
+}" > /etc/nginx/sites-available/api
+
+echo "server {
 	server_name $domain dev.$domain;
 	root /vagrant/app;
 	access_log /var/log/nginx/cronometrei.access.log;
 	error_log /var/log/nginx/cronometrei.error.log;
 	include global/common.conf;
 	include global/simple.conf;
-}" > /etc/nginx/sites-available/application
+}" > /etc/nginx/sites-available/app
 
 
 ln -s /etc/nginx/sites-available/pma /etc/nginx/sites-enabled/pma
-ln -s /etc/nginx/sites-available/statics /etc/nginx/sites-enabled/statics
-ln -s /etc/nginx/sites-available/application /etc/nginx/sites-enabled/application
+ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
+ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/app
 
 
 # Restart Services

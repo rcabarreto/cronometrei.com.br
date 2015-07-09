@@ -24,10 +24,10 @@ DROP TABLE IF EXISTS `bgimages`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bgimages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `image_path` varchar(512) NOT NULL,
+  `image_name` varchar(512) NOT NULL,
   `active` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +36,7 @@ CREATE TABLE `bgimages` (
 
 LOCK TABLES `bgimages` WRITE;
 /*!40000 ALTER TABLE `bgimages` DISABLE KEYS */;
+INSERT INTO `bgimages` VALUES (1,'london.jpg',1),(2,'borabora.jpg',1),(3,'bubbles.jpg',1),(4,'road.jpg',1);
 /*!40000 ALTER TABLE `bgimages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,4 +77,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-09 15:40:01
+-- Dump completed on 2015-07-09 20:30:01
