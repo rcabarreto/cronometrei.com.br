@@ -1,10 +1,11 @@
 
 var app = {
 	settings: {
-		debug: false,
+		debug: true,
 		titleSep: ' - ',
 		pageTitle: 'Cronometrei',
 		homeTitleFull: 'O tempo, sob controle',
+		defaultBG: 'london.jpg',
 		startButton: 'Iniciar',
 		pauseButton: 'Pausar',
 		continueButton: 'Continuar',
@@ -49,7 +50,7 @@ var app = {
 			app.keyHandler( event );
 		});
 
-		return false; // done
+		return false;
 	},
 	createAppCanvas: function(){
 		$("#application").append('<div id="titleRow" class="row"></div>');
@@ -68,10 +69,10 @@ var app = {
 	},
 	keyDefaults: function(event){
 		switch(event.keyCode) {
-			case 32: // SPACE
+			case 32:
 				event.preventDefault();
 				break;
-			case 27: // ESC
+			case 27:
 				event.preventDefault();
 				break;
 			default:
@@ -80,10 +81,10 @@ var app = {
 	},
 	keyHandler: function(event){
 		switch(event.keyCode) {
-			case 32: // SPACE
+			case 32:
 				app.startStopTimer();
 				break;
-			case 27: // ESC
+			case 27:
 				app.clearTimer();
 				break;
 			default:
@@ -98,10 +99,21 @@ var app = {
 		if(app.settings.debug)
 			console.log('Setting background image');
 
-		// get randon image
-		var imageName = 'gallery_2_557_212946-1600x900.jpg';
+		var imageName = '';
+		$.ajax( "bg.php" ).done(function(data) {
+			var image = JSON.parse(data);
 
-		$('body').css('background-image', 'url("assets/images/'+imageName+'")');
+			if(app.settings.debug)
+				console.log('Loaded random background: '+ image.name);
+
+			imageName = image.name;
+		}).fail(function() {
+			if(app.settings.debug)
+				console.log('Ajax failed! Using default background: '+ app.settings.defaultBG);
+			imageName = app.settings.defaultBG;
+		}).always(function() {
+			$('body').css('background-image', 'url("assets/images/background/'+imageName+'")');
+		});
 	},
 	startStopTimer: function() {
 		if(app.settings.debug)
@@ -119,15 +131,12 @@ var app = {
 
 		app.settings.needToConfirm = true;
 		app.settings.doing = 1;
-
 		if(typeof(app.settings.currentTimer) == 'undefined'){
 			app.settings.time = new Date();
 		}else{
 			app.settings.time = (new Date() - app.settings.currentTimer);
 		}
-
 		app.settings.loop = window.setInterval("app.update()", 10);
-
 		// set button label do PAUSE
 		$('#startStopLabel').html(app.settings.pauseButton);
 	},
@@ -146,7 +155,6 @@ var app = {
 		app.settings.doing = 0;
 		clearInterval(app.settings.loop);
 		app.settings.currentTimer = app.getTime();
-
 		// set button label to START
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
@@ -154,13 +162,16 @@ var app = {
 		if(app.settings.debug)
 			console.log('Clear timer');
 
-		if(confirm(app.settings.clearMessage)){
-			app.stopTimer();
-			app.settings.needToConfirm = false;
-			app.settings.time = 0;
-			app.settings.currentTimer = 0;
-			app.sendToScreen(app.format_seconds(0));
-		}
+		bootbox.confirm(app.settings.clearMessage, function(result) {
+			if(result){
+				app.stopTimer();
+				app.settings.needToConfirm = false;
+				app.settings.time = 0;
+				app.settings.currentTimer = 0;
+				app.sendToScreen(app.format_seconds(0));
+			}
+		});
+
 	},
 	update: function(){
 		app.sendToScreen(app.format_seconds(app.getTime()));
@@ -197,8 +208,6 @@ var app = {
 		return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 	},
 }
-
-
 
 $(document).ready(function(){
 	app.init();

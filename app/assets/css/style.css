@@ -41,7 +41,6 @@ div#clear{
 	-webkit-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 	-moz-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
 	box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75);
-	/*opacity: 0.9;*/
 }
 
 h1#appTitle{
@@ -55,7 +54,7 @@ div#timer{
 	font-size: 80px;
 	text-align: center;
 	text-shadow: 2px 2px #999;
-	background: rgba(239, 239, 239, 0.9);
+	background: rgba(239,239,239,0.9);
 	font-size: 10.5rem;
 }
 
@@ -65,19 +64,14 @@ div.button{
 }
 
 div#startStop{
-	background: #009E1F;
+	background: rgba(0,158,31,0.9);
 	color: #EFEFEF;
 }
 
 div#clear{
-	background: #B10000;
+	background: rgba(177,0,0,0.9);
 	color: #EFEFEF;
 }
-
-
-
-
-
 
 .button{
 	cursor: pointer;
@@ -105,31 +99,32 @@ div.sitead{
 
 
 
+
 @media only screen and (max-width: 1100px) {
 
 	h1#appTitle{ font-size: 10rem; }
-
 	div#timer{ font-size: 8.5rem; }
 
 }
 
+@media only screen and (max-width: 990px) {
 
+	div#startStop{ margin-bottom: 20px; }
+
+}
 
 
 @media only screen and (max-width: 800px) {
 
 	h1#appTitle{ font-size: 8rem; }
-
 	div#timer{ font-size: 6.5rem; }
 
-}  
-
+}
 
 
 @media only screen and (max-width: 400px) {
 
 	h1#appTitle{ font-size: 6rem; }
-
 	div#timer{ font-size: 4.5rem; }
 
 }

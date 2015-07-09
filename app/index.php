@@ -48,7 +48,7 @@
 </head>
 
 <body>
-
+	<div id="fb-root"></div>
     <script type="text/javascript" src="assets/js/facebook.js"></script>
 
 	<header class="container">
@@ -62,8 +62,9 @@
 	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.min.js"></script>
+	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

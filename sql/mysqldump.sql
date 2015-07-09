@@ -16,6 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `bgimages`
+--
+
+DROP TABLE IF EXISTS `bgimages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bgimages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `image_path` varchar(512) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bgimages`
+--
+
+LOCK TABLES `bgimages` WRITE;
+/*!40000 ALTER TABLE `bgimages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bgimages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -52,4 +76,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-09 13:50:01
+-- Dump completed on 2015-07-09 15:40:01
