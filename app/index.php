@@ -46,18 +46,14 @@
     <script type="text/javascript" src="assets/js/facebook.js"></script>
 
 	<header>
-		<div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
-		
+		<div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
 	</header>
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
 
 	<!-- footer -->
-	<footer>
-
-
-	</footer>
+	<footer></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="assets/js/functions.min.js"></script>
