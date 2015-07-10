@@ -1,22 +1,4 @@
-
-@import url(http://fonts.googleapis.com/css?family=Lobster|Titillium+Web|Luckiest+Guy|Oxygen|Satisfy|Rock+Salt|Architects+Daughter|Playball);
-
-/*
-	font-family: 'Dosis', sans-serif;
-	font-family: 'Lobster', cursive;
-	font-family: 'Indie Flower', cursive;
-	font-family: 'Playball', cursive;
-	font-family: 'Sigmar One', cursive;
-	font-family: 'Pacifico', cursive;
-	font-family: 'Luckiest Guy', cursive;
-	font-family: 'Oxygen', sans-serif;
-	font-family: 'Satisfy', cursive;
-	font-family: 'Titillium Web', sans-serif;
-	font-family: 'Bangers', cursive;
-	font-family: 'Courgette', cursive;
-	font-family: 'Rock Salt', cursive;
-	font-family: 'Architects Daughter', cursive;
-*/
+@import url(http://fonts.googleapis.com/css?family=Lobster|Titillium+Web);
 
 body{
 	background-repeat: no-repeat;
@@ -45,6 +27,7 @@ div#clear{
 
 h1#appTitle{
 	font-family: 'Lobster', cursive;
+	text-shadow: 1px 1px #666;
 	text-align: center;
 	color: #FFF;
 	font-size: 12rem;
@@ -55,7 +38,7 @@ div#timer{
 	text-align: center;
 	text-shadow: 2px 2px #999;
 	background: rgba(239,239,239,0.9);
-	font-size: 10.5rem;
+	font-size: 10rem;
 }
 
 div.button{

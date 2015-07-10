@@ -1,5 +1,11 @@
 
 var app = {
+
+	doing: false,
+	time: 0,
+	currentTimer: 0,
+	loop: false,
+
 	settings: {
 		debug: true,
 		titleSep: ' - ',
@@ -14,15 +20,13 @@ var app = {
 		clearInstruction: 'Esc',
 		exitMessage: 'Seu cronometro será perdido, deseja mesmo sair?',
 		clearMessage: 'Deseja mesmo zerar seu cronometro?',
-		doing: false,
-		time: 0,
-		currentTimer: 0,
-		loop: false,
 		needToConfirm: false,
+		fbAppID: '387506448107274',
 	},
 
 	user: {
 		id: "",
+		facebook_id: "",
 		email: "",
 		first_name: "",
 		last_name: "",
@@ -35,6 +39,11 @@ var app = {
 		verified: false,
 		options: {},
 	},
+	
+	theme: {
+		backgroundImage: "",
+		appTitleColor: "",
+	},
 
 	init: function(){
 		if(app.settings.debug)
@@ -45,7 +54,7 @@ var app = {
 
 		window.fbAsyncInit = function() {
 			FB.init({
-				appId      : '387506448107274',
+				appId      : app.settings.fbAppID,
 				cookie     : true,  // enable cookies to allow the server to access the session
 				xfbml      : true,  // parse social plugins on this page
 				version    : 'v2.2' // use version 2.2
@@ -67,15 +76,16 @@ var app = {
 
 		// create body divs
 		app.createAppCanvas();
+
 		// erase the timer
 		app.settings.needToConfirm = false;
-		app.settings.time = 0;
-		app.settings.currentTimer = 0;
+		app.time = 0;
+		app.currentTimer = 0;
 		app.sendToScreen(app.format_seconds(0));
 
 		// set page title and background
 		app.setPageTitle();
-		app.setBackground();
+		app.loadTheme();
 
 		if(app.settings.debug)
 			console.log('Binding keyboard shortcuts');
@@ -99,18 +109,14 @@ var app = {
 	statusChangeCallback: function(response){
 		if (response.status === 'connected') {
 			// Logged into your app and Facebook.
-			console.log('User logged in! Fetching information.... ');
+			if(app.settings.debug)
+				console.log('User logged in! Fetching information.... ');
 			FB.api('/me', function(user) {
-				var json = JSON.stringify(user);
 				// send this data to database on an ajax call
-				// load app with user profile settings
-				console.log("Loading custom user view for this app.")
-				if(app.loadUserInformation(user)){
-					// message?
-				}else{
+				// load app with user profile settings			
+				if(!app.loadUserInformation(user)){
 					console.log("Error loading user info object! Continuing with default user view instead...")
 				}
-				app.loadCronometer();
 
 			});
 
@@ -132,22 +138,34 @@ var app = {
 	},
 
 	loadUserInformation: function(user){
-		if(app.settings.debug)
-			console.log('Loading user information...');
 
-		app.user.id 		  = user.id;
-		app.user.email 		  = user.email;
-		app.user.first_name   = user.first_name;
-		app.user.last_name 	  = user.last_name;
-		app.user.gender 	  = user.gender;
-		app.user.link 		  = user.link;
-		app.user.locale 	  = user.locale;
-		app.user.name 		  = user.name;
-		app.user.timezone 	  = user.timezone;
-		app.user.updated_time = user.updated_time;
-		app.user.verified 	  = user.verified;
+		$.ajax({
+			url: "http://api.cronometrei.com.br/app/user/loadUserInfo",
+			method: "POST",
+			data: {json: JSON.stringify(user) },
+			crossDomain: true
+		}).done(function(data) {
+			var response = JSON.parse(data);
+			//console.log(response);
+			app.user.id 		  = response.appid;
+			app.user.facebook_id  = response.id;
+			app.user.email 		  = response.email;
+			app.user.first_name   = response.first_name;
+			app.user.last_name 	  = response.last_name;
+			app.user.gender 	  = response.gender;
+			app.user.link 		  = response.link;
+			app.user.locale 	  = response.locale;
+			app.user.name 		  = response.name;
+			app.user.timezone 	  = response.timezone;
+			app.user.updated_time = response.updated_time;
+			app.user.verified 	  = response.verified;
+			
+			app.loadCronometer();
 
-		return true;
+		}).fail(function() {
+		}).always(function(){
+		});
+
 	},
 
 	createAppCanvas: function(){
@@ -193,9 +211,9 @@ var app = {
 		if(app.settings.needToConfirm)
 			return app.settings.exitMessage;
 	},
-	setBackground: function(){
+	loadTheme: function(){
 		if(app.settings.debug)
-			console.log('Setting background image');
+			console.log('Loading theme');
 
 		var imageName = '';
 
@@ -203,7 +221,7 @@ var app = {
 			console.log('Trying the API...');
 
 		$.ajax({
-			url: "http://api.cronometrei.com.br/images/background",
+			url: "http://api.cronometrei.com.br/app/theme/loadTheme",
 			method: "POST",
 			data: { userid : app.user.id },
 			crossDomain: true
@@ -213,26 +231,28 @@ var app = {
 			if(app.settings.debug)
 				console.log('Loaded random background from api: '+ image.image_name);
 
-			imageName = image.image_name;
+			app.theme.backgroundImage = image.image_name;
+			app.theme.appTitleColor = image.logo_color;
 
 		}).fail(function() {
 			if(app.settings.debug)
 				console.log('Ajax failed! Using default background: '+ app.settings.defaultBG);
-			imageName = app.settings.defaultBG;
-		}).always(function() {
-			$('body').css('background-image', 'url("assets/images/background/'+imageName+'")');
+			app.theme.backgroundImage = app.settings.defaultBG;
+		}).always(function(){
+			// set everything
+			$('body').css('background-image', 'url("assets/images/background/'+app.theme.backgroundImage+'")');
+			$('#appTitle').css('color', app.theme.appTitleColor);
 		});
-
 
 	},
 	startStopTimer: function() {
 		if(app.settings.debug)
 			console.log('Call start/stop timer');
 
-		if (app.settings.doing)
+		if (app.doing)
 			app.pauseTimer();
 		else
-			app.startTimer(app.settings.currentTimer);
+			app.startTimer(app.currentTimer);
 		return false;
 	},
 	startTimer: function(currentTimer) {
@@ -240,13 +260,13 @@ var app = {
 			console.log('Starting timer');
 
 		app.settings.needToConfirm = true;
-		app.settings.doing = 1;
-		if(typeof(app.settings.currentTimer) == 'undefined'){
-			app.settings.time = new Date();
+		app.doing = 1;
+		if(typeof(app.currentTimer) == 'undefined'){
+			app.time = new Date();
 		}else{
-			app.settings.time = (new Date() - app.settings.currentTimer);
+			app.time = (new Date() - app.currentTimer);
 		}
-		app.settings.loop = window.setInterval("app.update()", 10);
+		app.loop = window.setInterval("app.update()", 10);
 		// set button label do PAUSE
 		$('#startStopLabel').html(app.settings.pauseButton);
 	},
@@ -254,17 +274,17 @@ var app = {
 		if(app.settings.debug)
 			console.log('Stopping timer');
 
-		app.settings.doing = 0;
-		clearInterval(app.settings.loop);
+		app.doing = 0;
+		clearInterval(app.loop);
 		$('#startStopLabel').html(app.settings.startButton);
 	},
 	pauseTimer: function(){
 		if(app.settings.debug)
 			console.log('Pausing timer');
 
-		app.settings.doing = 0;
-		clearInterval(app.settings.loop);
-		app.settings.currentTimer = app.getTime();
+		app.doing = 0;
+		clearInterval(app.loop);
+		app.currentTimer = app.getTime();
 		// set button label to START
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
@@ -276,8 +296,8 @@ var app = {
 			if(result){
 				app.stopTimer();
 				app.settings.needToConfirm = false;
-				app.settings.time = 0;
-				app.settings.currentTimer = 0;
+				app.time = 0;
+				app.currentTimer = 0;
 				app.sendToScreen(app.format_seconds(0));
 			}
 		});
@@ -290,7 +310,7 @@ var app = {
 		$('#timer').text(output);
 	},
 	getTime: function(){
-		return (new Date() - app.settings.time);
+		return (new Date() - app.time);
 	},
 	format_seconds: function(seconds){
 		if(isNaN(seconds))

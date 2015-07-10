@@ -16,28 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `bgimages`
+-- Table structure for table `theme`
 --
 
-DROP TABLE IF EXISTS `bgimages`;
+DROP TABLE IF EXISTS `theme`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bgimages` (
+CREATE TABLE `theme` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `image_name` varchar(512) NOT NULL,
+  `logo_color` varchar(10) NOT NULL DEFAULT '#FFF',
   `active` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bgimages`
+-- Dumping data for table `theme`
 --
 
-LOCK TABLES `bgimages` WRITE;
-/*!40000 ALTER TABLE `bgimages` DISABLE KEYS */;
-INSERT INTO `bgimages` VALUES (1,'london.jpg',1),(2,'borabora.jpg',1),(3,'bubbles.jpg',1),(4,'road.jpg',1);
-/*!40000 ALTER TABLE `bgimages` ENABLE KEYS */;
+LOCK TABLES `theme` WRITE;
+/*!40000 ALTER TABLE `theme` DISABLE KEYS */;
+INSERT INTO `theme` VALUES (1,'london.jpg','#FFF',1),(2,'borabora.jpg','#F4FCFA',1),(3,'bubbles.jpg','#FFF',1),(4,'road.jpg','#FFF',1),(6,'150305-cinqAA_by_Pierre_Cante.jpg','#FFF',1),(7,'11220682974_9d296080f3_k.jpg','##E7E8EB',1),(8,'11416120446_76a5ae1b18_k.jpg','#FFF',1),(9,'12591084605_c926ed2c7d_k.jpg','#FFF',1),(10,'12735618625_bbe342c702_k.jpg','#587065',1),(11,'Christmas_Lights_by_RaDu_GaLaN.jpg','#FFF',1);
+/*!40000 ALTER TABLE `theme` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -77,4 +78,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-09 20:30:01
+-- Dump completed on 2015-07-10  2:30:01

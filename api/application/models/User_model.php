@@ -3,25 +3,8 @@
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
 
-class Bgimages_model extends CI_Model{
+class User_model extends CI_Model{
 
-	public function get_user_bgimage(){
-		$this->db->select('image_name');
-		$this->db->from('bgimages');
-		$this->db->where(array('active' => 1));
-		$this->db->order_by('id', 'RANDOM');
-		$this->db->limit(1);
-		return $this->db->get()->result();
-	}
-	
-	public function get_random_bgimage(){
-		$this->db->select('image_name');
-		$this->db->from('bgimages');
-		$this->db->where(array('active' => 1));
-		$this->db->order_by('id', 'RANDOM');
-		$this->db->limit(1);
-		return $this->db->get()->result();
-	}
 
 	public function getUserName($tagid, &$username){
 
