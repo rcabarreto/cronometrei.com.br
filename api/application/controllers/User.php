@@ -8,23 +8,19 @@ class User extends CI_Controller {
 		$this->load->model('user_model', 'user');
 	}
 
-
 	public function loadUserInfo(){
-		
-		$objUser = json_decode($this->input->post('json'));
-		$objUser->appid = 1;
-		
-		// if( $this->user->checkUser($objUser) ){
-		// 	// update user info and return user id
-		// 	$objUser->appid = $this->user->update_user($objUser);
-		// }else{
-		// 	// insert user into dabatase and return id
-		// 	$objUser->appid = $this->user->insert_user($objUser);
-		// }
 
-		$viewData['echoJSON'] = json_encode($objUser);
-		$this->load->view('jsonDump', $viewData);
-
+		if($this->input->post('json')){
+			$json = $this->input->post('json');
+			$objUser = json_decode($json);
+			if( $this->user->checkUser($objUser, $userID) ){
+				$objUser->userid = $userID;
+			}else{
+				$objUser->userid = $this->user->insert_user($objUser);
+			}
+			$viewData['echoJSON'] = json_encode($objUser);
+			$this->load->view('jsonDump', $viewData);
+		}
 	}
 
 }

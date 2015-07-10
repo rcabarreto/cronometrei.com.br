@@ -5,69 +5,40 @@ if (!defined('BASEPATH'))
 
 class User_model extends CI_Model{
 
-
-	public function getUserName($tagid, &$username){
-
-		$sqlWhere = array('tag.tag' => $tagid);
-
-		$this->db->select('name');
-		$this->db->from('user');
-		$this->db->join('tag', 'user.tag_id = tag.id', 'inner');
+	public function checkUser($objUser, &$userID){
+		$sqlWhere = array('facebook_id' => $objUser->id);
+		$this->db->select('id');
+		$this->db->from('users');
 		$this->db->where($sqlWhere);
-
 		$return = $this->db->get();
-
 		if($return->num_rows() > 0){
 			foreach ($return->result() as $row) {
-				$username = $row->name;
+				$userID = (int)$row->id;
 			}
 		    return true;
 		}else{
 			return false;
 		}
-
-	}
-
-	public function get_users(){
-
-		$this->db->select('user.*, tag.tag as tagcode');
-		$this->db->from('user');
-		$this->db->join('tag', 'user.tag_id = tag.id', 'left');
-
-		return $this->db->get()->result();
-
-	}
-
-	public function get_single_user($userid){
-
-		$sqlWhere = array('id' => $userid);
-
-		$this->db->select('*');
-		$this->db->from('user');
-		$this->db->where($sqlWhere);
-
-		return $this->db->get()->result();
-
 	}
 
 	public function insert_user($data){
-
 		$insertData = array(
-			'name' => $data['username'],
-			'email' => $data['useremail']
+			'facebook_id' => $data->id,
+			'full_name' => $data->name,
+			'email' => $data->email,
+			'gender' => $data->gender,
+			'link' => $data->link,
+			'locale' => $data->locale
 		);
-
-		$insertID = $this->db->insert('user', $insertData);
-
-		return $insertID;
-
+		$this->db->insert('users', $insertData);
+		return $this->db->insert_id();
 	}
-
+	
 	public function remove_user($id){
 		$this->db->delete('user', array('id' => $id));
 		return true;
 	}
-
+	
 	public function update_user($userid, $data){
 		$this->db->update('user', $data, array('id' => $userid));
 		return true;

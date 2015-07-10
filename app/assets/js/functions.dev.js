@@ -22,6 +22,7 @@ var app = {
 		clearMessage: 'Deseja mesmo zerar seu cronometro?',
 		needToConfirm: false,
 		fbAppID: '387506448107274',
+		apihost: 'http://api.cronometrei.com.br/app',
 	},
 
 	user: {
@@ -108,46 +109,32 @@ var app = {
 
 	statusChangeCallback: function(response){
 		if (response.status === 'connected') {
-			// Logged into your app and Facebook.
 			if(app.settings.debug)
 				console.log('User logged in! Fetching information.... ');
 			FB.api('/me', function(user) {
-				// send this data to database on an ajax call
-				// load app with user profile settings			
-				if(!app.loadUserInformation(user)){
-					console.log("Error loading user info object! Continuing with default user view instead...")
-				}
-
+				app.loadUserInformation(user);
 			});
-
-		}else if(response.status === 'not_authorized'){
-			// The person is logged into Facebook, but not your app.
-			console.log("User is logged into Facebook, but not your app.");
-			console.log("Loading default user view for this app.")
-			app.loadCronometer();
-
 		}else{
-			// The person is not logged into Facebook, so we're not sure if
-			// they are logged into this app or not.
-			console.log("User is not logged into Facebook, so we're not sure if they are logged into this app or not..... ");
-			console.log("Loading default user view for this app.")
-			app.loadCronometer();
-
+			if(app.settings.debug)
+				console.log('User not logged, loading default app.... ');
+			app.loadDefaultUser();
 		}
-
 	},
 
+	loadDefaultUser: function(){
+		app.loadCronometer();
+	},
 	loadUserInformation: function(user){
 
 		$.ajax({
-			url: "http://api.cronometrei.com.br/app/user/loadUserInfo",
+			url: app.settings.apihost + "/user/loadUserInfo",
 			method: "POST",
 			data: {json: JSON.stringify(user) },
 			crossDomain: true
 		}).done(function(data) {
 			var response = JSON.parse(data);
-			//console.log(response);
-			app.user.id 		  = response.appid;
+
+			app.user.id 		  = response.userid;
 			app.user.facebook_id  = response.id;
 			app.user.email 		  = response.email;
 			app.user.first_name   = response.first_name;
@@ -163,9 +150,14 @@ var app = {
 			app.loadCronometer();
 
 		}).fail(function() {
-		}).always(function(){
+			if(app.settings.debug)
+				console.log('Userinfo loagind failed, going on with default user info...');
+			app.loadDefaultUser();
+
 		});
 
+		return true;
+		
 	},
 
 	createAppCanvas: function(){
