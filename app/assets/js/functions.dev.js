@@ -1,13 +1,11 @@
 
 var app = {
-
 	doing: false,
 	time: 0,
 	currentTimer: 0,
 	loop: false,
-
 	settings: {
-		debug: true,
+		debug: false,
 		titleSep: ' - ',
 		pageTitle: 'Cronometrei',
 		homeTitleFull: 'O tempo, sob controle',
@@ -24,7 +22,6 @@ var app = {
 		fbAppID: '387506448107274',
 		apihost: 'http://api.cronometrei.com.br/app',
 	},
-
 	user: {
 		id: "",
 		facebook_id: "",
@@ -40,12 +37,10 @@ var app = {
 		verified: false,
 		options: {},
 	},
-	
 	theme: {
 		backgroundImage: "",
 		appTitleColor: "",
 	},
-
 	init: function(){
 		if(app.settings.debug)
 			console.log('Initializing app');

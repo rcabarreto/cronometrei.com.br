@@ -67,7 +67,7 @@
 	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.min.js"></script>
+	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
 	<script>
