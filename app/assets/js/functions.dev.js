@@ -39,9 +39,25 @@ var app = {
 	},
 	theme: {
 		backgroundImage: "",
-		appTitleColor: "",
+		appTitleColor: "#FFF",
+		startStopButtonColor: "rgba(0,158,31,0.9)",
+		clearButtonColor: "rgba(177,0,0,0.9)",
+		setTheme: function(){
+			$('body').css('background-image', 'url("assets/images/background/'+this.backgroundImage+'")');
+			$('#appTitle').css('color', this.appTitleColor);
+			$('#startStop').css('background', this.startStopButtonColor);
+			$('#clear').css('background', this.clearButtonColor);
+		},
 	},
 	init: function(){
+
+		var url = window.location.pathname;
+		var filename = url.substring(url.lastIndexOf('/')+1);
+		if(filename === "dev.php"){
+			console.log('##########################################################\n###   Development mode detected. Going verbose mode.   ###\n########################################################## \n\n');
+			app.settings.debug = true;
+		}
+
 		if(app.settings.debug)
 			console.log('Initializing app');
 
@@ -55,53 +71,36 @@ var app = {
 				xfbml      : true,  // parse social plugins on this page
 				version    : 'v2.2' // use version 2.2
 			});
-
 			FB.getLoginStatus(function(response) {
 				app.statusChangeCallback(response);
 			});
-
 		};
-
 		// set unload function to prevent users from closing the crono window
 		window.onbeforeunload = app.confirmExit;
-
 		return false;
 	},
-
 	loadCronometer: function(){
-
-		// create body divs
 		app.createAppCanvas();
-
-		// erase the timer
 		app.settings.needToConfirm = false;
 		app.time = 0;
 		app.currentTimer = 0;
 		app.sendToScreen(app.format_seconds(0));
-
-		// set page title and background
 		app.setPageTitle();
 		app.loadTheme();
-
 		if(app.settings.debug)
 			console.log('Binding keyboard shortcuts');
-
-		// set key bindings
 		$(document).keydown(function(event){
 			app.keyDefaults( event );
 		}).keyup(function(event){
 			app.keyHandler( event );
 		});
-
 		return false;
 	},
-
 	checkLoginState: function(){
 		FB.getLoginStatus(function(response) {
 			statusChangeCallback(response);
 		});
 	},
-
 	statusChangeCallback: function(response){
 		if (response.status === 'connected') {
 			if(app.settings.debug)
@@ -115,7 +114,6 @@ var app = {
 			app.loadDefaultUser();
 		}
 	},
-
 	loadDefaultUser: function(){
 		app.loadCronometer();
 	},
@@ -154,7 +152,6 @@ var app = {
 		return true;
 		
 	},
-
 	createAppCanvas: function(){
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
@@ -201,41 +198,30 @@ var app = {
 	loadTheme: function(){
 		if(app.settings.debug)
 			console.log('Loading theme');
-
-		var imageName = '';
-
 		if(app.settings.debug)
-			console.log('Trying the API...');
-
+			console.log('==> Trying the API...');
 		$.ajax({
-			url: "http://api.cronometrei.com.br/app/theme/loadTheme",
+			url: app.settings.apihost + "/theme/loadTheme",
 			method: "POST",
 			data: { userid : app.user.id },
 			crossDomain: true
 		}).done(function(data) {
 			var image = JSON.parse(data);
-
 			if(app.settings.debug)
 				console.log('Loaded random background from api: '+ image.image_name);
-
 			app.theme.backgroundImage = image.image_name;
 			app.theme.appTitleColor = image.logo_color;
-
 		}).fail(function() {
 			if(app.settings.debug)
 				console.log('Ajax failed! Using default background: '+ app.settings.defaultBG);
 			app.theme.backgroundImage = app.settings.defaultBG;
 		}).always(function(){
-			// set everything
-			$('body').css('background-image', 'url("assets/images/background/'+app.theme.backgroundImage+'")');
-			$('#appTitle').css('color', app.theme.appTitleColor);
+			app.theme.setTheme();
 		});
-
 	},
 	startStopTimer: function() {
 		if(app.settings.debug)
 			console.log('Call start/stop timer');
-
 		if (app.doing)
 			app.pauseTimer();
 		else
@@ -245,7 +231,6 @@ var app = {
 	startTimer: function(currentTimer) {
 		if(app.settings.debug)
 			console.log('Starting timer');
-
 		app.settings.needToConfirm = true;
 		app.doing = 1;
 		if(typeof(app.currentTimer) == 'undefined'){
@@ -254,13 +239,11 @@ var app = {
 			app.time = (new Date() - app.currentTimer);
 		}
 		app.loop = window.setInterval("app.update()", 10);
-		// set button label do PAUSE
 		$('#startStopLabel').html(app.settings.pauseButton);
 	},
 	stopTimer: function() {
 		if(app.settings.debug)
 			console.log('Stopping timer');
-
 		app.doing = 0;
 		clearInterval(app.loop);
 		$('#startStopLabel').html(app.settings.startButton);
@@ -268,17 +251,14 @@ var app = {
 	pauseTimer: function(){
 		if(app.settings.debug)
 			console.log('Pausing timer');
-
 		app.doing = 0;
 		clearInterval(app.loop);
 		app.currentTimer = app.getTime();
-		// set button label to START
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
 	clearTimer: function(){
 		if(app.settings.debug)
 			console.log('Clear timer');
-
 		bootbox.confirm(app.settings.clearMessage, function(result) {
 			if(result){
 				app.stopTimer();
@@ -288,7 +268,6 @@ var app = {
 				app.sendToScreen(app.format_seconds(0));
 			}
 		});
-
 	},
 	update: function(){
 		app.sendToScreen(app.format_seconds(app.getTime()));
@@ -302,31 +281,28 @@ var app = {
 	format_seconds: function(seconds){
 		if(isNaN(seconds))
 			seconds = 0;
-
 		var diff = new Date(seconds);
 		var hours = diff.getUTCHours();
 		var minutes = diff.getMinutes();
 		var seconds = diff.getSeconds();
 		var milliseconds = diff.getMilliseconds();
-
 		if (hours < 10)
 			hours = "0" + hours;
 		if (minutes < 10)
 			minutes = "0" + minutes;
 		if (seconds < 10)
 			seconds = "0" + seconds;
-
 		if (milliseconds < 10)
 			milliseconds = "00" + milliseconds;
 		else if (milliseconds < 100)
 			milliseconds = "0" + milliseconds;
-
 		document.title = hours + ":" + minutes + ":" + seconds + app.settings.titleSep + app.settings.pageTitle;
 		return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 	},
 }
 
+
+
 $(document).ready(function(){
 	app.init();
 });
-

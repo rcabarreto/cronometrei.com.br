@@ -47,12 +47,12 @@ div.button{
 }
 
 div#startStop{
-	background: rgba(0,158,31,0.9);
+	/*background: rgba(0,158,31,0.9);*/
 	color: #EFEFEF;
 }
 
 div#clear{
-	background: rgba(177,0,0,0.9);
+	/*background: rgba(177,0,0,0.9);*/
 	color: #EFEFEF;
 }
 
@@ -67,6 +67,11 @@ div#clear{
 header {
 	background-color: rgba(255, 255, 255, 0.5);
 	padding: 10px;
+}
+
+header div{
+	float: left;
+	margin-right: 3px;
 }
 
 footer {

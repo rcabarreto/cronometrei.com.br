@@ -50,18 +50,18 @@
 <body>
 
 	<div id="fb-root"></div>
-    <script type="text/javascript" src="assets/js/facebook.js"></script>
+    <script type="text/javascript" src="assets/js/apis.js"></script>
 
 	<header class="container">
-		<div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+		<div><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div></div>
+		<div><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.cronometrei.com.br/">Tweet</a></div>
+		<div><g:plusone href="http://www.cronometrei.com.br/" size="medium"></g:plusone></div>
 	</header>
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
 
-	<div id="login" class="container">
-
-	</div>
+	<div id="login" class="container"></div>
 
 	<!-- footer -->
 	<footer class="container"></footer>
