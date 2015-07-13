@@ -53,7 +53,7 @@
     <script type="text/javascript" src="assets/js/apis.js"></script>
 
 	<header class="container">
-		<div><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div></div>
+		<div><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div></div>
 		<div><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.cronometrei.com.br/">Tweet</a></div>
 		<div><g:plusone href="http://www.cronometrei.com.br/" size="medium"></g:plusone></div>
 	</header>
@@ -67,7 +67,7 @@
 	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
+	<script type="text/javascript" src="assets/js/functions.dev.refac.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
 	<script>
