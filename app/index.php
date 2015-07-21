@@ -55,15 +55,13 @@
 	<header class="container">
 		<div><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div></div>
 		<div><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.cronometrei.com.br/">Tweet</a></div>
-		<div style="width: 60px;"><g:plusone href="http://www.cronometrei.com.br/" size="medium"></g:plusone></div>
+		<div><g:plusone href="http://www.cronometrei.com.br/" size="medium"></g:plusone></div>
 	</header>
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
 
-	<div id="login" class="container">
-
-	</div>
+	<div id="login" class="container"></div>
 
 	<!-- footer -->
 	<footer class="container"></footer>

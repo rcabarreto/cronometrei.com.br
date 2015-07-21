@@ -57,6 +57,7 @@ var app = {
 		},
 	},
 
+
 	init: function(){
 		var url = window.location.pathname;
 		var filename = url.substring(url.lastIndexOf('/')+1);
@@ -68,10 +69,11 @@ var app = {
 		if(app.settings.debug)
 			console.log('Initializing app');
 
+		window.onbeforeunload = app.confirmExit;
+
 		if(app.settings.debug)
 			console.log('Starting facebook integration');
 
-		window.onbeforeunload = app.confirmExit;
 		window.fbAsyncInit = function() {
 			FB.init({
 				appId      : app.settings.fbAppID,
@@ -86,29 +88,35 @@ var app = {
 		return false;
 	},
 
-	checkLoginState: function(){
-		FB.getLoginStatus(function(response) {
-			app.statusChangeCallback(response);
-		});
-	},
-
-	loadFacebookInfo: function(){
-		FB.api('/me', function(user) {
-			app.loadUserInformation(user);
-		});
-	},
 
 	statusChangeCallback: function(response){
 		if (response.status === 'connected') {
 			if(app.settings.debug)
 				console.log('User logged in! Fetching information.... ');
+			app.loadFacebookInfo();
 		}else{
 			if(app.settings.debug)
 				console.log('User not logged, loading default app.... ');
 		}
 	},
 
+
+	loadFacebookInfo: function(){
+		FB.api('/me', function(user) {
+
+			if(app.settings.debug)
+				console.log('got user info');
+
+			app.loadUserInformation(user);
+		});
+	},
+
+
 	loadUserInformation: function(user){
+
+		if(app.settings.debug)
+			console.log('loading user info...');
+
 		$.ajax({
 			url: app.settings.apihost + "/user/loadUserInfo",
 			method: "POST",
@@ -130,11 +138,15 @@ var app = {
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
 			
+			if(app.settings.debug)
+				console.log('user info loaded');
+
 			app.loadCronometer();
 
 		}).fail(function() {
 			if(app.settings.debug)
 				console.log('Userinfo loagind failed, going on with default user info...');
+
 			app.loadCronometer();
 
 		});
@@ -142,15 +154,6 @@ var app = {
 		return true;
 		
 	},
-
-
-
-
-
-
-
-
-
 
 
 	loadCronometer: function(){
