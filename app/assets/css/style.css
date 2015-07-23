@@ -65,11 +65,11 @@ div#clear{
 }
 
 header {
-	background-color: rgba(255, 255, 255, 0.5);
-	padding: 10px;
+	/*background-color: rgba(255, 255, 255, 0.5);*/
+	/*padding: 10px;*/
 }
 
-header div{
+header div.social{
 	float: left;
 	margin-right: 3px;
 }
@@ -84,6 +84,33 @@ div.sitead{
 	text-align: center;
 }
 
+.socialdiv {
+    position: relative;
+    overflow: visible;
+    top: 15px;
+    float: left;
+}
+
+.navbar-default {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: #e7e7e7;
+}
+
+.navbar {
+    border-radius: 0px;
+	border: 0px;
+}
+
+.navbar-toggle {
+    background-color: #ddd;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #333;
+    text-shadow: 1px 1px #666;
+    font-family: 'Lobster', cursive;
+    font-size: 20px;
+}
 
 
 

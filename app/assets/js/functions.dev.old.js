@@ -1,7 +1,6 @@
 /* ========================================================================
  * Cronometrei Webapp
  * http://www.cronometrei.com.br
- * Version: 2.0
  * ========================================================================
  * Copyright 2014-2015 R3 Web Solutions
  * Licensed under MIT
@@ -14,11 +13,8 @@ var app = {
 	loop: false,
 	settings: {
 		debug: false,
-		fbAppID: '387506448107274',
-		apihost: 'http://api.cronometrei.com.br/app',
-		needToConfirm: false,
-		pageTitle: 'Cronometrei',
 		titleSep: ' - ',
+		pageTitle: 'Cronometrei',
 		homeTitleFull: 'O tempo sob controle',
 		defaultBG: 'london.jpg',
 		startButton: 'Iniciar',
@@ -29,6 +25,9 @@ var app = {
 		clearInstruction: 'Esc',
 		exitMessage: 'Seu cronometro será perdido, deseja mesmo sair?',
 		clearMessage: 'Deseja mesmo zerar seu cronometro?',
+		needToConfirm: false,
+		fbAppID: '387506448107274',
+		apihost: 'http://api.cronometrei.com.br/app',
 	},
 	user: {
 		id: "",
@@ -43,6 +42,7 @@ var app = {
 		timezone: 0,
 		updated_time: "",
 		verified: false,
+		options: {},
 	},
 	theme: {
 		backgroundImage: "",
@@ -56,20 +56,17 @@ var app = {
 			$('#clear').css('background', this.clearButtonColor);
 		},
 	},
-
-
 	init: function(){
+
 		var url = window.location.pathname;
 		var filename = url.substring(url.lastIndexOf('/')+1);
 		if(filename === "dev.php"){
-			console.log('##########################################################\n###   Development mode detected. Going verbose mode.   ###\n########################################################## \n\n');
+			console.log('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
 			app.settings.debug = true;
 		}
 
 		if(app.settings.debug)
 			console.log('Initializing app');
-
-		window.onbeforeunload = app.confirmExit;
 
 		if(app.settings.debug)
 			console.log('Starting facebook integration');
@@ -77,45 +74,57 @@ var app = {
 		window.fbAsyncInit = function() {
 			FB.init({
 				appId      : app.settings.fbAppID,
-				cookie     : true,
-				xfbml      : true,
-				status 	   : true,
-				version    : 'v2.2'
+				cookie     : true,  // enable cookies to allow the server to access the session
+				xfbml      : true,  // parse social plugins on this page
+				version    : 'v2.2' // use version 2.2
 			});
-			FB.Event.subscribe('auth.statusChange', app.statusChangeCallback);
+			FB.getLoginStatus(function(response) {
+				app.statusChangeCallback(response);
+			});
 		};
-
+		// set unload function to prevent users from closing the crono window
+		window.onbeforeunload = app.confirmExit;
 		return false;
 	},
-
-
+	loadCronometer: function(){
+		app.createAppCanvas();
+		app.settings.needToConfirm = false;
+		app.time = 0;
+		app.currentTimer = 0;
+		app.sendToScreen(app.format_seconds(0));
+		app.setPageTitle();
+		app.loadTheme();
+		if(app.settings.debug)
+			console.log('Binding keyboard shortcuts');
+		$(document).keydown(function(event){
+			app.keyDefaults( event );
+		}).keyup(function(event){
+			app.keyHandler( event );
+		});
+		return false;
+	},
+	checkLoginState: function(){
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+	},
 	statusChangeCallback: function(response){
 		if (response.status === 'connected') {
 			if(app.settings.debug)
 				console.log('User logged in! Fetching information.... ');
-			app.loadFacebookInfo();
+			FB.api('/me', function(user) {
+				app.loadUserInformation(user);
+			});
 		}else{
 			if(app.settings.debug)
 				console.log('User not logged, loading default app.... ');
+			app.loadDefaultUser();
 		}
 	},
-
-
-	loadFacebookInfo: function(){
-		FB.api('/me', function(user) {
-
-			if(app.settings.debug)
-				console.log('got user info');
-
-			app.loadUserInformation(user);
-		});
+	loadDefaultUser: function(){
+		app.loadCronometer();
 	},
-
-
 	loadUserInformation: function(user){
-
-		if(app.settings.debug)
-			console.log('loading user info...');
 
 		$.ajax({
 			url: app.settings.apihost + "/user/loadUserInfo",
@@ -138,42 +147,19 @@ var app = {
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
 			
-			if(app.settings.debug)
-				console.log('user info loaded');
-
 			app.loadCronometer();
 
 		}).fail(function() {
 			if(app.settings.debug)
 				console.log('Userinfo loagind failed, going on with default user info...');
-
-			app.loadCronometer();
+			app.loadDefaultUser();
 
 		});
 
 		return true;
 		
 	},
-
-
-	loadCronometer: function(){
-		app.createAppElements();
-		app.settings.needToConfirm = false;
-		app.time = 0;
-		app.currentTimer = 0;
-		app.output(app.format_seconds(0));
-		app.setPageTitle();
-		app.loadTheme();
-		if(app.settings.debug)
-			console.log('Binding keyboard shortcuts');
-		$(document).keydown(function(event){
-			app.keyDefaults( event );
-		}).keyup(function(event){
-			app.keyHandler( event );
-		});
-		return false;
-	},
-	createAppElements: function(){
+	createAppCanvas: function(){
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
@@ -219,7 +205,8 @@ var app = {
 	loadTheme: function(){
 		if(app.settings.debug)
 			console.log('Loading theme');
-
+		if(app.settings.debug)
+			console.log('==> Trying the API...');
 		$.ajax({
 			url: app.settings.apihost + "/theme/loadTheme",
 			method: "POST",
@@ -239,9 +226,6 @@ var app = {
 			app.theme.setTheme();
 		});
 	},
-
-
-	// nothing to change from here
 	startStopTimer: function() {
 		if(app.settings.debug)
 			console.log('Call start/stop timer');
@@ -288,14 +272,14 @@ var app = {
 				app.settings.needToConfirm = false;
 				app.time = 0;
 				app.currentTimer = 0;
-				app.output(app.format_seconds(0));
+				app.sendToScreen(app.format_seconds(0));
 			}
 		});
 	},
 	update: function(){
-		app.output(app.format_seconds(app.getTime()));
+		app.sendToScreen(app.format_seconds(app.getTime()));
 	},
-	output: function(output){
+	sendToScreen: function(output){
 		$('#timer').text(output);
 	},
 	getTime: function(){
@@ -323,8 +307,6 @@ var app = {
 		return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 	},
 }
-
-
 
 
 

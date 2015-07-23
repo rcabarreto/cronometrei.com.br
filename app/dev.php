@@ -52,10 +52,47 @@
 	<div id="fb-root"></div>
     <script type="text/javascript" src="assets/js/apis.js"></script>
 
-	<header class="container">
-		<div><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div></div>
-		<div><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.cronometrei.com.br/">Tweet</a></div>
-		<div><g:plusone href="http://www.cronometrei.com.br/" size="medium"></g:plusone></div>
+
+
+
+
+	<header>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<div class="socialdiv">
+						<div class="social"><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div></div>
+						<div class="social"><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.cronometrei.com.br/">Tweet</a></div>
+						<div class="social"><g:plusone href="http://www.cronometrei.com.br/" size="medium"></g:plusone></div>
+					</div>
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li id="btnLogin" class="hide"><a href="#">Login</a></li>
+						<li id="btnAccount" class="dropdown hide">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Minha conta <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#">Action</a></li>
+								<li><a href="#">Another action</a></li>
+								<li><a href="#">Something else here</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a href="#">Separated link</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div><!-- /.navbar-collapse -->
+
+			</div><!-- /.container-fluid -->
+		</nav>
 	</header>
 
 	<!-- app container -->
@@ -67,7 +104,7 @@
 	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.dev.refac.js"></script>
+	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
 	<script>

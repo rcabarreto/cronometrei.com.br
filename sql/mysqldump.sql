@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.43, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: cronometrei
 -- ------------------------------------------------------
--- Server version	5.5.43-0ubuntu0.14.04.1
+-- Server version	5.5.44-0ubuntu0.14.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -37,7 +37,7 @@ CREATE TABLE `theme` (
 
 LOCK TABLES `theme` WRITE;
 /*!40000 ALTER TABLE `theme` DISABLE KEYS */;
-INSERT INTO `theme` VALUES (1,'london.jpg','#FFF',1),(2,'borabora.jpg','#F4FCFA',1),(3,'bubbles.jpg','#FFF',1),(4,'road.jpg','#FFF',1),(6,'150305-cinqAA_by_Pierre_Cante.jpg','#FFF',1),(7,'11220682974_9d296080f3_k.jpg','##E7E8EB',1),(8,'11416120446_76a5ae1b18_k.jpg','#FFF',1),(9,'12591084605_c926ed2c7d_k.jpg','#FFF',1),(10,'12735618625_bbe342c702_k.jpg','#587065',1),(11,'Christmas_Lights_by_RaDu_GaLaN.jpg','#FFF',1);
+INSERT INTO `theme` VALUES (1,'london.jpg','#FFF',1),(2,'borabora.jpg','#F4FCFA',0),(3,'bubbles.jpg','#FFF',0),(4,'road.jpg','#FFF',0),(6,'150305-cinqAA_by_Pierre_Cante.jpg','#FFF',0),(7,'11220682974_9d296080f3_k.jpg','##E7E8EB',0),(8,'11416120446_76a5ae1b18_k.jpg','#FFF',0),(9,'12591084605_c926ed2c7d_k.jpg','#FFF',0),(10,'12735618625_bbe342c702_k.jpg','#587065',0),(11,'Christmas_Lights_by_RaDu_GaLaN.jpg','#FFF',0);
 /*!40000 ALTER TABLE `theme` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,4 +79,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-20 19:00:01
+-- Dump completed on 2015-07-23 15:40:01
