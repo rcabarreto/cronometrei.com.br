@@ -77,8 +77,6 @@ var app = {
 		if(app.settings.debug)
 			console.log('Starting facebook integration');
 
-		this.stepProgress(10);
-
 		window.fbAsyncInit = function() {
 			FB.init({
 				appId      : app.settings.fbAppID,
@@ -112,11 +110,13 @@ var app = {
 			if(app.settings.debug)
 				console.log('The person is logged into Facebook, but not your app. Loading default app.... ');
 			app.user.logged = false;
+			app.stepProgress(10);
 			app.loadCronometer();
 		}else{
 			if(app.settings.debug)
 				console.log('The person is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
 			app.user.logged = false;
+			app.stepProgress(10);
 			app.loadCronometer();
 		}
 	},
@@ -164,21 +164,30 @@ var app = {
 				console.log('Userinfo loagind failed, going on with default user info...');
 			// load the app anyway
 			app.loadCronometer();
+		}).always(function(){
+			app.stepProgress(10);
 		});
 		return true;
 	},
 
 	loadCronometer: function(){
 
-		this.stepProgress(10);
-
-		app.createAppElements();
 		app.settings.needToConfirm = false;
 		app.time = 0;
 		app.currentTimer = 0;
+
+		app.createAppElements();
+		this.stepProgress(10);
+
 		app.output(app.format_seconds(0));
+		this.stepProgress(10);
+
 		app.setPageTitle();
+		this.stepProgress(10);
+
 		app.loadTheme();
+		this.stepProgress(10);
+
 		if(app.settings.debug)
 			console.log('Binding keyboard shortcuts');
 		$(document).keydown(function(event){
@@ -186,6 +195,7 @@ var app = {
 		}).keyup(function(event){
 			app.keyHandler( event );
 		});
+
 		return false;
 	},
 
@@ -235,17 +245,11 @@ var app = {
 	},
 
 	createAppElements: function(){
-
-		this.stepProgress(10);
-		this.stepProgress(10);
-
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
 		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
 		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
-
-		this.stepProgress(10);
 	},
 
 	setPageTitle: function(){
@@ -331,7 +335,6 @@ var app = {
 
 	loadingProgress: function(progress) {
 		$('.progress-bar').css('width', progress+'%').attr('aria-valuenow', progress).html(progress+'%');
-
 		if(progress>=100){
 			setTimeout(function(){
 				$('#progressbar').hide();

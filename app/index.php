@@ -53,7 +53,7 @@
     <script type="text/javascript" src="assets/js/apis.js"></script>
 
 	<header>
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default opaque">
 			<div class="container-fluid">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
