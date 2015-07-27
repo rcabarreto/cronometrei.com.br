@@ -12,6 +12,7 @@ var app = {
 	time: 0,
 	currentTimer: 0,
 	loop: false,
+	progressValue: 0,
 	settings: {
 		debug: false,
 		fbAppID: '387506448107274',
@@ -69,10 +70,14 @@ var app = {
 		if(app.settings.debug)
 			console.log('Initializing app');
 
+		this.stepProgress(10);
+
 		window.onbeforeunload = app.confirmExit;
 
 		if(app.settings.debug)
 			console.log('Starting facebook integration');
+
+		this.stepProgress(10);
 
 		window.fbAsyncInit = function() {
 			FB.init({
@@ -88,12 +93,16 @@ var app = {
 	},
 
 	checkLoginState: function(){
+		this.stepProgress(10);
 		FB.getLoginStatus(function(response) {
 			app.statusChangeCallback(response);
 		});
 	},
 
 	statusChangeCallback: function(response){
+
+		this.stepProgress(10);
+
 		if (response.status === 'connected') {
 			if(app.settings.debug)
 				console.log('User logged into your app and Facebook! Fetching information.... ');
@@ -116,7 +125,6 @@ var app = {
 		FB.api('/me', function(user) {
 			if(app.settings.debug)
 				console.log('got user info');
-
 			app.loadUserInformation(user);
 		});
 	},
@@ -161,6 +169,9 @@ var app = {
 	},
 
 	loadCronometer: function(){
+
+		this.stepProgress(10);
+
 		app.createAppElements();
 		app.settings.needToConfirm = false;
 		app.time = 0;
@@ -224,6 +235,9 @@ var app = {
 	},
 
 	createAppElements: function(){
+
+		this.stepProgress(10);
+
 		if(app.user.logged){
 			$('#btnAccount').removeClass('hide');
 		}else{
@@ -231,11 +245,15 @@ var app = {
 			$('#btnLogin > a').click(function(e){ e.preventDefault(); app.showLoginModal(); });
 		}
 
+		this.stepProgress(10);
+
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
 		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
 		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
+
+		this.stepProgress(10);
 	},
 
 	setPageTitle: function(){
@@ -279,6 +297,9 @@ var app = {
 	},
 
 	loadTheme: function(){
+
+		this.stepProgress(10);
+
 		if(app.settings.debug)
 			console.log('Loading theme');
 
@@ -307,7 +328,24 @@ var app = {
 			app.theme.backgroundImage = app.settings.defaultBG;
 		}).always(function(){
 			app.theme.setTheme();
+			app.stepProgress(10);
 		});
+	},
+
+	stepProgress: function(step){
+		this.progressValue+=step;
+		app.loadingProgress(this.progressValue);
+	},
+
+	loadingProgress: function(progress) {
+		$('.progress-bar').css('width', progress+'%').attr('aria-valuenow', progress).html(progress+'%');
+
+		if(progress>=100){
+			setTimeout(function(){
+				$('#progressbar').hide();
+				$('#application').removeClass('opaque');
+			}, 1000);
+		}
 	},
 
 	startStopTimer: function() {

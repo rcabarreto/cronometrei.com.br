@@ -52,10 +52,6 @@
 	<div id="fb-root"></div>
     <script type="text/javascript" src="assets/js/apis.js"></script>
 
-
-
-
-
 	<header>
 		<nav class="navbar navbar-default">
 			<div class="container-fluid">
@@ -85,7 +81,7 @@
 								<li><a href="#">Another action</a></li>
 								<li><a href="#">Something else here</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Separated link</a></li>
+								<li><a href="#">Sair</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -95,9 +91,22 @@
 		</nav>
 	</header>
 
-	<!-- app container -->
-	<div id="application" class="container"></div>
+	<!-- progressbar container -->
+	<div id="progressbar" class="container-fluid" style="display: block;">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="loading">Loading...</div>
+				<div class="progress">
+					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
+				</div>				
+			</div>
+		</div>
+	</div>
 
+	<!-- app container -->
+	<div id="application" class="container opaque"></div>
+
+	<!-- login container -->
 	<div id="login" class="container"></div>
 
 	<!-- footer -->

@@ -52,10 +52,6 @@
 	<div id="fb-root"></div>
     <script type="text/javascript" src="assets/js/apis.js"></script>
 
-
-
-
-
 	<header>
 		<nav class="navbar navbar-default">
 			<div class="container-fluid">
@@ -77,7 +73,7 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
-						
+
 						<li id="btnAccount" class="dropdown hide">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Minha conta <span class="caret"></span></a>
 							<ul class="dropdown-menu">
@@ -97,7 +93,6 @@
 
 	<!-- app container -->
 	<div id="application" class="container"></div>
-
 	<div id="login" class="container"></div>
 
 	<!-- footer -->
