@@ -53,7 +53,7 @@
     <script type="text/javascript" src="assets/js/apis.js"></script>
 
 	<header>
-		<nav class="navbar navbar-default">
+		<nav class="navbar navbar-default opaque">
 			<div class="container-fluid">
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
@@ -74,12 +74,14 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
 						<li id="btnLogin" class="hide"><a href="#">Login</a></li>
+
+
+						<li id="btnTempos" class="hide"><a href="#">Meus Tempos</a></li>
 						<li id="btnAccount" class="dropdown hide">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Minha conta <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">Action</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
+								<li><a href="#">Meus Dados</a></li>
+								<li><a href="#">Sobre o Cronometrei</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="#">Sair</a></li>
 							</ul>

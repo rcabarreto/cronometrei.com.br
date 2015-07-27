@@ -237,14 +237,6 @@ var app = {
 	createAppElements: function(){
 
 		this.stepProgress(10);
-
-		if(app.user.logged){
-			$('#btnAccount').removeClass('hide');
-		}else{
-			$('#btnLogin').removeClass('hide');
-			$('#btnLogin > a').click(function(e){ e.preventDefault(); app.showLoginModal(); });
-		}
-
 		this.stepProgress(10);
 
 		$("#application").append('<div id="titleRow" class="row"></div>');
@@ -344,6 +336,14 @@ var app = {
 			setTimeout(function(){
 				$('#progressbar').hide();
 				$('#application').removeClass('opaque');
+				$('header > nav').removeClass('opaque');
+				if(app.user.logged){
+					$('#btnTempos').removeClass('hide');
+					$('#btnAccount').removeClass('hide');
+				}else{
+					$('#btnLogin').removeClass('hide');
+					$('#btnLogin > a').click(function(e){ e.preventDefault(); app.showLoginModal(); });
+				}
 			}, 1000);
 		}
 	},

@@ -73,17 +73,6 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
-
-						<li id="btnAccount" class="dropdown hide">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Minha conta <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Action</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a href="#">Separated link</a></li>
-							</ul>
-						</li>
 					</ul>
 				</div><!-- /.navbar-collapse -->
 
@@ -91,15 +80,29 @@
 		</nav>
 	</header>
 
+	<!-- progressbar container -->
+	<div id="progressbar" class="container-fluid" style="display: block;">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="loading">Loading...</div>
+				<div class="progress">
+					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+
 	<!-- app container -->
-	<div id="application" class="container"></div>
+	<div id="application" class="container opaque"></div>
+
+	<!-- login container -->
 	<div id="login" class="container"></div>
 
 	<!-- footer -->
 	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.min.js"></script>
+	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
 	<script>

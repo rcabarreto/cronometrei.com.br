@@ -10,6 +10,7 @@ body{
 	background-size: cover;
 }
 
+header > nav,
 div#application{
 	-webkit-transition: all .8s ease .15s;
 	-moz-transition: all .8s ease .15s;
@@ -17,7 +18,6 @@ div#application{
 	-ms-transition: all .8s ease .15s;
 	transition: all .8s ease .15s;
 }
-
 
 .opaque{
 	opacity: 0;
