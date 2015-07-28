@@ -13,7 +13,6 @@ var app = {
 	currentTimer: 0,
 	loop: false,
 	progressValue: 0,
-	isOnline: false,
 	settings: {
 		debug: false,
 		fbAppID: '387506448107274',
@@ -62,27 +61,20 @@ var app = {
 
 	init: function(){
 
-		// detecting development mode
-		var url = window.location.pathname;
-		var filename = url.substring(url.lastIndexOf('/')+1);
-		if(filename === "dev.php"){
-			console.log('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
-			app.settings.debug = true;
-		}
+		// start by checking if the app is in dev or prod mode
+		this.checkDebugState();
 
-		if(app.settings.debug)
-			console.log('Initializing app');
-
-		// starting progressbar
+		this.outputMessage('Initializing app');
 		this.stepProgress(10);
 
-		// preventing user from closing the window
+		this.createAppElements();
+		this.createButtonLinks();
+		this.stepProgress(10);
+
 		window.onbeforeunload = app.confirmExit;
 
-		if(app.settings.debug)
-			console.log('Starting facebook integration');
+		this.outputMessage('Starting facebook integration');
 
-		// starting facebook integration
 		window.fbAsyncInit = function() {
 			FB.init({
 				appId      : app.settings.fbAppID,
@@ -94,13 +86,7 @@ var app = {
 			app.checkLoginState();
 		};
 
-		return false;
-	},
-
-	checkInternetConnectivity: function(){
-
-		Offline.check();
-
+		return true;
 	},
 
 	checkLoginState: function(){
@@ -111,34 +97,49 @@ var app = {
 	},
 
 	statusChangeCallback: function(response){
-
 		this.stepProgress(10);
-
 		if (response.status === 'connected') {
-			if(app.settings.debug)
-				console.log('User logged into your app and Facebook! Fetching information.... ');
+			this.outputMessage('User logged into your app and Facebook! Fetching information.... ');
 			app.user.logged = true;
 			app.loadFacebookInfo();
 		}else if(response.status === 'not_authorized'){
-			if(app.settings.debug)
-				console.log('User is logged into Facebook, but not your app. Loading default app.... ');
+			this.outputMessage('User is logged into Facebook, but not your app. Loading default app.... ');
 			app.user.logged = false;
 			app.stepProgress(10);
 			app.loadCronometer();
 		}else{
-			if(app.settings.debug)
-				console.log('User is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
+			this.outputMessage('User is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
 			app.user.logged = false;
 			app.stepProgress(10);
 			app.loadCronometer();
 		}
 	},
 
-	facebookLogin: function(){},
+	checkDebugState: function(){
+		var url = window.location.pathname;
+		var filename = url.substring(url.lastIndexOf('/')+1);
+		if(filename === "dev.php"){
+			console.log('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
+			app.settings.debug = true;
+		}
+		return true;
+	},
+
+	facebookLogin: function(){
+		FB.login(function(response){
+			app.checkLoginState();
+		});
+	},
 
 	facebookLogout: function(){
+		FB.logout(function(response) {
+			app.checkLoginState();
+		});
+	},
+
+	facebookRevoke: function(){
 		FB.api('/me/permissions', 'delete', function(response) {
-			if(response.success){ console.log("DESLOGADO!"); }
+			if(response.success){ console.log("DESLOGADO!"); location.reload(); }
 		});
 	},
 
@@ -150,8 +151,7 @@ var app = {
 
 	loadUserInformation: function(user){
 
-		if(app.settings.debug)
-			console.log('loading user info...');
+		this.outputMessage('loading user info...');
 
 		$.ajax({
 			url: app.settings.apihost + "/user/loadUserInfo",
@@ -174,14 +174,10 @@ var app = {
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
 
-			if(app.settings.debug)
-				console.log('user info loaded');
-			// load the app
+			app.outputMessage('user info loaded');
 			app.loadCronometer();
 		}).fail(function() {
-			if(app.settings.debug)
-				console.log('Userinfo loagind failed, going on with default user info...');
-			// load the app anyway
+			app.outputMessage('Userinfo loagind failed, going on with default user info...');
 			app.loadCronometer();
 		}).always(function(){
 			app.stepProgress(10);
@@ -191,24 +187,23 @@ var app = {
 
 	loadCronometer: function(){
 
-		app.settings.needToConfirm = false;
-		app.time = 0;
-		app.currentTimer = 0;
+		this.settings.needToConfirm = false;
+		this.time = 0;
+		this.currentTimer = 0;
 
-		app.createAppElements();
+		this.output(this.format_seconds(0));
 		this.stepProgress(10);
 
-		app.output(app.format_seconds(0));
+		this.setPageTitle();
 		this.stepProgress(10);
 
-		app.setPageTitle();
+		this.loadTheme();
 		this.stepProgress(10);
 
-		app.loadTheme();
-		this.stepProgress(10);
+		this.loadCustomMenu();
 
-		if(app.settings.debug)
-			console.log('Binding keyboard shortcuts');
+		this.outputMessage('Binding keyboard shortcuts');
+
 		$(document).keydown(function(event){
 			app.keyDefaults( event );
 		}).keyup(function(event){
@@ -216,6 +211,19 @@ var app = {
 		});
 
 		return false;
+	},
+
+	loadCustomMenu: function(){
+		if(app.user.logged){
+			$('#btnTempos').removeClass('hide');
+			$('#btnAccount').removeClass('hide');
+			$('#btnLogin').addClass('hide');
+		}else{
+			$('#btnTempos').addClass('hide');
+			$('#btnAccount').addClass('hide');
+			$('#btnLogin').removeClass('hide');
+		}
+		return true;
 	},
 
 	showLoginModal: function(){
@@ -271,6 +279,11 @@ var app = {
 		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
 	},
 
+	createButtonLinks: function(){
+		$('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
+		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.facebookLogout(); });
+	},
+
 	setPageTitle: function(){
 		document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
 		$('h1#appTitle').html(app.settings.pageTitle);
@@ -314,9 +327,7 @@ var app = {
 	loadTheme: function(){
 
 		this.stepProgress(10);
-
-		if(app.settings.debug)
-			console.log('Loading theme');
+		this.outputMessage('Loading theme');
 
 		if(app.settings.debug){
 			if(app.user.id!=''){
@@ -333,13 +344,11 @@ var app = {
 			crossDomain: true
 		}).done(function(data) {
 			var image = JSON.parse(data);
-			if(app.settings.debug)
-				console.log('Loaded random background from api: '+ image.image_name);
+			app.outputMessage('Loaded random background from api: '+ image.image_name);
 			app.theme.backgroundImage = image.image_name;
 			app.theme.appTitleColor = image.logo_color;
 		}).fail(function() {
-			if(app.settings.debug)
-				console.log('Ajax failed! Using default background: '+ app.settings.defaultBG);
+			app.outputMessage('Ajax failed! Using default background: '+ app.settings.defaultBG);
 			app.theme.backgroundImage = app.settings.defaultBG;
 		}).always(function(){
 			app.theme.setTheme();
@@ -353,42 +362,40 @@ var app = {
 	},
 
 	loadingProgress: function(progress) {
-		$('.progress-bar').css('width', progress+'%').attr('aria-valuenow', progress).html(progress+'%');
-		if(progress>=100){
+
+		if(progress < 100){
+			$('.progress-bar').css('width', progress+'%').attr('aria-valuenow', progress).html(progress+'%');
+		}else{
+			$('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).html('100%');
+
 			setTimeout(function(){
 				$('#progressbar').hide();
 				$('#application').removeClass('opaque');
 				$('header > nav').removeClass('opaque');
-				if(app.user.logged){
-					$('#btnTempos').removeClass('hide');
-					$('#btnAccount').removeClass('hide');
-				}else{
-					$('#btnLogin').removeClass('hide');
-					$('#btnLogin > a').click(function(e){ e.preventDefault(); app.showLoginModal(); });
-				}
 			}, 1000);
+
 		}
+		
 	},
 
 
 
-
-
-
 	// nothing changes from here on down
-	startStopTimer: function() {
+
+	outputMessage: function(message){
 		if(app.settings.debug)
-			console.log('Call start/stop timer');
+			console.log(message);
+	},
+	startStopTimer: function() {
+		this.outputMessage('Call start/stop timer');
 		if (app.doing)
 			app.pauseTimer();
 		else
 			app.startTimer(app.currentTimer);
 		return false;
 	},
-
 	startTimer: function(currentTimer) {
-		if(app.settings.debug)
-			console.log('Starting timer');
+		this.outputMessage('Starting timer');
 		app.settings.needToConfirm = true;
 		app.doing = 1;
 		if(typeof(app.currentTimer) == 'undefined'){
@@ -399,27 +406,21 @@ var app = {
 		app.loop = window.setInterval("app.update()", 10);
 		$('#startStopLabel').html(app.settings.pauseButton);
 	},
-
 	stopTimer: function() {
-		if(app.settings.debug)
-			console.log('Stopping timer');
+		this.outputMessage('Stopping timer');
 		app.doing = 0;
 		clearInterval(app.loop);
 		$('#startStopLabel').html(app.settings.startButton);
 	},
-
 	pauseTimer: function(){
-		if(app.settings.debug)
-			console.log('Pausing timer');
+		this.outputMessage('Pausing timer');
 		app.doing = 0;
 		clearInterval(app.loop);
 		app.currentTimer = app.getTime();
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
-
 	clearTimer: function(){
-		if(app.settings.debug)
-			console.log('Clear timer');
+		this.outputMessage('Clear timer');
 		bootbox.confirm(app.settings.clearMessage, function(result) {
 			if(result){
 				app.stopTimer();
@@ -430,19 +431,15 @@ var app = {
 			}
 		});
 	},
-
 	update: function(){
 		app.output(app.format_seconds(app.getTime()));
 	},
-
 	output: function(output){
 		$('#timer').text(output);
 	},
-
 	getTime: function(){
 		return (new Date() - app.time);
 	},
-
 	format_seconds: function(seconds){
 		if(isNaN(seconds))
 			seconds = 0;

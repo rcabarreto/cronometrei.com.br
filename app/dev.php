@@ -78,8 +78,6 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
 						<li id="btnLogin" class="hide"><a href="#">Login</a></li>
-
-
 						<li id="btnTempos" class="hide"><a href="#">Meus Tempos</a></li>
 						<li id="btnAccount" class="dropdown hide">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Minha conta <span class="caret"></span></a>
@@ -87,7 +85,7 @@
 								<li><a href="#">Meus Dados</a></li>
 								<li><a href="#">Sobre o Cronometrei</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="#">Sair</a></li>
+								<li id="btnLogout"><a href="#">Sair</a></li>
 							</ul>
 						</li>
 					</ul>
