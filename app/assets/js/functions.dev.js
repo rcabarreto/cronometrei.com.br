@@ -13,6 +13,7 @@ var app = {
 	currentTimer: 0,
 	loop: false,
 	progressValue: 0,
+	isOnline: false,
 	settings: {
 		debug: false,
 		fbAppID: '387506448107274',
@@ -60,6 +61,8 @@ var app = {
 	},
 
 	init: function(){
+
+		// detecting development mode
 		var url = window.location.pathname;
 		var filename = url.substring(url.lastIndexOf('/')+1);
 		if(filename === "dev.php"){
@@ -70,13 +73,16 @@ var app = {
 		if(app.settings.debug)
 			console.log('Initializing app');
 
+		// starting progressbar
 		this.stepProgress(10);
 
+		// preventing user from closing the window
 		window.onbeforeunload = app.confirmExit;
 
 		if(app.settings.debug)
 			console.log('Starting facebook integration');
 
+		// starting facebook integration
 		window.fbAsyncInit = function() {
 			FB.init({
 				appId      : app.settings.fbAppID,
@@ -87,7 +93,14 @@ var app = {
 			});
 			app.checkLoginState();
 		};
+
 		return false;
+	},
+
+	checkInternetConnectivity: function(){
+
+		Offline.check();
+
 	},
 
 	checkLoginState: function(){
@@ -108,23 +121,29 @@ var app = {
 			app.loadFacebookInfo();
 		}else if(response.status === 'not_authorized'){
 			if(app.settings.debug)
-				console.log('The person is logged into Facebook, but not your app. Loading default app.... ');
+				console.log('User is logged into Facebook, but not your app. Loading default app.... ');
 			app.user.logged = false;
 			app.stepProgress(10);
 			app.loadCronometer();
 		}else{
 			if(app.settings.debug)
-				console.log('The person is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
+				console.log('User is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
 			app.user.logged = false;
 			app.stepProgress(10);
 			app.loadCronometer();
 		}
 	},
 
+	facebookLogin: function(){},
+
+	facebookLogout: function(){
+		FB.api('/me/permissions', 'delete', function(response) {
+			if(response.success){ console.log("DESLOGADO!"); }
+		});
+	},
+
 	loadFacebookInfo: function(){
-		FB.api('/me', function(user) {
-			if(app.settings.debug)
-				console.log('got user info');
+		FB.api('/me', function(user){
 			app.loadUserInformation(user);
 		});
 	},
@@ -154,7 +173,7 @@ var app = {
 			app.user.timezone 	  = response.timezone;
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
-			
+
 			if(app.settings.debug)
 				console.log('user info loaded');
 			// load the app
@@ -351,6 +370,12 @@ var app = {
 		}
 	},
 
+
+
+
+
+
+	// nothing changes from here on down
 	startStopTimer: function() {
 		if(app.settings.debug)
 			console.log('Call start/stop timer');
@@ -441,6 +466,8 @@ var app = {
 	},
 }
 
+
+// START THE APP
 $(document).ready(function(){
 	app.init();
 });

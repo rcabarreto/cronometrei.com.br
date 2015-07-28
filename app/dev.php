@@ -38,6 +38,10 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
+	<link rel="stylesheet" type="text/css" href="assets/css/offline-theme-slide.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/offline-language-portuguese-brazil.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/offline-language-portuguese-brazil-indicator.css" />
+
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -118,6 +122,11 @@
 	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
+    <script type="text/javascript" src="assets/js/offline.min.js"></script>
+	<script type="text/javascript" src="assets/js/snake.js"></script>
+	<script type="text/javascript">
+		Offline.options = {checks: {xhr: {url: app.settings.apihost + "/theme/loadTheme"}}};
+	</script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
