@@ -123,9 +123,8 @@
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
     <script type="text/javascript" src="assets/js/offline.min.js"></script>
-	<script type="text/javascript" src="assets/js/snake.js"></script>
 	<script type="text/javascript">
-		Offline.options = {checks: {xhr: {url: app.settings.apihost + "/theme/loadTheme"}}};
+		Offline.options = {checks: {xhr: {url: app.settings.apihost + "/theme/loadTheme"}}}
 	</script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
