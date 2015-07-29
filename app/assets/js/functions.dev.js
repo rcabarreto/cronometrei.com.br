@@ -64,14 +64,18 @@ var app = {
 		// start by checking if the app is in dev or prod mode
 		this.checkDebugState();
 
+		// display startup message
 		this.outputMessage('Initializing app');
-		this.stepProgress(10);
 
+		// create elements
 		this.createAppElements();
 		this.createButtonLinks();
-		this.stepProgress(10);
 
-		window.onbeforeunload = app.confirmExit;
+		// hook window and document events
+		this.hookDocumentEvents();
+
+		// clear timer
+		this.resetTimer()
 
 		this.outputMessage('Starting facebook integration');
 
@@ -187,33 +191,16 @@ var app = {
 
 	loadCronometer: function(){
 
-		this.settings.needToConfirm = false;
-		this.time = 0;
-		this.currentTimer = 0;
-
-		this.output(this.format_seconds(0));
-		this.stepProgress(10);
-
+		
 		this.setPageTitle();
-		this.stepProgress(10);
-
 		this.loadTheme();
-		this.stepProgress(10);
-
 		this.loadCustomMenu();
-
-		this.outputMessage('Binding keyboard shortcuts');
-
-		$(document).keydown(function(event){
-			app.keyDefaults( event );
-		}).keyup(function(event){
-			app.keyHandler( event );
-		});
 
 		return false;
 	},
 
 	loadCustomMenu: function(){
+		this.stepProgress(10);
 		if(app.user.logged){
 			$('#btnTempos').removeClass('hide');
 			$('#btnAccount').removeClass('hide');
@@ -272,6 +259,7 @@ var app = {
 	},
 
 	createAppElements: function(){
+		this.stepProgress(10);
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
@@ -280,11 +268,13 @@ var app = {
 	},
 
 	createButtonLinks: function(){
+		this.stepProgress(10);
 		$('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
 		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.facebookLogout(); });
 	},
 
 	setPageTitle: function(){
+		this.stepProgress(10);
 		document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
 		$('h1#appTitle').html(app.settings.pageTitle);
 		$('#startStopLabel').html(app.settings.startButton);
@@ -325,7 +315,6 @@ var app = {
 	},
 
 	loadTheme: function(){
-
 		this.stepProgress(10);
 		this.outputMessage('Loading theme');
 
@@ -386,6 +375,7 @@ var app = {
 		if(app.settings.debug)
 			console.log(message);
 	},
+
 	startStopTimer: function() {
 		this.outputMessage('Call start/stop timer');
 		if (app.doing)
@@ -394,6 +384,7 @@ var app = {
 			app.startTimer(app.currentTimer);
 		return false;
 	},
+
 	startTimer: function(currentTimer) {
 		this.outputMessage('Starting timer');
 		app.settings.needToConfirm = true;
@@ -406,12 +397,14 @@ var app = {
 		app.loop = window.setInterval("app.update()", 10);
 		$('#startStopLabel').html(app.settings.pauseButton);
 	},
+
 	stopTimer: function() {
 		this.outputMessage('Stopping timer');
 		app.doing = 0;
 		clearInterval(app.loop);
 		$('#startStopLabel').html(app.settings.startButton);
 	},
+
 	pauseTimer: function(){
 		this.outputMessage('Pausing timer');
 		app.doing = 0;
@@ -419,27 +412,36 @@ var app = {
 		app.currentTimer = app.getTime();
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
+
 	clearTimer: function(){
 		this.outputMessage('Clear timer');
 		bootbox.confirm(app.settings.clearMessage, function(result) {
 			if(result){
 				app.stopTimer();
-				app.settings.needToConfirm = false;
-				app.time = 0;
-				app.currentTimer = 0;
-				app.output(app.format_seconds(0));
+				app.resetTimer();
 			}
 		});
 	},
+
+	resetTimer: function(){
+		app.settings.needToConfirm = false;
+		app.time = 0;
+		app.currentTimer = 0;
+		app.output(app.format_seconds(0));
+	},
+
 	update: function(){
 		app.output(app.format_seconds(app.getTime()));
 	},
+
 	output: function(output){
 		$('#timer').text(output);
 	},
+
 	getTime: function(){
 		return (new Date() - app.time);
 	},
+
 	format_seconds: function(seconds){
 		if(isNaN(seconds))
 			seconds = 0;
@@ -461,6 +463,42 @@ var app = {
 		document.title = hours + ":" + minutes + ":" + seconds + app.settings.titleSep + app.settings.pageTitle;
 		return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 	},
+
+	hookDocumentEvents: function(){
+		this.stepProgress(10);
+		this.outputMessage('Binding keyboard shortcuts');
+		window.onbeforeunload = app.confirmExit;
+		$(document).keydown(function(event){
+			app.keyDefaults( event );
+		}).keyup(function(event){
+			app.keyHandler( event );
+		});
+	},
+
+	createCookie: function(name,value,days) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime()+(days*24*60*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		}else var expires = "";
+		document.cookie = name+"="+value+expires+"; path=/";
+	},
+
+	readCookie: function(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	},
+
+	eraseCookie: function(name) {
+		this.createCookie(name,"",-1);
+	},
+
 }
 
 
