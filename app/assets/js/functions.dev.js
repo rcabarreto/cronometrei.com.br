@@ -4,7 +4,6 @@
  * Version: 2.0
  * ========================================================================
  * Copyright 2014-2015 R3 Web Solutions
- * Licensed under MIT
  * ======================================================================== */
 
 var app = {
@@ -75,10 +74,9 @@ var app = {
 		this.hookDocumentEvents();
 
 		// clear timer
-		this.resetTimer()
+		this.resetTimer();
 
 		this.outputMessage('Starting facebook integration');
-
 		window.fbAsyncInit = function() {
 			FB.init({
 				appId      : app.settings.fbAppID,
@@ -95,27 +93,39 @@ var app = {
 
 	checkLoginState: function(){
 		this.stepProgress(10);
-		FB.getLoginStatus(function(response) {
-			app.statusChangeCallback(response);
-		});
-	},
 
-	statusChangeCallback: function(response){
-		this.stepProgress(10);
-		if (response.status === 'connected') {
-			this.outputMessage('User logged into your app and Facebook! Fetching information.... ');
+		// check app cookie
+		// se estiver setado o cookie de usuario do app, pegar o id, jogar no objeto user
+		// e mandar para o metodo pra carregar os dados do banco.
+
+		// se não estiver setado o cookie do app, carregar integração com facebook 
+		// e testar se o usuário está logado com facebook. Se estiver, criar cookie do app
+		if( this.readCookie('appUserId') != null && this.readCookie('appUserId')!=''){
+			app.outputMessage('User logged into the app!');
+			app.stepProgress(10);
 			app.user.logged = true;
-			app.loadFacebookInfo();
-		}else if(response.status === 'not_authorized'){
-			this.outputMessage('User is logged into Facebook, but not your app. Loading default app.... ');
-			app.user.logged = false;
-			app.stepProgress(10);
-			app.loadCronometer();
+			app.user.id  = this.readCookie('appUserId');
+			this.loadUserInformation();
 		}else{
-			this.outputMessage('User is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
-			app.user.logged = false;
-			app.stepProgress(10);
-			app.loadCronometer();
+			app.outputMessage('User NOT logged into the app! Trying facebook loggin instead');
+			FB.getLoginStatus(function(response) {
+				app.stepProgress(10);
+				if (response.status === 'connected') {
+					app.outputMessage('User logged into your app and Facebook! Fetching information.... ');
+					app.loadFacebookInfo();
+				}else if(response.status === 'not_authorized'){
+					app.outputMessage('User is logged into Facebook, but not your app. Loading default app.... ');
+					app.user.logged = false;
+					app.stepProgress(10);
+					app.loadCronometer();
+				}else{
+					app.outputMessage('User is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
+					app.user.logged = false;
+					app.stepProgress(10);
+					app.loadCronometer();
+				}	
+			});
+
 		}
 	},
 
@@ -129,10 +139,20 @@ var app = {
 		return true;
 	},
 
+	appLogin: function(userid){
+		this.outputMessage('==> LOGGIN USER INTO THE APP');
+		app.createCookie('appUserId', userid, 30);
+	},
+
+	appLogout: function(){
+		this.outputMessage('==> LOGGIN USER OUT OF THE APP');
+		app.eraseCookie('appUserId');
+	},
+
 	facebookLogin: function(){
 		FB.login(function(response){
 			app.checkLoginState();
-		});
+		}, {scope: 'public_profile,email'});
 	},
 
 	facebookLogout: function(){
@@ -149,24 +169,38 @@ var app = {
 
 	loadFacebookInfo: function(){
 		FB.api('/me', function(user){
-			app.loadUserInformation(user);
+
+			app.user.logged 	  = true;
+			app.user.facebook_id  = user.id;
+			app.user.email 		  = user.email;
+			app.user.first_name   = user.first_name;
+			app.user.last_name 	  = user.last_name;
+			app.user.gender 	  = user.gender;
+			app.user.link 		  = user.link;
+			app.user.locale 	  = user.locale;
+			app.user.name 		  = user.name;
+			app.user.timezone 	  = user.timezone;
+			app.user.updated_time = user.updated_time;
+			app.user.verified 	  = user.verified;
+
+			app.loadUserInformation();
 		});
 	},
 
-	loadUserInformation: function(user){
+	loadUserInformation: function(){
 
 		this.outputMessage('loading user info...');
 
 		$.ajax({
 			url: app.settings.apihost + "/user/loadUserInfo",
 			method: "POST",
-			data: {json: JSON.stringify(user) },
+			data: {json: JSON.stringify(app.user) },
 			crossDomain: true
 		}).done(function(data) {
 			var response = JSON.parse(data);
 
-			app.user.id 		  = response.userid;
-			app.user.facebook_id  = response.id;
+			app.user.id 		  = response.id;
+			app.user.facebook_id  = response.facebook_id;
 			app.user.email 		  = response.email;
 			app.user.first_name   = response.first_name;
 			app.user.last_name 	  = response.last_name;
@@ -177,8 +211,9 @@ var app = {
 			app.user.timezone 	  = response.timezone;
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
-
 			app.outputMessage('user info loaded');
+
+			app.appLogin(response.id);
 			app.loadCronometer();
 		}).fail(function() {
 			app.outputMessage('Userinfo loagind failed, going on with default user info...');
@@ -191,7 +226,6 @@ var app = {
 
 	loadCronometer: function(){
 
-		
 		this.setPageTitle();
 		this.loadTheme();
 		this.loadCustomMenu();
@@ -261,6 +295,7 @@ var app = {
 	createAppElements: function(){
 		this.stepProgress(10);
 		$("#application").append('<div id="titleRow" class="row"></div>');
+		$("#application").append('<div id="ad" class="container"><ins class="adsbygoogle" style="display:inline-block;width:728px;height:15px" data-ad-client="ca-pub-5385380754980188" data-ad-slot="4894862141"></ins></div>')
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
 		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');

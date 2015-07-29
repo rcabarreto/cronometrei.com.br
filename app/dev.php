@@ -49,6 +49,7 @@
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 </head>
 
 <body>
@@ -110,11 +111,6 @@
 	<!-- app container -->
 	<div id="application" class="container opaque"></div>
 
-	<!-- login container -->
-	<div id="login" class="container"></div>
-
-	<!-- footer -->
-	<footer class="container"></footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
 	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
@@ -123,6 +119,9 @@
     <script type="text/javascript" src="assets/js/offline.min.js"></script>
 	<script type="text/javascript">
 		Offline.options = {checks: {xhr: {url: app.settings.apihost + "/theme/loadTheme"}}}
+	</script>
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
 	</script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

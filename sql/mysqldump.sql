@@ -52,10 +52,13 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `facebook_id` varchar(24) NOT NULL,
   `full_name` varchar(64) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
   `email` varchar(128) NOT NULL,
   `gender` varchar(12) NOT NULL,
   `link` varchar(256) NOT NULL,
   `locale` varchar(6) NOT NULL,
+  `timezone` varchar(5) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -66,7 +69,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (10,'10152835496865807','Rodrigo Barreto','rcabarreto@gmail.com','male','https://www.facebook.com/app_scoped_user_id/10152835496865807/','pt_BR');
+INSERT INTO `users` VALUES (10,'10152835496865807','Rodrigo Barreto','Rodrigo','Barreto','rcabarreto@gmail.com','male','https://www.facebook.com/app_scoped_user_id/10152835496865807/','pt_BR','0');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -79,4 +82,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-29 15:40:01
+-- Dump completed on 2015-07-29 21:30:01
