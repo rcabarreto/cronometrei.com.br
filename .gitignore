@@ -1,5 +1,2 @@
 .vagrant/
 pma/
-node_modules/
-dist/
-.tmp
