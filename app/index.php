@@ -38,6 +38,10 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 
+	<link rel="stylesheet" type="text/css" href="assets/css/offline-theme-slide.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/offline-language-portuguese-brazil.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/offline-language-portuguese-brazil-indicator.css" />
+
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -45,6 +49,7 @@
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 </head>
 
 <body>
@@ -55,7 +60,7 @@
 	<header>
 		<nav class="navbar navbar-default opaque">
 			<div class="container-fluid">
-				<!-- Brand and toggle get grouped for better mobile display -->
+
 				<div class="navbar-header">
 					<div class="socialdiv">
 						<div class="social"><div class="fb-like" data-href="http://www.cronometrei.com.br/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div></div>
@@ -74,9 +79,9 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
 					</ul>
-				</div><!-- /.navbar-collapse -->
+				</div>
 
-			</div><!-- /.container-fluid -->
+			</div>
 		</nav>
 	</header>
 
@@ -84,7 +89,7 @@
 	<div id="progressbar" class="container-fluid" style="display: block;">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
-				<div class="loading">Loading...</div>
+				<div class="loading">Carregando...</div>
 				<div class="progress">
 					<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
 				</div>				
@@ -94,17 +99,31 @@
 
 	<!-- app container -->
 	<div id="application" class="container opaque"></div>
-
-	<!-- login container -->
-	<div id="login" class="container"></div>
-
-	<!-- footer -->
-	<footer class="container"></footer>
+	
+	<footer id="appFooter" class="container-fluid opaque">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<!-- Cronometrei app -->
+				<ins class="adsbygoogle"
+				     style="display:block"
+				     data-ad-client="ca-pub-5385380754980188"
+				     data-ad-slot="3418128941"
+				     data-ad-format="auto"></ins>
+				<script>
+				(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+			</div>
+		</div>
+	</footer>
 
 	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/functions.dev.js"></script>
+	<script type="text/javascript" src="assets/js/functions.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/bootbox.min.js"></script>
+    <script type="text/javascript" src="assets/js/offline.min.js"></script>
+	<script type="text/javascript">
+		Offline.options = {checks: {xhr: {url: app.settings.apihost + "/theme/loadTheme"}}}
+	</script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

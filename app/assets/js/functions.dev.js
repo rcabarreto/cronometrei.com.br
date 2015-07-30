@@ -6,6 +6,18 @@
  * Copyright 2014-2015 R3 Web Solutions
  * ======================================================================== */
 
+
+var cronometrei = cronometrei || {
+
+
+};
+
+cronometrei.eventos = {
+	adicionar: function(){ console.log('chupapppapapappa'); },
+};
+
+
+
 var app = {
 	doing: false,
 	time: 0,
@@ -44,6 +56,8 @@ var app = {
 		timezone: 0,
 		updated_time: "",
 		verified: false,
+		load: function(){},
+		persist: function(){},
 	},
 	theme: {
 		backgroundImage: "",
@@ -141,12 +155,15 @@ var app = {
 
 	appLogin: function(userid){
 		this.outputMessage('==> LOGGIN USER INTO THE APP');
+		app.user.logged = true;
 		app.createCookie('appUserId', userid, 30);
+		return true;
 	},
 
 	appLogout: function(){
 		this.outputMessage('==> LOGGIN USER OUT OF THE APP');
 		app.eraseCookie('appUserId');
+		return true;
 	},
 
 	facebookLogin: function(){
@@ -162,6 +179,7 @@ var app = {
 	},
 
 	facebookRevoke: function(){
+		// remover o facebook_id do user object e fazer o persist
 		FB.api('/me/permissions', 'delete', function(response) {
 			if(response.success){ console.log("DESLOGADO!"); location.reload(); }
 		});
@@ -170,7 +188,6 @@ var app = {
 	loadFacebookInfo: function(){
 		FB.api('/me', function(user){
 
-			app.user.logged 	  = true;
 			app.user.facebook_id  = user.id;
 			app.user.email 		  = user.email;
 			app.user.first_name   = user.first_name;
@@ -211,9 +228,12 @@ var app = {
 			app.user.timezone 	  = response.timezone;
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
+
 			app.outputMessage('user info loaded');
 
-			app.appLogin(response.id);
+			if(!app.user.logged)
+				app.appLogin(response.id);
+
 			app.loadCronometer();
 		}).fail(function() {
 			app.outputMessage('Userinfo loagind failed, going on with default user info...');
@@ -295,7 +315,6 @@ var app = {
 	createAppElements: function(){
 		this.stepProgress(10);
 		$("#application").append('<div id="titleRow" class="row"></div>');
-		$("#application").append('<div id="ad" class="container"><ins class="adsbygoogle" style="display:inline-block;width:728px;height:15px" data-ad-client="ca-pub-5385380754980188" data-ad-slot="4894862141"></ins></div>')
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
 		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
@@ -386,20 +405,15 @@ var app = {
 	},
 
 	loadingProgress: function(progress) {
-
 		if(progress < 100){
 			$('.progress-bar').css('width', progress+'%').attr('aria-valuenow', progress).html(progress+'%');
 		}else{
 			$('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).html('100%');
-
-			setTimeout(function(){
-				$('#progressbar').hide();
-				$('#application').removeClass('opaque');
-				$('header > nav').removeClass('opaque');
-			}, 1000);
-
+			$('#progressbar').addClass('opaque');
+			$('#application').removeClass('opaque');
+			$('header > nav').removeClass('opaque');
+			$('#appFooter').removeClass('opaque');
 		}
-		
 	},
 
 
