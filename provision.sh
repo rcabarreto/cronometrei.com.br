@@ -246,10 +246,4 @@ cd ~
 curl -s http://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
-cd /vagrant/app
-composer update
-
-cd /vagrant/static
-composer update
-
 touch /var/lock/vagrant-provision
