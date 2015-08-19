@@ -21,6 +21,8 @@ cronometrei.eventos = {
 var app = {
 	doing: false,
 	time: 0,
+	startTime: 0,
+	finalTime: 0,
 	currentTimer: 0,
 	loop: false,
 	progressValue: 0,
@@ -434,10 +436,28 @@ var app = {
 		return false;
 	},
 
+
+	doing: false,
+	time: 0,
+	startTime: 0,
+	finalTime: 0,
+	currentTimer: 0,
+	loop: false,
+	progressValue: 0,
+
+
+
+
+
 	startTimer: function(currentTimer) {
 		this.outputMessage('Starting timer');
 		app.settings.needToConfirm = true;
 		app.doing = 1;
+		
+		// defino o startTime
+		if(app.startTime===0)
+			app.startTime = new Date();
+
 		if(typeof(app.currentTimer) == 'undefined'){
 			app.time = new Date();
 		}else{
@@ -449,6 +469,15 @@ var app = {
 
 	stopTimer: function() {
 		this.outputMessage('Stopping timer');
+
+		if(app.finalTime===0)
+			app.finalTime = new Date();
+
+		//	persist timer information if user is logged in
+		//	INICIO: 		 app.format_date(app.startTime)
+		//	FINAL: 			 app.format_date(app.finalTime)
+		//	TEMPO DECORRIDO: app.format_seconds(app.currentTimer));
+
 		app.doing = 0;
 		clearInterval(app.loop);
 		$('#startStopLabel').html(app.settings.startButton);
@@ -459,6 +488,7 @@ var app = {
 		app.doing = 0;
 		clearInterval(app.loop);
 		app.currentTimer = app.getTime();
+		app.output(app.format_seconds(app.currentTimer));
 		$('#startStopLabel').html(app.settings.continueButton);
 	},
 
@@ -475,6 +505,8 @@ var app = {
 	resetTimer: function(){
 		app.settings.needToConfirm = false;
 		app.time = 0;
+		app.startTime = 0;
+		app.finalTime = 0;
 		app.currentTimer = 0;
 		app.output(app.format_seconds(0));
 	},
@@ -489,6 +521,24 @@ var app = {
 
 	getTime: function(){
 		return (new Date() - app.time);
+	},
+
+	pad2: function(number) {
+		return (number < 10 ? '0' : '') + number
+	},
+
+	format_date: function(dateVar){
+
+		var dt = new Date(dateVar);
+		var dtstring = dt.getFullYear()
+		    + '-' + app.pad2(dt.getMonth()+1)
+		    + '-' + app.pad2(dt.getDate())
+		    + ' ' + app.pad2(dt.getHours())
+		    + ':' + app.pad2(dt.getMinutes())
+		    + ':' + app.pad2(dt.getSeconds());
+
+		return dtstring;
+
 	},
 
 	format_seconds: function(seconds){
