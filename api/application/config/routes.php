@@ -51,7 +51,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $route['app/theme/loadTheme'] = 'theme/loadTheme';
+
 $route['app/user/loadUserInfo'] = 'user/loadUserInfo';
+
+$route['app/timer/recordUserTimer'] = 'timer/recordUserTimer';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

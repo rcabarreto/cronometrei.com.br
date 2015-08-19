@@ -42,6 +42,34 @@ INSERT INTO `theme` VALUES (1,'london.jpg','#FFF',1),(2,'borabora.jpg','#F4FCFA'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `timer`
+--
+
+DROP TABLE IF EXISTS `timer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `timer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `start` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `timer` varchar(12) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `timer`
+--
+
+LOCK TABLES `timer` WRITE;
+/*!40000 ALTER TABLE `timer` DISABLE KEYS */;
+INSERT INTO `timer` VALUES (1,10,'2015-08-19 20:20:22','2015-08-19 17:12:24','2015-08-19 17:12:34','00:00:07:032'),(2,10,'2015-08-19 20:41:35','2015-08-19 17:12:24','2015-08-19 17:12:34','00:00:07:032'),(3,0,'2015-08-19 20:43:52','0000-00-00 00:00:00','0000-00-00 00:00:00',''),(4,0,'2015-08-19 20:45:24','0000-00-00 00:00:00','0000-00-00 00:00:00',''),(5,10,'2015-08-19 20:47:44','2015-08-19 17:47:38','2015-08-19 17:47:44','00:00:03:729'),(6,10,'2015-08-19 20:49:11','2015-08-19 17:48:49','2015-08-19 17:49:10','00:00:19:466');
+/*!40000 ALTER TABLE `timer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -82,4 +110,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-19 15:20:01
+-- Dump completed on 2015-08-19 20:50:01

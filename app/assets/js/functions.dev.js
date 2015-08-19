@@ -61,6 +61,12 @@ var app = {
 		load: function(){},
 		persist: function(){},
 	},
+	timerInfo: {
+		user_id: "",
+		start: "",
+		end: "",
+		timer: "",
+	},
 	theme: {
 		backgroundImage: "",
 		appTitleColor: "#FFF",
@@ -437,16 +443,6 @@ var app = {
 	},
 
 
-	doing: false,
-	time: 0,
-	startTime: 0,
-	finalTime: 0,
-	currentTimer: 0,
-	loop: false,
-	progressValue: 0,
-
-
-
 
 
 	startTimer: function(currentTimer) {
@@ -473,10 +469,26 @@ var app = {
 		if(app.finalTime===0)
 			app.finalTime = new Date();
 
-		//	persist timer information if user is logged in
-		//	INICIO: 		 app.format_date(app.startTime)
-		//	FINAL: 			 app.format_date(app.finalTime)
-		//	TEMPO DECORRIDO: app.format_seconds(app.currentTimer));
+		app.timerInfo.user_id 	= app.user.id;
+		app.timerInfo.start 	= app.format_date(app.startTime);
+		app.timerInfo.end 		= app.format_date(app.finalTime);
+		app.timerInfo.timer 	= app.format_seconds(app.currentTimer);
+
+		console.log(app.timerInfo);
+
+		$.ajax({
+			url: app.settings.apihost + "/timer/recordUserTimer",
+			method: "POST",
+			data: {json: JSON.stringify(app.timerInfo) },
+			crossDomain: true
+		}).done(function(data) {
+
+		}).fail(function() {
+
+		}).always(function(){
+
+		});
+
 
 		app.doing = 0;
 		clearInterval(app.loop);
