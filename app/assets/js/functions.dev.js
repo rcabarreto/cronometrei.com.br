@@ -171,6 +171,10 @@ var app = {
 	appLogout: function(){
 		this.outputMessage('==> LOGGIN USER OUT OF THE APP');
 		app.eraseCookie('appUserId');
+
+		app.facebookRevoke();
+		// app.facebookLogout();
+		
 		return true;
 	},
 
@@ -332,7 +336,7 @@ var app = {
 	createButtonLinks: function(){
 		this.stepProgress(10);
 		$('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
-		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.facebookLogout(); });
+		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
 	},
 
 	setPageTitle: function(){
@@ -426,7 +430,12 @@ var app = {
 
 
 
-	// nothing changes from here on down
+
+
+
+
+
+
 
 	outputMessage: function(message){
 		if(app.settings.debug)
@@ -441,9 +450,6 @@ var app = {
 			app.startTimer(app.currentTimer);
 		return false;
 	},
-
-
-
 
 	startTimer: function(currentTimer) {
 		this.outputMessage('Starting timer');
@@ -474,21 +480,17 @@ var app = {
 		app.timerInfo.end 		= app.format_date(app.finalTime);
 		app.timerInfo.timer 	= app.format_seconds(app.currentTimer);
 
-		console.log(app.timerInfo);
-
-		$.ajax({
-			url: app.settings.apihost + "/timer/recordUserTimer",
-			method: "POST",
-			data: {json: JSON.stringify(app.timerInfo) },
-			crossDomain: true
-		}).done(function(data) {
-
-		}).fail(function() {
-
-		}).always(function(){
-
-		});
-
+		if(app.timerInfo.user_id!=''){
+			$.ajax({
+				url: app.settings.apihost + "/timer/recordUserTimer",
+				method: "POST",
+				data: {json: JSON.stringify(app.timerInfo) },
+				crossDomain: true
+			}).done(function(data){
+			}).fail(function(){
+			}).always(function(){
+			});
+		}
 
 		app.doing = 0;
 		clearInterval(app.loop);
