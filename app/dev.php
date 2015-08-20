@@ -83,8 +83,8 @@
 						<li id="btnAccount" class="dropdown hide">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Minha conta <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">Meus Dados</a></li>
-								<li><a href="#">Sobre o Cronometrei</a></li>
+								<li id="btnUserData"><a href="#">Meus Dados</a></li>
+								<li id="btnSobre"><a href="#">Sobre o Cronometrei</a></li>
 								<li role="separator" class="divider"></li>
 								<li id="btnLogout"><a href="#">Sair</a></li>
 							</ul>

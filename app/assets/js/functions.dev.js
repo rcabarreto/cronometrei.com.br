@@ -169,13 +169,17 @@ var app = {
 	},
 
 	appLogout: function(){
-		this.outputMessage('==> LOGGIN USER OUT OF THE APP');
-		app.eraseCookie('appUserId');
 
-		app.facebookRevoke();
-		// app.facebookLogout();
-		
-		return true;
+		bootbox.confirm("Deseja mesmo sair do aplicativo?", function(result) {
+			if(result){
+				app.outputMessage('==> LOGGIN USER OUT OF THE APP');
+				app.eraseCookie('appUserId');
+				app.facebookRevoke();
+				// app.facebookLogout();
+				return true;
+			}
+		});
+
 	},
 
 	facebookLogin: function(){
@@ -324,6 +328,120 @@ var app = {
 
 	},
 
+	showAboutScreen: function(){
+
+		bootbox.dialog({
+			title:   "Faça seu login no Cronometrei.",
+			message: '<div class="row">  ' +
+					 '<div class="col-md-12"> ' +
+					 '<form class="form-horizontal"> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="name">Name</label> ' +
+					 '<div class="col-md-4"> ' +
+					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					 '<span class="help-block">Here goes your name</span> </div> ' +
+					 '</div> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="awesomeness">How awesome is this?</label> ' +
+					 '<div class="col-md-4"> <div class="radio"> <label for="awesomeness-0"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Really awesome" checked="checked"> ' +
+					 'Really awesome </label> ' +
+					 '</div><div class="radio"> <label for="awesomeness-1"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Super awesome"> Super awesome </label> ' +
+					 '</div> ' +
+					 '</div></div>' +
+					 '</form></div></div>',
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-success",
+					callback: function () {
+						var name = $('#name').val();
+						var answer = $("input[name='awesomeness']:checked").val()
+						Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
+					}
+				}
+			}
+		});
+
+	},
+
+	showUserDataScreen: function(){
+
+		bootbox.dialog({
+			title:   "Faça seu login no Cronometrei.",
+			message: '<div class="row">  ' +
+					 '<div class="col-md-12"> ' +
+					 '<form class="form-horizontal"> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="name">Name</label> ' +
+					 '<div class="col-md-4"> ' +
+					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					 '<span class="help-block">Here goes your name</span> </div> ' +
+					 '</div> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="awesomeness">How awesome is this?</label> ' +
+					 '<div class="col-md-4"> <div class="radio"> <label for="awesomeness-0"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Really awesome" checked="checked"> ' +
+					 'Really awesome </label> ' +
+					 '</div><div class="radio"> <label for="awesomeness-1"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Super awesome"> Super awesome </label> ' +
+					 '</div> ' +
+					 '</div></div>' +
+					 '</form></div></div>',
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-success",
+					callback: function () {
+						var name = $('#name').val();
+						var answer = $("input[name='awesomeness']:checked").val()
+						Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
+					}
+				}
+			}
+		});
+
+	},
+
+	showMyTimers: function(){
+
+		bootbox.dialog({
+			title:   "Faça seu login no Cronometrei.",
+			message: '<div class="row">  ' +
+					 '<div class="col-md-12"> ' +
+					 '<form class="form-horizontal"> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="name">Name</label> ' +
+					 '<div class="col-md-4"> ' +
+					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					 '<span class="help-block">Here goes your name</span> </div> ' +
+					 '</div> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="awesomeness">How awesome is this?</label> ' +
+					 '<div class="col-md-4"> <div class="radio"> <label for="awesomeness-0"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Really awesome" checked="checked"> ' +
+					 'Really awesome </label> ' +
+					 '</div><div class="radio"> <label for="awesomeness-1"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Super awesome"> Super awesome </label> ' +
+					 '</div> ' +
+					 '</div></div>' +
+					 '</form></div></div>',
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-success",
+					callback: function () {
+						var name = $('#name').val();
+						var answer = $("input[name='awesomeness']:checked").val()
+						Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
+					}
+				}
+			}
+		});
+
+	},
+
 	createAppElements: function(){
 		this.stepProgress(10);
 		$("#application").append('<div id="titleRow" class="row"></div>');
@@ -337,6 +455,11 @@ var app = {
 		this.stepProgress(10);
 		$('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
 		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
+
+		$('#btnUserData > a').click(function(e){ e.preventDefault(); app.showUserDataScreen(); });
+		$('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
+		$('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
+
 	},
 
 	setPageTitle: function(){
