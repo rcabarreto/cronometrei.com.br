@@ -203,7 +203,6 @@ var app = {
 
 	loadFacebookInfo: function(){
 		FB.api('/me', function(user){
-
 			app.user.facebook_id  = user.id;
 			app.user.email 		  = user.email;
 			app.user.first_name   = user.first_name;
@@ -215,15 +214,12 @@ var app = {
 			app.user.timezone 	  = user.timezone;
 			app.user.updated_time = user.updated_time;
 			app.user.verified 	  = user.verified;
-
 			app.loadUserInformation();
 		});
 	},
 
 	loadUserInformation: function(){
-
 		this.outputMessage('loading user info...');
-
 		$.ajax({
 			url: app.settings.apihost + "/user/loadUserInfo",
 			method: "POST",
@@ -231,7 +227,6 @@ var app = {
 			crossDomain: true
 		}).done(function(data) {
 			var response = JSON.parse(data);
-
 			app.user.id 		  = response.id;
 			app.user.facebook_id  = response.facebook_id;
 			app.user.email 		  = response.email;
@@ -244,12 +239,9 @@ var app = {
 			app.user.timezone 	  = response.timezone;
 			app.user.updated_time = response.updated_time;
 			app.user.verified 	  = response.verified;
-
 			app.outputMessage('user info loaded');
-
 			if(!app.user.logged)
 				app.appLogin(response.id);
-
 			app.loadCronometer();
 		}).fail(function() {
 			app.outputMessage('Userinfo loagind failed, going on with default user info...');
@@ -261,11 +253,9 @@ var app = {
 	},
 
 	loadCronometer: function(){
-
 		this.setPageTitle();
 		this.loadTheme();
 		this.loadCustomMenu();
-
 		return false;
 	},
 
@@ -288,44 +278,8 @@ var app = {
 			title: "Faça seu login com o Facebook",
 			message: '<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>'
 		});
-
 		// call facebook sdk
 		FB.XFBML.parse();
-
-		// bootbox.dialog({
-		// 	title:   "Faça seu login no Cronometrei.",
-		// 	message: '<div class="row">  ' +
-		// 			 '<div class="col-md-12"> ' +
-		// 			 '<form class="form-horizontal"> ' +
-		// 			 '<div class="form-group"> ' +
-		// 			 '<label class="col-md-4 control-label" for="name">Name</label> ' +
-		// 			 '<div class="col-md-4"> ' +
-		// 			 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
-		// 			 '<span class="help-block">Here goes your name</span> </div> ' +
-		// 			 '</div> ' +
-		// 			 '<div class="form-group"> ' +
-		// 			 '<label class="col-md-4 control-label" for="awesomeness">How awesome is this?</label> ' +
-		// 			 '<div class="col-md-4"> <div class="radio"> <label for="awesomeness-0"> ' +
-		// 			 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Really awesome" checked="checked"> ' +
-		// 			 'Really awesome </label> ' +
-		// 			 '</div><div class="radio"> <label for="awesomeness-1"> ' +
-		// 			 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Super awesome"> Super awesome </label> ' +
-		// 			 '</div> ' +
-		// 			 '</div></div>' +
-		// 			 '</form></div></div>',
-		// 	buttons: {
-		// 		success: {
-		// 			label: "Save",
-		// 			className: "btn-success",
-		// 			callback: function () {
-		// 				var name = $('#name').val();
-		// 				var answer = $("input[name='awesomeness']:checked").val()
-		// 				Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
-		// 			}
-		// 		}
-		// 	}
-		// });
-
 	},
 
 	showAboutScreen: function(){
@@ -358,7 +312,7 @@ var app = {
 					callback: function () {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val()
-						Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
+						console.log("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -396,7 +350,7 @@ var app = {
 					callback: function () {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val()
-						Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
+						console.log("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -434,7 +388,57 @@ var app = {
 					callback: function () {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val()
-						Example.show("Hello " + name + ". You've chosen <b>" + answer + "</b>");
+						console.log("Hello " + name + ". You've chosen " + answer + "");
+					}
+				}
+			}
+		});
+
+	},
+
+	showFeedbackForm: function(){
+
+		bootbox.dialog({
+			title:   "O que você acha do Cronometrei?",
+			message: '<div class="row">  ' +
+					 '<div class="col-md-12"> ' +
+					 '<form class="form-horizontal"> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="name">Seu nome</label> ' +
+					 '<div class="col-md-6"> ' +
+					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					 '</div> ' +
+					 '</div> ' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="awesomeness">O que você acha do Cronometrei?</label> ' +
+					 '<div class="col-md-6"> ' +
+					 '<div class="radio"> <label for="awesomeness-0"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Demais" checked="checked"> Demais! </label></div>' +
+					 '<div class="radio"> <label for="awesomeness-1"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Legal"> Legal </label> </div> ' +
+					 '<div class="radio"> <label for="awesomeness-2"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-2" value="Mais ou menos"> Mais ou menos </label> </div> ' +
+					 '<div class="radio"> <label for="awesomeness-3"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-3" value="Fraco"> Fraco </label> </div> ' +
+					 '<div class="radio"> <label for="awesomeness-4"> ' +
+					 '<input type="radio" name="awesomeness" id="awesomeness-4" value="Péssimo"> Péssimo </label> </div> ' +
+					 '</div></div>' +
+					 '<div class="form-group"> ' +
+					 '<label class="col-md-4 control-label" for="name">Mensagem</label> ' +
+					 '<div class="col-md-6"> ' +
+					 '<textarea id="message" name="message" class="form-control input-md"></textarea>' +
+					 '</div> ' +
+					 '</div> ' +
+					 '</form></div></div>',
+			buttons: {
+				success: {
+					label: "Enviar",
+					className: "btn-success",
+					callback: function () {
+						var name = $('#name').val();
+						var answer = $("input[name='awesomeness']:checked").val();
+						var message = $('#message').val();
+						console.log("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -453,6 +457,7 @@ var app = {
 
 	createButtonLinks: function(){
 		this.stepProgress(10);
+		$('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
 		$('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
 		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
 

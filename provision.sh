@@ -192,9 +192,7 @@ if (!-e \$request_filename) {
 }" > /etc/nginx/global/wpmultisite.conf
 
 
-
 # CREATING WEB SITES
-
 echo "server {
 	server_name db.$domain;
 	root /vagrant/pma;

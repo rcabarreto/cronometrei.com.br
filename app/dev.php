@@ -78,6 +78,7 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
+						<li id="btnFeedback"><a href="#">Feedback</a></li>
 						<li id="btnLogin" class="hide"><a href="#">Login</a></li>
 						<li id="btnTempos" class="hide"><a href="#">Meus Tempos</a></li>
 						<li id="btnAccount" class="dropdown hide">
