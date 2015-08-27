@@ -312,7 +312,7 @@ var app = {
 					callback: function () {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val()
-						console.log("Hello " + name + ". You've chosen " + answer + "");
+						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -350,7 +350,7 @@ var app = {
 					callback: function () {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val()
-						console.log("Hello " + name + ". You've chosen " + answer + "");
+						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -388,7 +388,7 @@ var app = {
 					callback: function () {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val()
-						console.log("Hello " + name + ". You've chosen " + answer + "");
+						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -438,7 +438,7 @@ var app = {
 						var name = $('#name').val();
 						var answer = $("input[name='awesomeness']:checked").val();
 						var message = $('#message').val();
-						console.log("Hello " + name + ". You've chosen " + answer + "");
+						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
 			}
@@ -635,13 +635,15 @@ var app = {
 	},
 
 	clearTimer: function(){
-		this.outputMessage('Clear timer');
-		bootbox.confirm(app.settings.clearMessage, function(result) {
-			if(result){
-				app.stopTimer();
-				app.resetTimer();
-			}
-		});
+		if(app.time !== 0){
+			this.outputMessage('Clear timer');
+			bootbox.confirm(app.settings.clearMessage, function(result) {
+				if(result){
+					app.stopTimer();
+					app.resetTimer();
+				}
+			});
+		}
 	},
 
 	resetTimer: function(){
