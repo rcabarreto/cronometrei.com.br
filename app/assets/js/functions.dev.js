@@ -13,7 +13,7 @@ var cronometrei = cronometrei || {
 };
 
 cronometrei.eventos = {
-	adicionar: function(){ console.log('chupapppapapappa'); },
+	adicionar: function(){ console.log('test'); },
 };
 
 
@@ -66,6 +66,11 @@ var app = {
 		start: "",
 		end: "",
 		timer: "",
+	},
+	feedback: {
+		name: '',
+		answer: '',
+		message: '',
 	},
 	theme: {
 		backgroundImage: "",
@@ -435,10 +440,20 @@ var app = {
 					label: "Enviar",
 					className: "btn-success",
 					callback: function () {
-						var name = $('#name').val();
-						var answer = $("input[name='awesomeness']:checked").val();
-						var message = $('#message').val();
-						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
+						app.feedback.name = $('#name').val();
+						app.feedback.answer = $("input[name='awesomeness']:checked").val();
+						app.feedback.message = $('#message').val();
+
+						$.ajax({
+							url: app.settings.apihost + "/system/feedback",
+							method: "POST",
+							data: {json: JSON.stringify(app.feedback) },
+							crossDomain: true
+						}).done(function(data) {
+							var response = JSON.parse(data);
+						}).fail(function() {
+						}).always(function(){
+						});
 					}
 				}
 			}
