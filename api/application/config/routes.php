@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 
-$route['app/feedback'] = 'system/feedback';
+$route['app/system/feedback'] = 'system/feedback';
 $route['app/theme/loadTheme'] = 'theme/loadTheme';
 
 $route['app/user/loadUserInfo'] = 'user/loadUserInfo';

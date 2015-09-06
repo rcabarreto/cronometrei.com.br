@@ -8,9 +8,28 @@ class System extends CI_Controller {
 		$this->load->model('system_model', 'system');
 	}
 
-	public function setFeedback(){
-		$viewData['echoJSON'] = json_encode($this->system->load_random_theme());
+	public function feedback(){
+
+		$objReturn = new stdClass;
+
+		//if($this->input->post('json')){
+
+			//$json = $this->input->post('json');
+			$json = '{"name":"10","answer":"awesome","message": "testing"}';
+
+			$objFeedback = json_decode($json);
+			$objReturn->status = "success";
+			$objReturn->errorCode = "0";
+			$objReturn->returnID = $this->system->insert_feedback($objFeedback);
+
+		//}
+
+		print_r($objReturn);
+		die();
+
+		$viewData['echoJSON'] = json_encode($objReturn);
 		$this->load->view('jsonDump', $viewData);
+
 	}
 
 }
