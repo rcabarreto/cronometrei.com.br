@@ -14,8 +14,8 @@ class System extends CI_Controller {
 
 		//if($this->input->post('json')){
 
-			//$json = $this->input->post('json');
-			$json = '{"name":"10","answer":"awesome","message": "testing"}';
+			$json = $this->input->post('json');
+			//$json = '{"name":"10","answer":"awesome","message": "testing"}';
 
 			$objFeedback = json_decode($json);
 			$objReturn->status = "success";
