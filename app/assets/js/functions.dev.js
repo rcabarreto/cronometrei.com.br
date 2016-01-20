@@ -29,6 +29,12 @@ var app = {
 	settings: {
 		debug: false,
 		fbAppID: '387506448107274',
+		apiSettings: {
+			apiProtocol: 'http',
+			apiHost: 'api.cronometrei.com.br',
+			apiPort: '8080',
+			apiPath: 'restFull',
+		},
 		apihost: 'http://api.cronometrei.com.br/app',
 		needToConfirm: false,
 		pageTitle: 'Cronometrei',
