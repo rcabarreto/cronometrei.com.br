@@ -11,5 +11,3 @@ if [ -f /vagrant/sql/mysqldump.sql ]; then
 	mysql -u root -p$rootpass $mysqldb < /vagrant/sql/mysqldump.sql
 fi
 
-cd $compassfolder
-compass watch --poll -q &

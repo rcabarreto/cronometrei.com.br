@@ -36,10 +36,19 @@ sudo debconf-set-selections <<< "mysql-server mysql-server/root_password passwor
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $rootpass"
 
 # Install basic tools
-apt-get -y install build-essential binutils-doc git
+apt-get -y install build-essential binutils-doc git curl
+apt-get -y install nginx
 apt-get -y install mysql-server
+apt-get -y install php5-fpm php5-mysql php5-cli php5-gd php5-common php5-curl php5-json php5-mcrypt
+apt-get -y install unzip
+
+php5enmod mcrypt
+
+sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" ${php_config_file}
+sed -i "s/sendfile on/sendfile off/g" ${nginx_config_file}
 
 sed -i "s/bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" ${mysql_config_file}
+
 
 # Allow root access from any host
 echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION" | mysql -u root --password=$rootpass
@@ -161,28 +170,9 @@ if (!-e \$request_filename) {
 }" > /etc/nginx/global/wpmultisite.conf
 
 
-# CREATING WEB SITES
 echo "server {
-	server_name db.$domain;
-	root /vagrant/pma;
-	access_log /var/log/nginx/pma.access.log;
-	error_log /var/log/nginx/pma.error.log;
-	include global/common.conf;
-	include global/simple.conf;
-}" > /etc/nginx/sites-available/pma
-
-echo "server {
-	server_name api.$domain;
-	root /vagrant/api;
-	access_log /var/log/nginx/api.access.log;
-	error_log /var/log/nginx/api.error.log;
-	include global/common.conf;
-	include global/codeigniterapi.conf;
-}" > /etc/nginx/sites-available/api
-
-echo "server {
-	server_name $domain dev.$domain;
-	root /vagrant/app;
+	server_name $domain www.$domain dev.$domain;
+	root /vagrant/public;
 	access_log /var/log/nginx/cronometrei.access.log;
 	error_log /var/log/nginx/cronometrei.error.log;
 	include global/common.conf;
@@ -190,8 +180,6 @@ echo "server {
 }" > /etc/nginx/sites-available/app
 
 
-ln -s /etc/nginx/sites-available/pma /etc/nginx/sites-enabled/pma
-ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
 ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/app
 
 
@@ -210,7 +198,5 @@ echo "*/10 * * * * mysqldump --user=$mysqluser -p$mysqlpass $mysqldb > /vagrant/
 
 # Install Composer and run it
 cd ~
-curl -s http://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
 
 touch /var/lock/vagrant-provision

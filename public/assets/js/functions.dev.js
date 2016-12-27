@@ -17,7 +17,6 @@ cronometrei.eventos = {
 };
 
 
-
 var app = {
 	doing: false,
 	time: 0,
@@ -28,14 +27,15 @@ var app = {
 	progressValue: 0,
 	settings: {
 		debug: false,
+		forceDebug: true,
 		fbAppID: '387506448107274',
 		apiSettings: {
 			apiProtocol: 'http',
 			apiHost: 'api.cronometrei.com.br',
-			apiPort: '8080',
-			apiPath: 'restFull',
+			apiPort: '3000',
+			apiPath: 'api',
 		},
-		apihost: 'http://api.cronometrei.com.br/app',
+		apihost: 'http://localhost:3000',
 		needToConfirm: false,
 		pageTitle: 'Cronometrei',
 		titleSep: ' - ',
@@ -156,16 +156,15 @@ var app = {
 					app.user.logged = false;
 					app.stepProgress(10);
 					app.loadCronometer();
-				}	
+				}
 			});
-
-		}
+        }
 	},
 
 	checkDebugState: function(){
 		var url = window.location.pathname;
 		var filename = url.substring(url.lastIndexOf('/')+1);
-		if(filename === "dev.php"){
+		if(filename === "dev.php" || app.settings.forceDebug === true){
 			console.log('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
 			app.settings.debug = true;
 		}
@@ -576,14 +575,6 @@ var app = {
 			$('#appFooter').removeClass('opaque');
 		}
 	},
-
-
-
-
-
-
-
-
 
 
 	outputMessage: function(message){
