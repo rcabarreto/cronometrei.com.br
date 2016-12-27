@@ -55,9 +55,9 @@ echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT 
 echo "GRANT PROXY ON ''@'' TO 'root'@'%' WITH GRANT OPTION" | mysql -u root --password=$rootpass
 
 # setup mysql user
-echo "CREATE USER '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass'" | mysql -uroot -p$rootpass
+echo "CREATE USER '$mysqluser'@'%' IDENTIFIED BY '$mysqlpass'" | mysql -uroot -p$rootpass
 echo "CREATE DATABASE $mysqldb" | mysql -u root -p$rootpass
-echo "GRANT ALL ON $mysqldb.* TO '$mysqluser'@'localhost'" | mysql -uroot -p$rootpass
+echo "GRANT ALL ON $mysqldb.* TO '$mysqluser'@'%'" | mysql -uroot -p$rootpass
 echo "flush privileges" | mysql -u root -p$rootpass
 
 mkdir /etc/nginx/global

@@ -29,13 +29,13 @@ var app = {
 		debug: false,
 		forceDebug: true,
 		fbAppID: '387506448107274',
+        apiHome: "http://api.cronometrei.com.br:3000/api",
 		apiSettings: {
 			apiProtocol: 'http',
 			apiHost: 'api.cronometrei.com.br',
 			apiPort: '3000',
 			apiPath: 'api',
 		},
-		apihost: 'http://localhost:3000',
 		needToConfirm: false,
 		pageTitle: 'Cronometrei',
 		titleSep: ' - ',
@@ -53,7 +53,6 @@ var app = {
 	user: {
 		logged: false,
 		id: "",
-		facebook_id: "",
 		email: "",
 		first_name: "",
 		last_name: "",
@@ -172,7 +171,7 @@ var app = {
 	},
 
 	appLogin: function(userid){
-		this.outputMessage('==> LOGGIN USER INTO THE APP');
+		this.outputMessage('==> LOGING USER INTO THE APP');
 		app.user.logged = true;
 		app.createCookie('appUserId', userid, 30);
 		return true;
@@ -213,7 +212,7 @@ var app = {
 
 	loadFacebookInfo: function(){
 		FB.api('/me', function(user){
-			app.user.facebook_id  = user.id;
+			app.user.id  		  = user.id;
 			app.user.email 		  = user.email;
 			app.user.first_name   = user.first_name;
 			app.user.last_name 	  = user.last_name;
@@ -224,39 +223,43 @@ var app = {
 			app.user.timezone 	  = user.timezone;
 			app.user.updated_time = user.updated_time;
 			app.user.verified 	  = user.verified;
-			app.loadUserInformation();
+
+            if(!app.user.logged)
+                app.appLogin(user.id);
+
+            app.loadCronometer();
+            app.stepProgress(10);
+
 		});
 	},
 
 	loadUserInformation: function(){
 		this.outputMessage('loading user info...');
 		$.ajax({
-			url: app.settings.apihost + "/user/loadUserInfo",
-			method: "POST",
-			data: {json: JSON.stringify(app.user) },
+			url: app.createAPIURL() + "/user/loaduserinfo",
+			method: "GET",
+			data: {},
 			crossDomain: true
 		}).done(function(data) {
 			var response = JSON.parse(data);
-			app.user.id 		  = response.id;
-			app.user.facebook_id  = response.facebook_id;
-			app.user.email 		  = response.email;
-			app.user.first_name   = response.first_name;
-			app.user.last_name 	  = response.last_name;
-			app.user.gender 	  = response.gender;
-			app.user.link 		  = response.link;
-			app.user.locale 	  = response.locale;
-			app.user.name 		  = response.name;
-			app.user.timezone 	  = response.timezone;
-			app.user.updated_time = response.updated_time;
-			app.user.verified 	  = response.verified;
+			app.user.id 		  = response.data.id;
+			app.user.email 		  = response.data.email;
+			app.user.first_name   = response.data.first_name;
+			app.user.last_name 	  = response.data.last_name;
+			app.user.gender 	  = response.data.gender;
+			app.user.link 		  = response.data.link;
+			app.user.locale 	  = response.data.locale;
+			app.user.name 		  = response.data.name;
+			app.user.timezone 	  = response.data.timezone;
+			app.user.updated_time = response.data.updated_time;
+			app.user.verified 	  = response.data.verified;
 			app.outputMessage('user info loaded');
-			if(!app.user.logged)
-				app.appLogin(response.id);
-			app.loadCronometer();
 		}).fail(function() {
-			app.outputMessage('Userinfo loagind failed, going on with default user info...');
-			app.loadCronometer();
+			app.outputMessage('Userinfo loading failed, going on with default user info...');
 		}).always(function(){
+            if(!app.user.logged)
+                app.appLogin(response.id);
+            app.loadCronometer();
 			app.stepProgress(10);
 		});
 		return true;
@@ -310,7 +313,7 @@ var app = {
 					 '<div class="col-md-4"> <div class="radio"> <label for="awesomeness-0"> ' +
 					 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Really awesome" checked="checked"> ' +
 					 'Really awesome </label> ' +
-					 '</div><div class="radio"> <label for="awesomeness-1"> ' +
+					 '</div><div class="radioWelcome to Contability API!"> <label for="awesomeness-1"> ' +
 					 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Super awesome"> Super awesome </label> ' +
 					 '</div> ' +
 					 '</div></div>' +
@@ -403,7 +406,6 @@ var app = {
 				}
 			}
 		});
-
 	},
 
 	showFeedbackForm: function(){
@@ -416,7 +418,7 @@ var app = {
 					 '<div class="form-group"> ' +
 					 '<label class="col-md-4 control-label" for="name">Seu nome</label> ' +
 					 '<div class="col-md-6"> ' +
-					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
+					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md" value="'+app.user.name+'"> ' +
 					 '</div> ' +
 					 '</div> ' +
 					 '<div class="form-group"> ' +
@@ -528,6 +530,31 @@ var app = {
 			return app.settings.exitMessage;
 	},
 
+	createAPIURL: function(){
+		return app.settings.apiSettings.apiProtocol +'://'+ app.settings.apiSettings.apiHost +':'+ app.settings.apiSettings.apiPort +'/'+ app.settings.apiSettings.apiPath;
+	},
+
+	makeAPICall: function(endPoint, method, sendData, callback){
+
+        var responseData = '';
+
+        $.ajax({
+            url: app.createAPIURL() + endPoint,
+            method: method,
+            data: sendData,
+            crossDomain: true
+        }).done(function(data) {
+            responseData = JSON.parse(data);
+            app.outputMessage('API Call Successfull!');
+        }).fail(function() {
+            responseData = JSON.parse('{"result":"failed"}');
+            app.outputMessage('API Call Failed!');
+        }).always(function(){
+            callback(responseData);
+		});
+
+    },
+
 	loadTheme: function(){
 		this.stepProgress(10);
 		this.outputMessage('Loading theme');
@@ -540,23 +567,35 @@ var app = {
 			}
 		}
 
-		$.ajax({
-			url: app.settings.apihost + "/theme/loadTheme",
-			method: "POST",
-			data: { userid : app.user.id },
-			crossDomain: true
-		}).done(function(data) {
-			var image = JSON.parse(data);
-			app.outputMessage('Loaded random background from api: '+ image.image_name);
-			app.theme.backgroundImage = image.image_name;
-			app.theme.appTitleColor = image.logo_color;
-		}).fail(function() {
-			app.outputMessage('Ajax failed! Using default background: '+ app.settings.defaultBG);
-			app.theme.backgroundImage = app.settings.defaultBG;
-		}).always(function(){
-			app.theme.setTheme();
-			app.stepProgress(10);
-		});
+		var apiReturn = app.makeAPICall('/user/loadtheme', 'GET', '{ userid : '+app.user.id+'}', function(response){
+            console.log('callback de themeload! ' + response.result);
+
+            // app.theme.backgroundImage = image.image_name;
+            // app.theme.appTitleColor = image.logo_color;
+
+            app.theme.backgroundImage = app.settings.defaultBG;
+            app.theme.setTheme();
+            app.stepProgress(10);
+		} );
+
+		// $.ajax({
+		// 	url: app.createAPIURL() + "/theme/loadTheme",
+		// 	method: "POST",
+		// 	data: { userid : app.user.id },
+		// 	crossDomain: true
+		// }).done(function(data) {
+		// 	var image = JSON.parse(data);
+		// 	app.outputMessage('Loaded random background from api: '+ image.image_name);
+		// 	app.theme.backgroundImage = image.image_name;
+		// 	app.theme.appTitleColor = image.logo_color;
+		// }).fail(function() {
+		// 	app.outputMessage('Ajax failed! Using default background: '+ app.settings.defaultBG);
+		// 	app.theme.backgroundImage = app.settings.defaultBG;
+		// }).always(function(){
+		// 	app.theme.setTheme();
+		// 	app.stepProgress(10);
+		// });
+
 	},
 
 	stepProgress: function(step){
@@ -576,14 +615,13 @@ var app = {
 		}
 	},
 
-
 	outputMessage: function(message){
 		if(app.settings.debug)
 			console.log(message);
 	},
 
 	startStopTimer: function() {
-		this.outputMessage('Call start/stop timer');
+		// this.outputMessage('Call start/stop timer');
 		if (app.doing)
 			app.pauseTimer();
 		else
@@ -619,6 +657,8 @@ var app = {
 		app.timerInfo.start 	= app.format_date(app.startTime);
 		app.timerInfo.end 		= app.format_date(app.finalTime);
 		app.timerInfo.timer 	= app.format_seconds(app.currentTimer);
+
+		console.log(JSON.stringify(app.timerInfo));
 
 		if(app.timerInfo.user_id!=''){
 			$.ajax({
