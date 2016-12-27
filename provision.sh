@@ -37,38 +37,7 @@ sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again p
 
 # Install basic tools
 apt-get -y install build-essential binutils-doc git
-apt-get -y install nginx
 apt-get -y install mysql-server
-apt-get -y install php5-fpm php5-mysql php5-cli
-apt-get -y install unzip
-apt-get -y install ruby-compass
-
-# install phpmyadmin
-if [ ! -d /vagrant/pma ]; then
-	cd /tmp
-	wget -O ./pma.zip -q https://files.phpmyadmin.net/phpMyAdmin/4.3.13.1/phpMyAdmin-4.3.13.1-all-languages.zip
-	unzip *.zip
-	mv ./phpMyAdmin-4.3.13.1-all-languages /vagrant/pma
-fi
-
-# config pma to access dbase
-echo "<?php
-\$cfg['blowfish_secret'] = '';
-\$i = 0;
-\$i++;
-\$cfg['Servers'][\$i]['auth_type'] 	= 'config';
-\$cfg['Servers'][\$i]['user']         = '$mysqluser';  
-\$cfg['Servers'][\$i]['password']     = '$mysqlpass';
-\$cfg['Servers'][\$i]['host'] 		= 'localhost';
-\$cfg['Servers'][\$i]['connect_type'] = 'tcp';
-\$cfg['Servers'][\$i]['compress'] 	= false;
-\$cfg['Servers'][\$i]['AllowNoPassword'] = false;
-\$cfg['UploadDir'] = '';
-\$cfg['SaveDir'] = '';
-?>" > /vagrant/pma/config.inc.php
-
-sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" ${php_config_file}
-sed -i "s/sendfile on/sendfile off/g" ${nginx_config_file}
 
 sed -i "s/bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" ${mysql_config_file}
 

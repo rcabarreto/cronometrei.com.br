@@ -1,2 +1,4 @@
 .vagrant/
 pma/
+.idea/
+node_modules/
