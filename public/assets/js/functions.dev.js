@@ -27,9 +27,8 @@ var app = {
 	progressValue: 0,
 	settings: {
 		debug: false,
-		forceDebug: true,
+		forceDebug: false,
 		fbAppID: '387506448107274',
-        apiHome: "http://api.cronometrei.com.br:3000/api",
 		apiSettings: {
 			apiProtocol: 'http',
 			apiHost: 'api.cronometrei.com.br',
@@ -126,7 +125,7 @@ var app = {
 	checkLoginState: function(){
 		this.stepProgress(10);
 
-		// check app cookie
+		// TODO: check app cookie
 		// se estiver setado o cookie de usuario do app, pegar o id, jogar no objeto user
 		// e mandar para o metodo pra carregar os dados do banco.
 
@@ -161,9 +160,8 @@ var app = {
 	},
 
 	checkDebugState: function(){
-		var url = window.location.pathname;
-		var filename = url.substring(url.lastIndexOf('/')+1);
-		if(filename === "dev.php" || app.settings.forceDebug === true){
+		var url = window.location.hostname;
+		if(url === "dev.cronometrei.com.br" || app.settings.forceDebug === true){
 			console.log('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
 			app.settings.debug = true;
 		}
@@ -233,35 +231,90 @@ var app = {
 		});
 	},
 
-	loadUserInformation: function(){
-		this.outputMessage('loading user info...');
+    createAPIURL: function(){
+        return app.settings.apiSettings.apiProtocol +'://'+ app.settings.apiSettings.apiHost +':'+ app.settings.apiSettings.apiPort +'/'+ app.settings.apiSettings.apiPath;
+    },
+
+    makeAPICall: function(endPoint, method, sendData, callback){
+
+        var responseData = '';
+
 		$.ajax({
-			url: app.createAPIURL() + "/user/loaduserinfo",
-			method: "GET",
-			data: {},
+			url: app.createAPIURL() + endPoint,
+			method: method,
+			contentType: 'application/json',
+			data: JSON.stringify(sendData),
 			crossDomain: true
-		}).done(function(data) {
-			var response = JSON.parse(data);
-			app.user.id 		  = response.data.id;
-			app.user.email 		  = response.data.email;
-			app.user.first_name   = response.data.first_name;
-			app.user.last_name 	  = response.data.last_name;
-			app.user.gender 	  = response.data.gender;
-			app.user.link 		  = response.data.link;
-			app.user.locale 	  = response.data.locale;
-			app.user.name 		  = response.data.name;
-			app.user.timezone 	  = response.data.timezone;
-			app.user.updated_time = response.data.updated_time;
-			app.user.verified 	  = response.data.verified;
-			app.outputMessage('user info loaded');
-		}).fail(function() {
-			app.outputMessage('Userinfo loading failed, going on with default user info...');
-		}).always(function(){
+		}).done(function (data) {
+			responseData = JSON.parse(data);
+			app.outputMessage('API Call Successfull!');
+		}).fail(function () {
+			responseData = JSON.parse('{"result":"failed"}');
+			app.outputMessage('API Call Failed!');
+		}).always(function () {
+			callback(responseData);
+		});
+
+    },
+
+    loadTheme: function(){
+        this.stepProgress(10);
+        this.outputMessage('Loading theme');
+
+        if(app.settings.debug){
+            if(app.user.id!=''){
+                console.log('theme for user: '+ app.user.id);
+            }else{
+                console.log('theme generic');
+            }
+        }
+
+        var apiReturn = app.makeAPICall('/user/loadtheme', 'GET', '{ userid : '+app.user.id+'}', function(response){
+            console.log('callback de themeload! ' + response.result);
+
+            if(response.result == "success"){
+            	// success
+                app.outputMessage('Loaded user defined background from api: '+ response.data.imageName);
+                app.theme.backgroundImage = response.data.imageName;
+                app.theme.appTitleColor = response.data.logoColor;
+            }else{
+            	// failed
+                app.outputMessage('Ajax failed! Using default background: '+ app.settings.defaultBG);
+                app.theme.backgroundImage = app.settings.defaultBG;
+			}
+
+            app.theme.setTheme();
+            app.stepProgress(10);
+
+        } );
+
+    },
+
+    loadUserInformation: function(){
+		this.outputMessage('loading user info...');
+        var apiReturn = app.makeAPICall('/user/loaduserinfo/'+app.user.id, 'GET', '', function(response){
+            console.log('callback de userload! ' + response.result);
+            if(response.result == "success"){
+                app.user.id 		  = response.data.id;
+                app.user.email 		  = response.data.email;
+                app.user.first_name   = response.data.first_name;
+                app.user.last_name 	  = response.data.last_name;
+                app.user.gender 	  = response.data.gender;
+                app.user.link 		  = response.data.link;
+                app.user.locale 	  = response.data.locale;
+                app.user.name 		  = response.data.name;
+                app.user.timezone 	  = response.data.timezone;
+                app.user.updated_time = response.data.updated_time;
+                app.user.verified 	  = response.data.verified;
+                app.outputMessage('user info loaded');
+			}else{
+                app.outputMessage('Userinfo loading failed, going on with default user info...');
+			}
             if(!app.user.logged)
                 app.appLogin(response.id);
             app.loadCronometer();
-			app.stepProgress(10);
-		});
+            app.stepProgress(10);
+        } );
 		return true;
 	},
 
@@ -330,7 +383,6 @@ var app = {
 				}
 			}
 		});
-
 	},
 
 	showUserDataScreen: function(){
@@ -530,74 +582,6 @@ var app = {
 			return app.settings.exitMessage;
 	},
 
-	createAPIURL: function(){
-		return app.settings.apiSettings.apiProtocol +'://'+ app.settings.apiSettings.apiHost +':'+ app.settings.apiSettings.apiPort +'/'+ app.settings.apiSettings.apiPath;
-	},
-
-	makeAPICall: function(endPoint, method, sendData, callback){
-
-        var responseData = '';
-
-        $.ajax({
-            url: app.createAPIURL() + endPoint,
-            method: method,
-            data: sendData,
-            crossDomain: true
-        }).done(function(data) {
-            responseData = JSON.parse(data);
-            app.outputMessage('API Call Successfull!');
-        }).fail(function() {
-            responseData = JSON.parse('{"result":"failed"}');
-            app.outputMessage('API Call Failed!');
-        }).always(function(){
-            callback(responseData);
-		});
-
-    },
-
-	loadTheme: function(){
-		this.stepProgress(10);
-		this.outputMessage('Loading theme');
-
-		if(app.settings.debug){
-			if(app.user.id!=''){
-				console.log('theme for user: '+ app.user.id);
-			}else{
-				console.log('theme generic');
-			}
-		}
-
-		var apiReturn = app.makeAPICall('/user/loadtheme', 'GET', '{ userid : '+app.user.id+'}', function(response){
-            console.log('callback de themeload! ' + response.result);
-
-            // app.theme.backgroundImage = image.image_name;
-            // app.theme.appTitleColor = image.logo_color;
-
-            app.theme.backgroundImage = app.settings.defaultBG;
-            app.theme.setTheme();
-            app.stepProgress(10);
-		} );
-
-		// $.ajax({
-		// 	url: app.createAPIURL() + "/theme/loadTheme",
-		// 	method: "POST",
-		// 	data: { userid : app.user.id },
-		// 	crossDomain: true
-		// }).done(function(data) {
-		// 	var image = JSON.parse(data);
-		// 	app.outputMessage('Loaded random background from api: '+ image.image_name);
-		// 	app.theme.backgroundImage = image.image_name;
-		// 	app.theme.appTitleColor = image.logo_color;
-		// }).fail(function() {
-		// 	app.outputMessage('Ajax failed! Using default background: '+ app.settings.defaultBG);
-		// 	app.theme.backgroundImage = app.settings.defaultBG;
-		// }).always(function(){
-		// 	app.theme.setTheme();
-		// 	app.stepProgress(10);
-		// });
-
-	},
-
 	stepProgress: function(step){
 		this.progressValue+=step;
 		app.loadingProgress(this.progressValue);
@@ -661,15 +645,15 @@ var app = {
 		console.log(JSON.stringify(app.timerInfo));
 
 		if(app.timerInfo.user_id!=''){
-			$.ajax({
-				url: app.settings.apihost + "/timer/recordUserTimer",
-				method: "POST",
-				data: {json: JSON.stringify(app.timerInfo) },
-				crossDomain: true
-			}).done(function(data){
-			}).fail(function(){
-			}).always(function(){
-			});
+            var apiReturn = app.makeAPICall('/user/newtimer', 'POST', app.timerInfo, function(response){
+                if(response.result == "success"){
+                    // success
+                    console.log('New timer registerd successfully!  ' + JSON.stringify(response) );
+                }else{
+                    // failed
+                    console.log('Error registering new timer!  ' + JSON.stringify(response) );
+                }
+            } );
 		}
 
 		app.doing = 0;
