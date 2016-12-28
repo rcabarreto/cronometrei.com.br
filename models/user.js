@@ -3,9 +3,11 @@
  */
 var bcrypt = require('bcrypt');
 var _ = require('underscore');
+var cryptojs = require('crypto-js');
+var jwt = require('jsonwebtoken');
 
 module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('user', {
+    var user = sequelize.define('user', {
         user_id: {
             type: DataTypes.STRING(32),
             allowNull: false,
@@ -13,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
                 len: [1, 32]
             }
         },
-        full_name: {
+        name: {
             type: DataTypes.STRING,
             allowNull: true
         },
@@ -66,7 +68,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: true
         },
         timezone: {
-            type: DataTypes.STRING(5),
+            type: DataTypes.INTEGER,
             allowNull: true
         }
     }, {
@@ -77,6 +79,58 @@ module.exports = function(sequelize, DataTypes) {
                     user.email = user.email.toLowerCase();
                 }
             }
+        },
+        classMethods: {
+            authenticate: function(body) {
+
+                return new Promise(function (resolve, reject) {
+
+                    if(typeof body.email !== 'string' || typeof body.password !== 'string'){
+                        return reject();
+                    }
+
+                    user.findOne({
+                        where: {
+                            email: body.email
+                        }
+                    }).then(function(user) {
+                        if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
+                            return reject();
+                        }else{
+                            resolve(user);
+                        }
+                    }, function(e){
+                        reject();
+                    });
+
+                });
+            }
+        },
+        instanceMethods: {
+            toPublicJSON: function() {
+                var json = this.toJSON();
+                return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
+            },
+            generateToken: function (type) {
+                if (!_.isString(type)) {
+                    return undefined;
+                }
+
+                try {
+                    var stringData = JSON.stringify({id: this.get('id'), type: type});
+                    var encryptedData = cryptojs.AES.encrypt(stringData, 'jpwq27z3').toString();
+                    var token = jwt.sign({
+                        token: encryptedData
+                    },'asdfasdf');
+
+                    return token;
+                } catch(e) {
+                    console.error(e);
+                    return undefined;
+                }
+            }
         }
     });
+
+    return user;
 };
