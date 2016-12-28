@@ -39,7 +39,6 @@ var app = {
 		pageTitle: 'Cronometrei',
 		titleSep: ' - ',
 		homeTitleFull: 'O tempo sob controle',
-		defaultBG: 'london.jpg',
 		startButton: 'Iniciar',
 		pauseButton: 'Pausar',
 		continueButton: 'Continuar',
@@ -50,7 +49,7 @@ var app = {
 		clearMessage: 'Deseja mesmo zerar seu cronometro?',
 	},
 	user: {
-		logged: false,
+		isLogged: false,
 		id: "",
 		email: "",
 		first_name: "",
@@ -77,7 +76,7 @@ var app = {
 		message: '',
 	},
 	theme: {
-		backgroundImage: "",
+		backgroundImage: "london.jpg",
 		appTitleColor: "#FFF",
 		startStopButtonColor: "rgba(0,158,31,0.9)",
 		clearButtonColor: "rgba(177,0,0,0.9)",
@@ -90,7 +89,6 @@ var app = {
 	},
 
 	init: function(){
-
 		// start by checking if the app is in dev or prod mode
 		this.checkDebugState();
 
@@ -106,24 +104,28 @@ var app = {
 
 		// clear timer
 		this.resetTimer();
-
-		this.outputMessage('Starting facebook integration');
-		window.fbAsyncInit = function() {
-			FB.init({
-				appId      : app.settings.fbAppID,
-				cookie     : true,
-				xfbml      : true,
-				status 	   : true,
-				version    : 'v2.2'
-			});
-			app.checkLoginState();
-		};
+		this.facebookInit();
 
 		return true;
 	},
 
+	facebookInit: function(){
+        this.stepProgress(20);
+        this.outputMessage('Starting facebook integration');
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : app.settings.fbAppID,
+                cookie     : true,
+                xfbml      : true,
+                status 	   : true,
+                version    : 'v2.2'
+            });
+            app.checkLoginState();
+        };
+	},
+
 	checkLoginState: function(){
-		this.stepProgress(10);
+		this.stepProgress(20);
 
 		// TODO: check app cookie
 		// se estiver setado o cookie de usuario do app, pegar o id, jogar no objeto user
@@ -134,25 +136,24 @@ var app = {
 		if( this.readCookie('appUserId') != null && this.readCookie('appUserId')!=''){
 			app.outputMessage('User logged into the app!');
 			app.stepProgress(10);
-			app.user.logged = true;
+			app.user.isLogged = true;
 			app.user.id  = this.readCookie('appUserId');
+			// load user information from app database
 			this.loadUserInformation();
 		}else{
 			app.outputMessage('User NOT logged into the app! Trying facebook loggin instead');
 			FB.getLoginStatus(function(response) {
-				app.stepProgress(10);
+				app.stepProgress(20);
 				if (response.status === 'connected') {
 					app.outputMessage('User logged into your app and Facebook! Fetching information.... ');
 					app.loadFacebookInfo();
 				}else if(response.status === 'not_authorized'){
 					app.outputMessage('User is logged into Facebook, but not your app. Loading default app.... ');
-					app.user.logged = false;
-					app.stepProgress(10);
+					app.user.isLogged = false;
 					app.loadCronometer();
 				}else{
 					app.outputMessage('User is not logged into Facebook, so we\'re not sure if they are logged into this app or not. Loading default app.... ');
-					app.user.logged = false;
-					app.stepProgress(10);
+					app.user.isLogged = false;
 					app.loadCronometer();
 				}
 			});
@@ -170,7 +171,7 @@ var app = {
 
 	appLogin: function(userid){
 		this.outputMessage('==> LOGING USER INTO THE APP');
-		app.user.logged = true;
+		app.user.isLogged = true;
 		app.createCookie('appUserId', userid, 30);
 		return true;
 	},
@@ -222,11 +223,10 @@ var app = {
 			app.user.updated_time = user.updated_time;
 			app.user.verified 	  = user.verified;
 
-            if(!app.user.logged)
+            if(!app.user.isLogged)
                 app.appLogin(user.id);
 
             app.loadCronometer();
-            app.stepProgress(10);
 
 		});
 	},
@@ -237,7 +237,7 @@ var app = {
 
     makeAPICall: function(endPoint, method, sendData, callback){
 
-        var responseData = '';
+        var responseData = {};
 
 		$.ajax({
 			url: app.createAPIURL() + endPoint,
@@ -246,10 +246,15 @@ var app = {
 			data: JSON.stringify(sendData),
 			crossDomain: true
 		}).done(function (data) {
-			responseData = JSON.parse(data);
+			responseData = {
+				result: 'success',
+				data: data
+			};
 			app.outputMessage('API Call Successfull!');
 		}).fail(function () {
-			responseData = JSON.parse('{"result":"failed"}');
+			responseData = {
+				result: 'failed'
+			};
 			app.outputMessage('API Call Failed!');
 		}).always(function () {
 			callback(responseData);
@@ -261,38 +266,30 @@ var app = {
         this.stepProgress(10);
         this.outputMessage('Loading theme');
 
-        if(app.settings.debug){
-            if(app.user.id!=''){
-                console.log('theme for user: '+ app.user.id);
-            }else{
-                console.log('theme generic');
-            }
-        }
+		if(app.user.isLogged){
+			console.log('theme for user: '+ app.user.id);
 
-        var apiReturn = app.makeAPICall('/user/loadtheme', 'GET', '{ userid : '+app.user.id+'}', function(response){
-            console.log('callback de themeload! ' + response.result);
+			var apiReturn = app.makeAPICall('/user/'+ app.user.id +'/theme/', 'GET', undefined, function(response){
+				console.log('callback de themeload! ' + response.result);
 
-            if(response.result == "success"){
-            	// success
-                app.outputMessage('Loaded user defined background from api: '+ response.data.imageName);
-                app.theme.backgroundImage = response.data.imageName;
-                app.theme.appTitleColor = response.data.logoColor;
-            }else{
-            	// failed
-                app.outputMessage('Ajax failed! Using default background: '+ app.settings.defaultBG);
-                app.theme.backgroundImage = app.settings.defaultBG;
-			}
-
-            app.theme.setTheme();
-            app.stepProgress(10);
-
-        } );
-
+				if(response.result == "success"){
+					// success
+					app.outputMessage('Loaded user defined background from api: '+ response.data.imageName);
+					app.theme.backgroundImage = response.data.imageName;
+					app.theme.appTitleColor = response.data.logoColor;
+				}
+				app.theme.setTheme();
+			});
+		}else{
+			console.log('theme generic');
+			app.theme.setTheme();
+		}
+        app.stepProgress(10);
     },
 
     loadUserInformation: function(){
 		this.outputMessage('loading user info...');
-        var apiReturn = app.makeAPICall('/user/loaduserinfo/'+app.user.id, 'GET', '', function(response){
+        var apiReturn = app.makeAPICall('/user/'+ app.user.id +'/info/', 'GET', undefined, function(response){
             console.log('callback de userload! ' + response.result);
             if(response.result == "success"){
                 app.user.id 		  = response.data.id;
@@ -310,24 +307,24 @@ var app = {
 			}else{
                 app.outputMessage('Userinfo loading failed, going on with default user info...');
 			}
-            if(!app.user.logged)
+            if(!app.user.isLogged)
                 app.appLogin(response.id);
             app.loadCronometer();
-            app.stepProgress(10);
         } );
 		return true;
 	},
 
 	loadCronometer: function(){
+        app.stepProgress(10);
 		this.setPageTitle();
 		this.loadTheme();
 		this.loadCustomMenu();
-		return false;
+		return true;
 	},
 
 	loadCustomMenu: function(){
 		this.stepProgress(10);
-		if(app.user.logged){
+		if(app.user.isLogged){
 			$('#btnTempos').removeClass('hide');
 			$('#btnAccount').removeClass('hide');
 			$('#btnLogin').addClass('hide');
@@ -521,25 +518,23 @@ var app = {
 	},
 
 	createAppElements: function(){
-		this.stepProgress(10);
 		$("#application").append('<div id="titleRow" class="row"></div>');
 		$("#application").append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
 		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
 		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
+        this.stepProgress(10);
 	},
 
 	createButtonLinks: function(){
-		this.stepProgress(10);
 		$('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
-		$('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
-		$('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
-
+        $('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
+        $('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
 		$('#btnUserData > a').click(function(e){ e.preventDefault(); app.showUserDataScreen(); });
-		$('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
-		$('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
-
-	},
+        $('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
+        $('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
+        this.stepProgress(10);
+    },
 
 	setPageTitle: function(){
 		this.stepProgress(10);
@@ -744,7 +739,6 @@ var app = {
 	},
 
 	hookDocumentEvents: function(){
-		this.stepProgress(10);
 		this.outputMessage('Binding keyboard shortcuts');
 		window.onbeforeunload = app.confirmExit;
 		$(document).keydown(function(event){
@@ -752,6 +746,7 @@ var app = {
 		}).keyup(function(event){
 			app.keyHandler( event );
 		});
+        this.stepProgress(10);
 	},
 
 	createCookie: function(name,value,days) {

@@ -29,25 +29,59 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+
+app.get('/', function (req, res) {
+    res.send('Todo API Root');
+});
+
 app.get('/api', middleware.requireAuthentication, function(req, res){
     res.send('Welcome to Contability API!');
 });
 
-app.get('/api/user/loadtheme', function(req, res){
-    res.send('{"result": "success", "data": {"imageName": "borabora.jpg", "logoColor": "#FF0"}}');
+app.post('/api/user/newuser', function(req, res){
+
+    console.log(req.body);
+
+    var body = _.pick(req.body, 'user_id', 'email', 'first_name', 'last_name', 'gender', 'link', 'locale', 'name', 'timezone', 'password');
+
+    db.user.create(body).then(function(user) {
+        res.json(user.toJSON());
+    }, function(e) {
+        res.status(400).json(e);
+    });
+
 });
 
-app.get('/api/user/loaduserinfo/:userid', function(req, res){
-    var userid = req.params.userid;
-    res.send('{"result": "success", "data": {"id":"'+userid+'","email":"rcabarreto@gmail.com","first_name":"Rodrigo","last_name":"Barreto","gender":"male","link":"https://www.facebook.com/app_scoped_user_id/10152835496865807/","locale":"pt_BR","name":"Rodrigo Barreto","timezone":-2,"updated_time":"2016-12-26T13:12:15+0000","verified":true}}');
+app.get('/api/user/:userid/theme', function(req, res){
+    res.json(JSON.parse('{"imageName": "borabora.jpg", "logoColor": "#F4FCFA"}'));
 });
+
+app.get('/api/user/:userid/info', function(req, res){
+    var userid = req.params.userid;
+    res.json(JSON.parse('{"id":"'+userid+'","email":"rcabarreto@gmail.com","first_name":"Rodrigo","last_name":"Barreto","gender":"male","link":"https://www.facebook.com/app_scoped_user_id/10152835496865807/","locale":"pt_BR","name":"Rodrigo Barreto","timezone":-2,"updated_time":"2016-12-26T13:12:15+0000","verified":true}'))
+});
+
 
 app.post('/api/user/newtimer', function(req, res){
     console.log(req.body);
-    res.send('{"result": "success", "data": '+ JSON.stringify(req.body) +'}');
+
+    var body = _.pick(req.body, 'user_id', 'start', 'end', 'timer');
+
+    db.timer.create(body).then(function(timer) {
+        res.json(timer.toJSON());
+    }, function(e) {
+        res.status(400).json(e);
+    });
+
 });
 
 // app.use(express.static(__dirname + '/public'));
+
+
+app.get('*', function(req, res){
+    res.status(404).send();
+});
+
 
 db.sequelize.sync({force: true}).then(function() {
     app.listen(PORT, function() {
