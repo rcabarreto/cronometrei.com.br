@@ -13,13 +13,14 @@ var cronometrei = cronometrei || {
 };
 
 cronometrei.eventos = {
-	adicionar: function(){ console.log('test'); },
+	adicionar: function(){ console.log('test'); }
 };
 
 
 var app = {
 	doing: false,
 	time: 0,
+	timers: [],
 	startTime: 0,
 	finalTime: 0,
 	currentTimer: 0,
@@ -33,7 +34,7 @@ var app = {
 			apiProtocol: 'http',
 			apiHost: 'api.cronometrei.com.br',
 			apiPort: '3000',
-			apiPath: 'api',
+			apiPath: 'api'
 		},
 		needToConfirm: false,
 		pageTitle: 'Cronometrei',
@@ -46,11 +47,13 @@ var app = {
 		startInstruction: 'Barra de Espaço',
 		clearInstruction: 'Esc',
 		exitMessage: 'Seu cronometro será perdido, deseja mesmo sair?',
-		clearMessage: 'Deseja mesmo zerar seu cronometro?',
+		clearMessage: 'Deseja mesmo zerar seu cronometro?'
 	},
 	user: {
 		isLogged: false,
+        authToken: "",
 		id: "",
+        user_id: "",
 		email: "",
 		first_name: "",
 		last_name: "",
@@ -61,18 +64,19 @@ var app = {
 		timezone: 0,
 		updated_time: "",
 		verified: false,
+		themeId: 1,
 		load: function(){},
-		persist: function(){},
+		persist: function(){}
 	},
 	timerInfo: {
 		start: "",
 		end: "",
-		timer: "",
+		timer: ""
 	},
 	feedback: {
 		name: '',
 		answer: '',
-		message: '',
+		message: ''
 	},
 	theme: {
 		backgroundImage: "london.jpg",
@@ -84,10 +88,11 @@ var app = {
 			$('#appTitle').css('color', this.appTitleColor);
 			$('#startStop').css('background', this.startStopButtonColor);
 			$('#clear').css('background', this.clearButtonColor);
-		},
+		}
 	},
 
 	init: function(){
+
 		// start by checking if the app is in dev or prod mode
 		this.checkDebugState();
 
@@ -96,7 +101,6 @@ var app = {
 
 		// create elements
 		this.createAppElements();
-		this.createButtonLinks();
 
 		// hook window and document events
 		this.hookDocumentEvents();
@@ -106,6 +110,7 @@ var app = {
 		this.facebookInit();
 
 		return true;
+
 	},
 
 	facebookInit: function(){
@@ -126,18 +131,12 @@ var app = {
 	checkLoginState: function(){
 		this.stepProgress(20);
 
-		// TODO: check app cookie
-		// se estiver setado o cookie de usuario do app, pegar o id, jogar no objeto user
-		// e mandar para o metodo pra carregar os dados do banco.
+        app.outputMessage('Checking user login state!');
 
-		// se não estiver setado o cookie do app, carregar integração com facebook 
-		// e testar se o usuário está logado com facebook. Se estiver, criar cookie do app
-		if( this.readCookie('appUserId') != null && this.readCookie('appUserId')!=''){
-			app.outputMessage('User logged into the app!');
+		if( this.readCookie('userObj') != null && this.readCookie('userObj')!=''){
+			app.outputMessage('User Cookie found! User logged into the app!');
 			app.stepProgress(10);
-			app.user.isLogged = true;
-			app.user.id  = this.readCookie('appUserId');
-			// load user information from app database
+			app.user = JSON.parse(this.readCookie('userObj'));
 			this.loadUserInformation();
 		}else{
 			app.outputMessage('User NOT logged into the app! Trying facebook loggin instead');
@@ -161,17 +160,17 @@ var app = {
 
 	checkDebugState: function(){
 		var url = window.location.hostname;
-		if(url === "dev.cronometrei.com.br" || app.settings.forceDebug === true){
-			console.log('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
+		if(url === "dev.cronometrei.com.br" || app.settings.forceDebug === true)
 			app.settings.debug = true;
-		}
+
+        this.outputMessage('##########################################################\n##    Development mode detected. Going verbose mode.    ##\n########################################################## \n\n');
 		return true;
 	},
 
-	appLogin: function(userid){
+	appLogin: function(user){
 		this.outputMessage('==> LOGING USER INTO THE APP');
 		app.user.isLogged = true;
-		app.createCookie('appUserId', userid, 30);
+		app.createCookie('userObj', JSON.stringify(user), 30);
 		return true;
 	},
 
@@ -179,23 +178,31 @@ var app = {
 
 		bootbox.confirm("Deseja mesmo sair do aplicativo?", function(result) {
 			if(result){
-				app.outputMessage('==> LOGGIN USER OUT OF THE APP');
-				app.eraseCookie('appUserId');
+                app.outputMessage('==> APP LOGOFF <==');
+                app.user.isLogged = false;
+				app.eraseCookie('userObj');
 				app.facebookRevoke();
-				// app.facebookLogout();
+				// app.callFacebookLogout();
 				return true;
 			}
 		});
 
 	},
 
-	facebookLogin: function(){
+	forceLogout: function () {
+        app.outputMessage('==> APP LOGOFF <==');
+        app.user.isLogged = false;
+        app.eraseCookie('userObj');
+        return true;
+    },
+
+	callFacebookLogin: function(){
 		FB.login(function(response){
 			app.checkLoginState();
 		}, {scope: 'public_profile,email'});
 	},
 
-	facebookLogout: function(){
+	callFacebookLogout: function(){
 		FB.logout(function(response) {
 			app.checkLoginState();
 		});
@@ -210,7 +217,7 @@ var app = {
 
 	loadFacebookInfo: function(){
 		FB.api('/me', function(user){
-			app.user.id  		  = user.id;
+			app.user.user_id  	  = user.id;
 			app.user.email 		  = user.email;
 			app.user.first_name   = user.first_name;
 			app.user.last_name 	  = user.last_name;
@@ -223,12 +230,75 @@ var app = {
 			app.user.verified 	  = user.verified;
 
             if(!app.user.isLogged)
-                app.appLogin(user.id);
-
-            app.loadCronometer();
+                app.facebookLogin(app.user);
 
 		});
 	},
+
+    facebookLogin: function (user) {
+
+        $.ajax({
+            url: app.createAPIURL() + '/user/facebooklogin',
+            method: 'POST',
+            contentType: 'application/json',
+            headers: {
+                Auth: ''
+            },
+            data: JSON.stringify(user),
+            crossDomain: true
+        }).done(function (data, textStatus, xhr) {
+            app.user.id = data.id;
+            app.user.themeId = data.themeId;
+            app.user.authToken = xhr.getResponseHeader('Auth');
+            app.outputMessage('Facebook login app call Successfull!');
+        }).fail(function () {
+            responseData = {
+                result: 'failed',
+                status: false
+            };
+            app.outputMessage('Facebook login app call failed!');
+        }).always(function () {
+
+            if (app.user.id !== '' && app.user.authToken !== '')
+                app.appLogin(app.user);
+
+            app.loadCronometer();
+
+        });
+
+    },
+
+
+    loadUserInformation: function(){
+        this.outputMessage('refreshing user info...');
+        app.makeAPICall('/user/load/', 'GET', undefined, function(response){
+            if(response.result == "success"){
+                app.user.first_name   = response.data.first_name;
+                app.user.last_name 	  = response.data.last_name;
+                app.user.gender 	  = response.data.gender;
+                app.user.link 		  = response.data.link;
+                app.user.locale 	  = response.data.locale;
+                app.user.name 		  = response.data.name;
+                app.user.timezone 	  = response.data.timezone;
+                app.user.updated_time = response.data.updated_time;
+                app.user.verified 	  = response.data.verified;
+                app.user.themeId 	  = response.data.themeId;
+
+                if(!app.user.isLogged)
+                    app.appLogin(response.id);
+
+                app.loadCronometer();
+
+            }else{
+                app.outputMessage('Userinfo loading failed. Going to logoff the user and try again!');
+                app.forceLogout();
+                app.checkLoginState();
+            }
+
+        } );
+        return true;
+    },
+
 
     createAPIURL: function(){
         return app.settings.apiSettings.apiProtocol +'://'+ app.settings.apiSettings.apiHost +':'+ app.settings.apiSettings.apiPort +'/'+ app.settings.apiSettings.apiPath;
@@ -242,7 +312,7 @@ var app = {
 			url: app.createAPIURL() + endPoint,
 			method: method,
 			headers: {
-				'Auth': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IlUyRnNkR1ZrWDE5Tjd2dEpNMVE4cjFkczJWV01SVElHdi9Sb3JGcWZjcEFLOFlzd2JNSUdJZWw2L3FzNVJtbGdkTWp5a3FzTHNMazlKTVo3dGNXdElnPT0iLCJpYXQiOjE0ODI5NzExMzJ9.-J6S3v1puIr2EdGl7SgU58dcBJy9LnYC9RHE2tDri2A'
+				'Auth': app.user.authToken
 			},
 			contentType: 'application/json',
 			data: JSON.stringify(sendData),
@@ -250,12 +320,14 @@ var app = {
 		}).done(function (data) {
 			responseData = {
 				result: 'success',
+				status: true,
 				data: data
 			};
 			app.outputMessage('API Call Successfull!');
 		}).fail(function () {
 			responseData = {
-				result: 'failed'
+				result: 'failed',
+				status: false
 			};
 			app.outputMessage('API Call Failed!');
 		}).always(function () {
@@ -264,61 +336,47 @@ var app = {
 
     },
 
+    loadTimers: function () {
+        if(app.user.isLogged){
+            this.outputMessage('Loading Timers');
+            app.makeAPICall('/timer/list', 'GET', undefined, function(response){
+                if(response.result == "success"){
+                    // success
+                    $.each(response.data, function(key, value){
+                        app.timers.push(value);
+					})
+                }
+            });
+        }
+        app.stepProgress(10);
+	},
+
     loadTheme: function(){
         this.stepProgress(10);
-        this.outputMessage('Loading theme');
 
 		if(app.user.isLogged){
-			console.log('theme for user: '+ app.user.id);
+            this.outputMessage('Loading theme for user: '+ app.user.id);
 
-			var apiReturn = app.makeAPICall('/user/'+ app.user.id +'/theme/', 'GET', undefined, function(response){
-				console.log('callback de themeload! ' + response.result);
-
+			app.makeAPICall('/theme/'+ app.user.themeId, 'GET', undefined, function(response){
 				if(response.result == "success"){
 					// success
-					app.outputMessage('Loaded user defined background from api: '+ response.data.imageName);
-					app.theme.backgroundImage = response.data.imageName;
-					app.theme.appTitleColor = response.data.logoColor;
+					app.outputMessage('Loaded user defined background from api: '+ response.data.image_name);
+					app.theme.backgroundImage = response.data.image_name;
+					app.theme.appTitleColor = response.data.logo_color;
 				}
 				app.theme.setTheme();
 			});
 		}else{
-			console.log('theme generic');
+            this.outputMessage('Loading theme generic');
 			app.theme.setTheme();
 		}
         app.stepProgress(10);
     },
 
-    loadUserInformation: function(){
-		this.outputMessage('loading user info...');
-        var apiReturn = app.makeAPICall('/user/'+ app.user.id +'/info/', 'GET', undefined, function(response){
-            console.log('callback de userload! ' + response.result);
-            if(response.result == "success"){
-                app.user.id 		  = response.data.id;
-                app.user.email 		  = response.data.email;
-                app.user.first_name   = response.data.first_name;
-                app.user.last_name 	  = response.data.last_name;
-                app.user.gender 	  = response.data.gender;
-                app.user.link 		  = response.data.link;
-                app.user.locale 	  = response.data.locale;
-                app.user.name 		  = response.data.name;
-                app.user.timezone 	  = response.data.timezone;
-                app.user.updated_time = response.data.updated_time;
-                app.user.verified 	  = response.data.verified;
-                app.outputMessage('user info loaded');
-			}else{
-                app.outputMessage('Userinfo loading failed, going on with default user info...');
-			}
-            if(!app.user.isLogged)
-                app.appLogin(response.id);
-            app.loadCronometer();
-        } );
-		return true;
-	},
-
 	loadCronometer: function(){
         app.stepProgress(10);
 		this.setPageTitle();
+		this.loadTimers();
 		this.loadTheme();
 		this.loadCustomMenu();
 		return true;
@@ -376,7 +434,7 @@ var app = {
 					className: "btn-success",
 					callback: function () {
 						var name = $('#name').val();
-						var answer = $("input[name='awesomeness']:checked").val()
+						var answer = $("input[name='awesomeness']:checked").val();
 						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
@@ -413,7 +471,7 @@ var app = {
 					className: "btn-success",
 					callback: function () {
 						var name = $('#name').val();
-						var answer = $("input[name='awesomeness']:checked").val()
+						var answer = $("input[name='awesomeness']:checked").val();
 						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
@@ -451,7 +509,7 @@ var app = {
 					className: "btn-success",
 					callback: function () {
 						var name = $('#name').val();
-						var answer = $("input[name='awesomeness']:checked").val()
+						var answer = $("input[name='awesomeness']:checked").val();
 						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
 					}
 				}
@@ -502,16 +560,17 @@ var app = {
 						app.feedback.answer = $("input[name='awesomeness']:checked").val();
 						app.feedback.message = $('#message').val();
 
-						$.ajax({
-							url: app.settings.apihost + "/system/feedback",
-							method: "POST",
-							data: {json: JSON.stringify(app.feedback) },
-							crossDomain: true
-						}).done(function(data) {
-							var response = JSON.parse(data);
-						}).fail(function() {
-						}).always(function(){
-						});
+                        $.ajax({
+                            url: app.createAPIURL() + "/feedback",
+                            method: "POST",
+                            contentType: 'application/json',
+                            data: JSON.stringify(app.feedback),
+                            crossDomain: true
+                        }).done(function (data) {
+                        }).fail(function () {
+                        }).always(function () {
+                        });
+
 					}
 				}
 			}
@@ -520,23 +579,20 @@ var app = {
 	},
 
 	createAppElements: function(){
-		$("#application").append('<div id="titleRow" class="row"></div>');
-		$("#application").append('<div id="controlRow" class="row"></div>');
+		$('#application').append('<div id="titleRow" class="row"></div>').append('<div id="controlRow" class="row"></div>');
 		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
-		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>');
-		$('#controlRow').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
-        this.stepProgress(10);
-	},
+		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
 
-	createButtonLinks: function(){
-		$('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
-        $('#btnLogin > a').click(function(e){ e.preventDefault(); app.facebookLogin(); });
+		this.stepProgress(10);
+
+        $('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
+        $('#btnLogin > a').click(function(e){ e.preventDefault(); app.callFacebookLogin(); });
         $('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
-		$('#btnUserData > a').click(function(e){ e.preventDefault(); app.showUserDataScreen(); });
+        $('#btnUserData > a').click(function(e){ e.preventDefault(); app.showUserDataScreen(); });
         $('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
         $('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
         this.stepProgress(10);
-    },
+	},
 
 	setPageTitle: function(){
 		this.stepProgress(10);
@@ -638,16 +694,13 @@ var app = {
 		app.timerInfo.end 		= app.format_date(app.finalTime);
 		app.timerInfo.timer 	= app.format_seconds(app.currentTimer);
 
-		console.log(JSON.stringify(app.timerInfo));
-
 		if(app.user.isLogged){
             var apiReturn = app.makeAPICall('/timer/create', 'POST', app.timerInfo, function(response){
                 if(response.result == "success"){
                     // success
-                    console.log('New timer registerd successfully!  ' + JSON.stringify(response) );
+                    app.timers.push(response.data);
                 }else{
                     // failed
-                    console.log('Error registering new timer!  ' + JSON.stringify(response) );
                 }
             } );
 		}
@@ -740,12 +793,15 @@ var app = {
 	},
 
 	hookDocumentEvents: function(){
-		this.outputMessage('Binding keyboard shortcuts');
 		window.onbeforeunload = app.confirmExit;
 		$(document).keydown(function(event){
-			app.keyDefaults( event );
+			if ( !$('div.bootbox').hasClass('in') ) {
+                app.keyDefaults( event );
+			}
 		}).keyup(function(event){
-			app.keyHandler( event );
+            if ( !$('div.bootbox').hasClass('in') ) {
+                app.keyHandler( event );
+			}
 		});
         this.stepProgress(10);
 	},
@@ -772,9 +828,9 @@ var app = {
 
 	eraseCookie: function(name) {
 		this.createCookie(name,"",-1);
-	},
+	}
 
-}
+};
 
 
 // START THE APP

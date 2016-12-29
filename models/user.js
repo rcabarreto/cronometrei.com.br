@@ -10,10 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     var user = sequelize.define('user', {
         user_id: {
             type: DataTypes.STRING(32),
-            allowNull: false,
-            validate: {
-                len: [1, 32]
-            }
+            allowNull: true
         },
         name: {
             type: DataTypes.STRING,
@@ -29,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         email: {
             type: DataTypes.STRING(128),
-            allowNull: true,
+            allowNull: false,
             unique: true,
             validate: {
                 isEmail: true
@@ -70,6 +67,11 @@ module.exports = function(sequelize, DataTypes) {
         timezone: {
             type: DataTypes.INTEGER,
             allowNull: true
+        },
+        themeId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1
         }
     }, {
         hooks: {
@@ -84,7 +86,6 @@ module.exports = function(sequelize, DataTypes) {
             authenticate: function(body) {
 
                 return new Promise(function (resolve, reject) {
-
                     if(typeof body.email !== 'string' || typeof body.password !== 'string'){
                         return reject();
                     }
@@ -102,8 +103,42 @@ module.exports = function(sequelize, DataTypes) {
                     }, function(e){
                         reject();
                     });
-
                 });
+
+            },
+            facebookAuthenticate: function (body) {
+                // facebook integration
+
+                return new Promise(function (resolve, reject) {
+                    if(typeof body.email !== 'string' || typeof body.user_id !== 'string'){
+                        return reject();
+                    }
+
+                    user.findOrCreate({
+                        where: {
+                            email: body.email
+                        },
+                        defaults: {
+                            user_id: body.user_id,
+                            name: body.name,
+                            first_name: body.first_name,
+                            last_name: body.last_name,
+                            gender: body.gender,
+                            link: body.link,
+                            locale: body.locale,
+                            timezone: body.timezone
+                        }
+                    }).spread(function(user, created) {
+                        console.log(user.get({
+                            plain: true
+                        }));
+                        console.log(created)
+
+                        resolve(user);
+
+                    });
+                });
+
             },
             findByToken: function (token) {
                 return new Promise(function (resolve, reject) {
@@ -133,7 +168,7 @@ module.exports = function(sequelize, DataTypes) {
         instanceMethods: {
             toPublicJSON: function() {
                 var json = this.toJSON();
-                return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
+                return _.pick(json, 'id', 'email', 'themeId', 'createdAt', 'updatedAt');
             },
             generateToken: function (type) {
                 if (!_.isString(type)) {

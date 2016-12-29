@@ -3,10 +3,6 @@
  */
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define('feedback', {
-        user_id: {
-            type: DataTypes.STRING(32),
-            allowNull: true
-        },
         name: {
             type: DataTypes.STRING(32),
             allowNull: true

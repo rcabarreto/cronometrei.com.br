@@ -29,7 +29,4 @@ db.Sequelize = Sequelize;
 db.timer.belongsTo(db.user);
 db.user.hasMany(db.timer);
 
-// db.user.belongsTo(db.theme);
-// db.theme.hasMany(db.user);
-
 module.exports = db;

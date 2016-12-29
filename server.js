@@ -16,9 +16,11 @@ var PORT = 3000;
 app.use(middleware.logger);
 app.use(bodyParser.json());
 
+
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, Auth, X-Requested-With");
+    res.header("Access-Control-Expose-Headers", "Authorization, Auth");
     next();
 });
 
@@ -27,9 +29,24 @@ app.get('/', function (req, res) {
     res.send('Todo API Root');
 });
 
+
 app.get('/api', middleware.requireAuthentication, function(req, res){
     res.send('Welcome to Contability API!');
 });
+
+
+app.post('/api/feedback', function (req, res) {
+    // create feedback in database
+
+    var body = _.pick(req.body, 'name', 'answer', 'message');
+
+    db.feedback.create(body).then(function (feedback) {
+        res.json(feedback.toJSON());
+    }, function (e) {
+        res.status(400).json(e);
+    })
+});
+
 
 app.post('/api/user/create', function(req, res){
 
@@ -45,13 +62,32 @@ app.post('/api/user/create', function(req, res){
 
 });
 
-app.get('/api/user/:userid/theme', function(req, res){
-    res.json(JSON.parse('{"imageName": "borabora.jpg", "logoColor": "#F4FCFA"}'));
+
+app.get('/api/theme/:themeid', middleware.requireAuthentication, function(req, res){
+    var themeId = req.params.themeid;
+    db.theme.findById(themeId).then(function (theme) {
+        res.json(theme.toJSON());
+    }, function (e) {
+        console.log(e);
+        res.status(500).json(e)
+    });
 });
 
-app.get('/api/user/:userid/info', function(req, res){
-    var userid = req.params.userid;
-    res.json(JSON.parse('{"id":"'+userid+'","email":"rcabarreto@gmail.com","first_name":"Rodrigo","last_name":"Barreto","gender":"male","link":"https://www.facebook.com/app_scoped_user_id/10152835496865807/","locale":"pt_BR","name":"Rodrigo Barreto","timezone":-2,"updated_time":"2016-12-26T13:12:15+0000","verified":true}'))
+
+app.get('/api/user/load', middleware.requireAuthentication, function(req, res){
+
+    var userId = req.user.get('id');
+
+    db.user.findById(userId).then(function (user) {
+        console.log(user.toJSON());
+        res.json(user.toJSON());
+    }, function (e) {
+        console.log(e);
+        res.status(500).json(e)
+    });
+
+
+    // res.json(JSON.parse('{"id":"'+userid+'","email":"rcabarreto@gmail.com","first_name":"Rodrigo","last_name":"Barreto","gender":"male","link":"https://www.facebook.com/app_scoped_user_id/10152835496865807/","locale":"pt_BR","name":"Rodrigo Barreto","timezone":-2,"updated_time":"2016-12-26T13:12:15+0000","verified":true}'))
 });
 
 
@@ -75,6 +111,7 @@ app.post('/api/timer/create', middleware.requireAuthentication, function(req, re
 
 });
 
+
 app.get('/api/timer/list', middleware.requireAuthentication, function (req, res) {
     var query = req.query;
     var where = {
@@ -90,8 +127,52 @@ app.get('/api/timer/list', middleware.requireAuthentication, function (req, res)
     });
 });
 
-// app.use(express.static(__dirname + '/public'));
 
+app.get('/api/timer/:timerId', middleware.requireAuthentication, function (req, res) {
+    var timerId = parseInt(req.params.timerId, 10);
+
+    db.timer.findOne({
+        where: {
+            id: timerId,
+            userId: req.user.get('id')
+        }
+    }).then(function (timer) {
+        if (!!timer) {
+            res.json(timer.toJSON());
+        } else {
+            res.status(404).send();
+        }
+
+    }, function (e) {
+        res.status(500).send();
+    });
+});
+
+
+app.delete('/api/timer/:timerId', middleware.requireAuthentication, function (req, res) {
+    var timerId = parseInt(req.params.timerId, 10);
+
+    db.timer.destroy({
+        where: {
+            id: timerId,
+            userId: req.user.get('id')
+        }
+    }).then(function (rowsDeleted) {
+        if (rowsDeleted === 0) {
+            res.status(404).json({
+                error: 'No timer with id'
+            });
+        }else{
+            res.status(204).send();
+        }
+
+    }, function (e) {
+        res.status(500).send();
+    });
+});
+
+
+// app.use(express.static(__dirname + '/public'));
 
 
 app.post('/api/user/login', function (req, res) {
@@ -111,6 +192,23 @@ app.post('/api/user/login', function (req, res) {
 });
 
 
+app.post('/api/user/facebooklogin', function (req, res) {
+    var body = _.pick(req.body, 'user_id', 'name', 'first_name', 'last_name', 'email', 'gender', 'link', 'locale', 'timezone');
+
+    console.log(body);
+
+    db.user.facebookAuthenticate(body).then(function(user) {
+        var token = user.generateToken('authentication');
+        if (token) {
+            res.header('Auth', token).json(user.toPublicJSON());
+        } else {
+            res.status(401).send();
+        }
+    }, function() {
+        res.status(401).send();
+    });
+
+});
 
 app.get('*', function(req, res){
     res.status(404).send();
@@ -118,6 +216,25 @@ app.get('*', function(req, res){
 
 
 db.sequelize.sync().then(function() {
+
+    // var themes = [];
+    // themes.push({image_name: "london.jpg", logo_color: "#FFF", active: 1});
+    // themes.push({image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1});
+    // themes.push({image_name: "bubbles.jpg", logo_color: "#FFF", active: 1});
+    // themes.push({image_name: "road.jpg", logo_color: "#FFF", active: 1});
+    // themes.push({image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1});
+    // themes.push({image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1});
+    // themes.push({image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1});
+    // themes.push({image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1});
+    // themes.push({image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1});
+    // themes.push({image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1});
+    // db.theme.bulkCreate(themes).then(function (themes) {
+    //     // ok
+    // }, function (e) {
+    //     // error
+    // });
+
+
     app.listen(PORT, function() {
         console.log('Cronometrei API Server Started Successfully on port '+ PORT +'!');
     });
