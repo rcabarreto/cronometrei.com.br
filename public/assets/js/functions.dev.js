@@ -65,7 +65,6 @@ var app = {
 		persist: function(){},
 	},
 	timerInfo: {
-		user_id: "",
 		start: "",
 		end: "",
 		timer: "",
@@ -242,6 +241,9 @@ var app = {
 		$.ajax({
 			url: app.createAPIURL() + endPoint,
 			method: method,
+			headers: {
+				'Auth': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IlUyRnNkR1ZrWDE5Tjd2dEpNMVE4cjFkczJWV01SVElHdi9Sb3JGcWZjcEFLOFlzd2JNSUdJZWw2L3FzNVJtbGdkTWp5a3FzTHNMazlKTVo3dGNXdElnPT0iLCJpYXQiOjE0ODI5NzExMzJ9.-J6S3v1puIr2EdGl7SgU58dcBJy9LnYC9RHE2tDri2A'
+			},
 			contentType: 'application/json',
 			data: JSON.stringify(sendData),
 			crossDomain: true
@@ -632,15 +634,14 @@ var app = {
 		if(app.finalTime===0)
 			app.finalTime = new Date();
 
-		app.timerInfo.user_id 	= app.user.id;
 		app.timerInfo.start 	= app.format_date(app.startTime);
 		app.timerInfo.end 		= app.format_date(app.finalTime);
 		app.timerInfo.timer 	= app.format_seconds(app.currentTimer);
 
 		console.log(JSON.stringify(app.timerInfo));
 
-		if(app.timerInfo.user_id!=''){
-            var apiReturn = app.makeAPICall('/user/newtimer', 'POST', app.timerInfo, function(response){
+		if(app.user.isLogged){
+            var apiReturn = app.makeAPICall('/timer/create', 'POST', app.timerInfo, function(response){
                 if(response.result == "success"){
                     // success
                     console.log('New timer registerd successfully!  ' + JSON.stringify(response) );

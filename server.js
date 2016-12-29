@@ -7,26 +7,18 @@ var bcrypt = require('bcrypt');
 var _ = require('underscore');
 var db = require('./db.js');
 
+var middleware = require('./middleware.js')(db);
+
 var app = express();
 var PORT = 3000;
 
-var middleware = {
-    requireAuthentication: function(req, res, next){
-        console.log('private route hit!');
-        next();
-    },
-    logger: function(req, res, next){
-        console.log(req.method +' '+ req.originalUrl);
-        next();
-    }
-}
 
 app.use(middleware.logger);
 app.use(bodyParser.json());
 
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, Auth, X-Requested-With");
     next();
 });
 
@@ -39,13 +31,9 @@ app.get('/api', middleware.requireAuthentication, function(req, res){
     res.send('Welcome to Contability API!');
 });
 
-app.post('/api/user/newuser', function(req, res){
-
-    console.log(req.body);
+app.post('/api/user/create', function(req, res){
 
     req.body.user_id = req.body.id;
-
-    console.log(req.body);
 
     var body = _.pick(req.body, 'user_id', 'email', 'first_name', 'last_name', 'gender', 'link', 'locale', 'name', 'timezone', 'password');
 
@@ -67,17 +55,39 @@ app.get('/api/user/:userid/info', function(req, res){
 });
 
 
-app.post('/api/user/newtimer', function(req, res){
+app.post('/api/timer/create', middleware.requireAuthentication, function(req, res){
     console.log(req.body);
 
-    var body = _.pick(req.body, 'user_id', 'start', 'end', 'timer');
+    // {"start":"2016-12-28 20:57:27","end":"2016-12-28 20:57:30","timer":"00:00:01:428"}
+
+    var body = _.pick(req.body, 'start', 'end', 'timer');
 
     db.timer.create(body).then(function(timer) {
-        res.json(timer.toJSON());
+        // res.json(timer.toJSON());
+        req.user.addTimer(timer).then(function () {
+            return timer.reload();
+        }).then(function (timer) {
+            res.json(timer.toJSON());
+        });
     }, function(e) {
         res.status(400).json(e);
     });
 
+});
+
+app.get('/api/timer/list', middleware.requireAuthentication, function (req, res) {
+    var query = req.query;
+    var where = {
+        userId: req.user.get('id')
+    };
+
+    db.timer.findAll({
+        where: where
+    }).then(function (timers) {
+        res.json(timers);
+    }, function (e) {
+        res.status(500).send();
+    });
 });
 
 // app.use(express.static(__dirname + '/public'));
@@ -89,17 +99,14 @@ app.post('/api/user/login', function (req, res) {
 
     db.user.authenticate(body).then(function(user) {
         var token = user.generateToken('authentication');
-
         if (token) {
             res.header('Auth', token).json(user.toPublicJSON());
         } else {
             res.status(401).send();
         }
-
     }, function() {
         res.status(401).send();
     });
-
 
 });
 

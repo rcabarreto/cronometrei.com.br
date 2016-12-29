@@ -3,13 +3,6 @@
  */
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define('timer', {
-        user_id: {
-            type: DataTypes.STRING(32),
-            allowNull: false,
-            validate: {
-                len: [1, 32]
-            }
-        },
         start: {
             type: DataTypes.DATE,
             allowNull: true,
