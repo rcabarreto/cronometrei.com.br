@@ -95,7 +95,7 @@ module.exports = function(sequelize, DataTypes) {
                             email: body.email
                         }
                     }).then(function(user) {
-                        if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
+                        if (!user || !user.get('password_hash') || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
                             return reject();
                         }else{
                             resolve(user);
@@ -132,7 +132,7 @@ module.exports = function(sequelize, DataTypes) {
                         console.log(user.get({
                             plain: true
                         }));
-                        console.log(created)
+                        console.log(created);
 
                         resolve(user);
 
