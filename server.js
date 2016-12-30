@@ -34,8 +34,6 @@ app.get('/api', function(req, res){
 });
 
 
-
-
 app.post('/api/user/create', function(req, res){
 
     req.body.user_id = req.body.id;
@@ -140,9 +138,6 @@ app.post('/api/user/facebooklogin', function (req, res) {
     });
 
 });
-
-
-
 
 
 app.post('/api/timer/create', middleware.requireAuthentication, function(req, res){
@@ -264,8 +259,6 @@ app.get('/api/theme/:themeid', middleware.requireAuthentication, function(req, r
 app.get('*', function(req, res){
     res.status(404).send();
 });
-
-
 
 
 db.sequelize.sync().then(function() {
