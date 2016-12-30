@@ -6,11 +6,10 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
 var _ = require('underscore');
 var db = require('./db.js');
-
 var middleware = require('./middleware.js')(db);
 
 var app = express();
-var PORT = 3000;
+var PORT = process.env.PORT ||  3000;
 
 
 app.use(middleware.logger);
