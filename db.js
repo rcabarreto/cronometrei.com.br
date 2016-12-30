@@ -22,6 +22,7 @@ db.user     = sequelize.import(__dirname + '/models/user.js');
 db.timer    = sequelize.import(__dirname + '/models/timer.js');
 db.feedback = sequelize.import(__dirname + '/models/feedback.js');
 db.theme    = sequelize.import(__dirname + '/models/theme.js');
+db.token    = sequelize.import(__dirname + '/models/token.js');
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
