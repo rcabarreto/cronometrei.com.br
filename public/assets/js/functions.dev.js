@@ -31,9 +31,9 @@ var app = {
 		forceDebug: false,
 		fbAppID: '387506448107274',
 		apiSettings: {
-			apiProtocol: 'http',
-			apiHost: 'api.cronometrei.com.br',
-			apiPort: '3000',
+			apiProtocol: 'https',
+			apiHost: 'arcane-lake-28395.herokuapp.com',
+			apiPort: '',
 			apiPath: 'api'
 		},
 		needToConfirm: false,
@@ -301,7 +301,7 @@ var app = {
 
 
     createAPIURL: function(){
-        return app.settings.apiSettings.apiProtocol +'://'+ app.settings.apiSettings.apiHost +':'+ app.settings.apiSettings.apiPort +'/'+ app.settings.apiSettings.apiPath;
+        return app.settings.apiSettings.apiProtocol +'://'+ app.settings.apiSettings.apiHost + app.settings.apiSettings.apiPort +'/'+ app.settings.apiSettings.apiPath;
     },
 
     makeAPICall: function(endPoint, method, sendData, callback){

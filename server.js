@@ -248,8 +248,8 @@ app.get('*', function(req, res){
 
 db.sequelize.sync().then(function() {
 
-    // var themes = [ {image_name: "london.jpg", logo_color: "#FFF", active: 1}, {image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1}, {image_name: "bubbles.jpg", logo_color: "#FFF", active: 1}, {image_name: "road.jpg", logo_color: "#FFF", active: 1}, {image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1}, {image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1}, {image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1}, {image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1}, {image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1}, {image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1} ];
-    // db.theme.bulkCreate(themes).then(function (themes) {}, function (e) {});
+    var themes = [ {image_name: "london.jpg", logo_color: "#FFF", active: 1}, {image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1}, {image_name: "bubbles.jpg", logo_color: "#FFF", active: 1}, {image_name: "road.jpg", logo_color: "#FFF", active: 1}, {image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1}, {image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1}, {image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1}, {image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1}, {image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1}, {image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1} ];
+    db.theme.bulkCreate(themes).then(function (themes) {}, function (e) {});
 
     app.listen(PORT, function() {
         console.log('Cronometrei API Server Started Successfully on port '+ PORT +'!');
