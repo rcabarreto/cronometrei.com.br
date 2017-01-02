@@ -31,9 +31,9 @@ var app = {
 		forceDebug: false,
 		fbAppID: '387506448107274',
 		apiSettings: {
-			apiProtocol: 'https',
-			apiHost: 'arcane-lake-28395.herokuapp.com',
-			apiPort: '',
+			apiProtocol: 'http', // https
+			apiHost: 'localhost', // arcane-lake-28395.herokuapp.com
+			apiPort: ':3000',
 			apiPath: 'api'
 		},
 		needToConfirm: false,
@@ -139,7 +139,7 @@ var app = {
 			app.user = JSON.parse(this.readCookie('userObj'));
 			this.loadUserInformation();
 		}else{
-			app.outputMessage('User NOT logged into the app! Trying facebook loggin instead');
+			app.outputMessage('User NOT logged into the app! Trying facebook login instead');
 			FB.getLoginStatus(function(response) {
 				app.stepProgress(20);
 				if (response.status === 'connected') {
@@ -235,6 +235,7 @@ var app = {
 		});
 	},
 
+
     facebookLogin: function (user) {
 
         $.ajax({
@@ -271,7 +272,7 @@ var app = {
 
     loadUserInformation: function(){
         this.outputMessage('refreshing user info...');
-        app.makeAPICall('/user/load/', 'GET', undefined, function(response){
+        app.makeAPICall('/user/', 'GET', undefined, function(response){
             if(response.result == "success"){
                 app.user.first_name   = response.data.first_name;
                 app.user.last_name 	  = response.data.last_name;
@@ -293,6 +294,20 @@ var app = {
                 app.outputMessage('Userinfo loading failed. Going to logoff the user and try again!');
                 app.forceLogout();
                 app.checkLoginState();
+            }
+
+        } );
+        return true;
+    },
+
+
+    updateUserInformation: function () {
+        this.outputMessage('updating user info...');
+        app.makeAPICall('/user/', 'PUT', app.user, function(response){
+            if(response.result == "success"){
+                // app.loadCronometer();
+            }else{
+                app.outputMessage('Userinfo updating failed! You may have to try again!');
             }
 
         } );
@@ -385,7 +400,7 @@ var app = {
 	loadCustomMenu: function(){
 		this.stepProgress(10);
 		if(app.user.isLogged){
-			$('#btnTempos').removeClass('hide');
+			$('#btnTempos').addClass('hide');
 			$('#btnAccount').removeClass('hide');
 			$('#btnLogin').addClass('hide');
 		}else{
@@ -408,7 +423,7 @@ var app = {
 	showAboutScreen: function(){
 
 		bootbox.dialog({
-			title:   "Faça seu login no Cronometrei.",
+			title:   "Sobre o Cronometrei.",
 			message: '<div class="row">  ' +
 					 '<div class="col-md-12"> ' +
 					 '<form class="form-horizontal"> ' +
@@ -445,34 +460,46 @@ var app = {
 	showUserDataScreen: function(){
 
 		bootbox.dialog({
-			title:   "Faça seu login no Cronometrei.",
+			title:   "Meus Dados.",
 			message: '<div class="row">  ' +
 					 '<div class="col-md-12"> ' +
 					 '<form class="form-horizontal"> ' +
 					 '<div class="form-group"> ' +
-					 '<label class="col-md-4 control-label" for="name">Name</label> ' +
-					 '<div class="col-md-4"> ' +
-					 '<input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md"> ' +
-					 '<span class="help-block">Here goes your name</span> </div> ' +
+					 '  <label class="col-md-4 control-label" for="name">Name</label> ' +
+					 '  <div class="col-md-4"> ' +
+					 '    <input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md" value="'+ app.user.name +'"> ' +
+					 '  </div> ' +
 					 '</div> ' +
 					 '<div class="form-group"> ' +
-					 '<label class="col-md-4 control-label" for="awesomeness">How awesome is this?</label> ' +
-					 '<div class="col-md-4"> <div class="radio"> <label for="awesomeness-0"> ' +
-					 '<input type="radio" name="awesomeness" id="awesomeness-0" value="Really awesome" checked="checked"> ' +
-					 'Really awesome </label> ' +
-					 '</div><div class="radio"> <label for="awesomeness-1"> ' +
-					 '<input type="radio" name="awesomeness" id="awesomeness-1" value="Super awesome"> Super awesome </label> ' +
+					 '  <label class="col-md-4 control-label" for="name">E-mail</label> ' +
+					 '  <div class="col-md-4"> ' +
+					 '    <input id="email" name="email" type="email" placeholder="Your email" class="form-control input-md" value="'+ app.user.email+'"> ' +
+					 '  </div> ' +
 					 '</div> ' +
-					 '</div></div>' +
+					 '<div class="form-group"> ' +
+					 '  <label class="col-md-4 control-label" for="name">Gender</label> ' +
+					 '  <div class="col-md-4"> ' +
+					 '    <select name="gender" id="gender" class="form-control input-md"><option value="Male">Male</option><option value="Female">Female</option></select>' +
+					 '  </div> ' +
+					 '</div> ' +
+					 '<div class="form-group"> ' +
+					 '  <label class="col-md-4 control-label" for="name">Theme</label> ' +
+					 '  <div class="col-md-4"> ' +
+					 '    <select name="theme" id="theme" class="form-control input-md"><option value="1">London</option><option value="2">Borabora</option><option value="3">Bubbles</option><option value="4">Road</option></select> ' +
+					 '  </div> ' +
+					 '</div> ' +
 					 '</form></div></div>',
 			buttons: {
 				success: {
 					label: "Save",
 					className: "btn-success",
 					callback: function () {
-						var name = $('#name').val();
-						var answer = $("input[name='awesomeness']:checked").val();
-						app.outputMessage("Hello " + name + ". You've chosen " + answer + "");
+						app.user.name = $('#name').val();
+                        app.user.email = $('#email').val();
+                        app.user.gender = $('#gender').val();
+                        app.user.themeId = $('#theme').val();
+						app.updateUserInformation();
+						app.loadTheme();
 					}
 				}
 			}

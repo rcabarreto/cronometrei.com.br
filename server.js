@@ -49,7 +49,23 @@ app.post('/api/user/create', function(req, res){
 });
 
 
-app.get('/api/user/load', middleware.requireAuthentication, function(req, res){
+app.get('/api/user', middleware.requireAuthentication, function(req, res){
+
+    var userId = req.user.get('id');
+
+    db.user.findById(userId).then(function (user) {
+        console.log(user.toJSON());
+        res.json(user.toJSON());
+    }, function (e) {
+        console.log(e);
+        res.status(500).json(e)
+    });
+
+    // res.json(JSON.parse('{"id":"'+userid+'","email":"rcabarreto@gmail.com","first_name":"Rodrigo","last_name":"Barreto","gender":"male","link":"https://www.facebook.com/app_scoped_user_id/10152835496865807/","locale":"pt_BR","name":"Rodrigo Barreto","timezone":-2,"updated_time":"2016-12-26T13:12:15+0000","verified":true}'))
+});
+
+
+app.get('/api/user', middleware.requireAuthentication, function(req, res){
 
     var userId = req.user.get('id');
 
@@ -123,17 +139,19 @@ app.delete('/api/user/login', middleware.requireAuthentication, function (req, r
 
 app.post('/api/user/facebooklogin', function (req, res) {
     var body = _.pick(req.body, 'user_id', 'name', 'first_name', 'last_name', 'email', 'gender', 'link', 'locale', 'timezone');
-
-    console.log(body);
+    var userInstance;
 
     db.user.facebookAuthenticate(body).then(function(user) {
         var token = user.generateToken('authentication');
-        if (token) {
-            res.header('Auth', token).json(user.toPublicJSON());
-        } else {
-            res.status(401).send();
-        }
-    }, function() {
+        userInstance = user;
+
+        return db.token.create({
+            token: token
+        });
+
+    }).then(function (tokenInstance) {
+        res.header('Auth', tokenInstance.get('token')).json(userInstance.toPublicJSON());
+    }).catch(function() {
         res.status(401).send();
     });
 
@@ -263,7 +281,7 @@ app.get('*', function(req, res){
 
 db.sequelize.sync().then(function() {
 
-    // var themes = [ {image_name: "london.jpg", logo_color: "#FFF", active: 1}, {image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1}, {image_name: "bubbles.jpg", logo_color: "#FFF", active: 1}, {image_name: "road.jpg", logo_color: "#FFF", active: 1}, {image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1}, {image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1}, {image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1}, {image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1}, {image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1}, {image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1} ];
+    // var themes = [ {theme_name: "London", image_name: "london.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Borabora", image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1}, {theme_name: "Bubbles", image_name: "bubbles.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Road", image_name: "road.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Squares", image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Snow", image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1}, {theme_name: "Sunlight", image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Boat", image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Balloons", image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1}, {theme_name: "Christmas Lights", image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1} ];
     // db.theme.bulkCreate(themes).then(function (themes) {}, function (e) {});
 
     app.listen(PORT, function() {

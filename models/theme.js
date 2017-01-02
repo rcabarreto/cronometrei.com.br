@@ -3,6 +3,10 @@
  */
 module.exports = function(sequelize, DataTypes){
     return sequelize.define('theme', {
+        theme_name: {
+            type: DataTypes.STRING(32),
+            allowNull: false
+        },
         image_name: {
             type: DataTypes.STRING(512),
             allowNull: false
