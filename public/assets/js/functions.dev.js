@@ -6,18 +6,36 @@
  * Copyright 2014-2015 R3 Web Solutions
  * ======================================================================== */
 
+var User = function () {
+    var user
+};
+var Timer = function () {
+
+    this.doing = 0;
+    this.time = 0;
+    this.pauseTime = 0;
+    this.startTime = new Date();
+    this.finalTime = '';
+
+    return this;
+};
+
 
 var cronometrei = cronometrei || {
 
-
+    currentTimer: 0,
+    startTimer: function () {
+        this.currentTimer = new Timer();
+        return false;
+    },
+    printTimer: function () {
+        console.log(JSON.stringify(this.currentTimer));
+    }
 };
 
-cronometrei.eventos = {
-	adicionar: function(){ console.log('test'); }
-};
 
 
-var app = {
+var app = app || {
 	doing: false,
 	time: 0,
 	timers: [],
