@@ -73,11 +73,6 @@ var app = {
 		end: "",
 		timer: ""
 	},
-	feedback: {
-		name: '',
-		answer: '',
-		message: ''
-	},
 	theme: {
 		backgroundImage: "london.jpg",
 		appTitleColor: "#FFF",
@@ -583,15 +578,21 @@ var app = {
 					label: "Enviar",
 					className: "btn-success",
 					callback: function () {
-						app.feedback.name = $('#name').val();
-						app.feedback.answer = $("input[name='awesomeness']:checked").val();
-						app.feedback.message = $('#message').val();
+
+						var feedback = {
+							name: $('#name').val(),
+							answer: $("input[name='awesomeness']:checked").val(),
+							message: $('#message').val()
+						};
+						// app.feedback.name = $('#name').val();
+						// app.feedback.answer = $("input[name='awesomeness']:checked").val();
+						// app.feedback.message = $('#message').val();
 
                         $.ajax({
                             url: app.createAPIURL() + "/feedback",
                             method: "POST",
                             contentType: 'application/json',
-                            data: JSON.stringify(app.feedback),
+                            data: JSON.stringify(feedback),
                             crossDomain: true
                         }).done(function (data) {
                         }).fail(function () {
