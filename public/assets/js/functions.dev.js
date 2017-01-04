@@ -472,7 +472,7 @@ var app = app || {
 
 	showUserDataScreen: function(){
 
-		bootbox.dialog({
+		var dialog = bootbox.dialog({
 			title:   "Meus Dados.",
 			message: '<div class="row">  ' +
 					 '<div class="col-md-12"> ' +
@@ -480,19 +480,19 @@ var app = app || {
 					 '<div class="form-group"> ' +
 					 '  <label class="col-md-4 control-label" for="name">Name</label> ' +
 					 '  <div class="col-md-4"> ' +
-					 '    <input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md" value="'+ app.user.name +'"> ' +
+					 '    <input id="name" name="name" type="text" placeholder="Your name" class="form-control input-md" value=""> ' +
 					 '  </div> ' +
 					 '</div> ' +
 					 '<div class="form-group"> ' +
 					 '  <label class="col-md-4 control-label" for="name">E-mail</label> ' +
 					 '  <div class="col-md-4"> ' +
-					 '    <input id="email" name="email" type="email" placeholder="Your email" class="form-control input-md" value="'+ app.user.email+'"> ' +
+					 '    <input id="email" name="email" type="email" placeholder="Your email" class="form-control input-md" value=""> ' +
 					 '  </div> ' +
 					 '</div> ' +
 					 '<div class="form-group"> ' +
 					 '  <label class="col-md-4 control-label" for="name">Gender</label> ' +
 					 '  <div class="col-md-4"> ' +
-					 '    <select name="gender" id="gender" class="form-control input-md"><option value="Male">Male</option><option value="Female">Female</option></select>' +
+					 '    <select name="gender" id="gender" class="form-control input-md"><option value="male">Male</option><option value="female">Female</option></select>' +
 					 '  </div> ' +
 					 '</div> ' +
 					 '<div class="form-group"> ' +
@@ -517,6 +517,13 @@ var app = app || {
 				}
 			}
 		});
+
+        dialog.init(function () {
+            $('#name').val(app.user.name);
+            $('#email').val(app.user.email);
+            $('#gender').val(app.user.gender);
+            $('#theme').val(app.user.themeId);
+        });
 
 	},
 

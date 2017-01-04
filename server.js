@@ -18,8 +18,10 @@ app.use(bodyParser.json());
 
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, Auth, X-Requested-With");
     res.header("Access-Control-Expose-Headers", "Authorization, Auth");
+    res.header('Access-Control-Allow-Credentials', true);
     next();
 });
 
@@ -34,7 +36,7 @@ app.get('/api', function(req, res){
 });
 
 
-app.post('/api/user/create', function(req, res){
+app.post('/api/user', function(req, res){
 
     req.body.user_id = req.body.id;
 
@@ -54,7 +56,6 @@ app.get('/api/user', middleware.requireAuthentication, function(req, res){
     var userId = req.user.get('id');
 
     db.user.findById(userId).then(function (user) {
-        console.log(user.toJSON());
         res.json(user.toJSON());
     }, function (e) {
         console.log(e);
@@ -65,19 +66,26 @@ app.get('/api/user', middleware.requireAuthentication, function(req, res){
 });
 
 
-app.get('/api/user', middleware.requireAuthentication, function(req, res){
+app.put('/api/user', middleware.requireAuthentication, function(req, res){
 
     var userId = req.user.get('id');
+    var body = _.pick(req.body, 'email','gender','themeId');
 
     db.user.findById(userId).then(function (user) {
-        console.log(user.toJSON());
-        res.json(user.toJSON());
+        if (user) {
+            user.update(body).then(function (user) {
+                res.json(user.toPublicJSON());
+            }, function (e) {
+                res.status(400).json(e);
+            })
+        } else {
+            res.status(404).send();
+        }
+
     }, function (e) {
-        console.log(e);
         res.status(500).json(e)
     });
 
-    // res.json(JSON.parse('{"id":"'+userid+'","email":"rcabarreto@gmail.com","first_name":"Rodrigo","last_name":"Barreto","gender":"male","link":"https://www.facebook.com/app_scoped_user_id/10152835496865807/","locale":"pt_BR","name":"Rodrigo Barreto","timezone":-2,"updated_time":"2016-12-26T13:12:15+0000","verified":true}'))
 });
 
 
@@ -279,10 +287,10 @@ app.get('*', function(req, res){
 });
 
 
-db.sequelize.sync({force:true}).then(function() {
+db.sequelize.sync().then(function() {
 
-    var themes = [ {theme_name: "London", image_name: "london.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Borabora", image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1}, {theme_name: "Bubbles", image_name: "bubbles.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Road", image_name: "road.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Squares", image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Snow", image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1}, {theme_name: "Sunlight", image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Boat", image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Balloons", image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1}, {theme_name: "Christmas Lights", image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1} ];
-    db.theme.bulkCreate(themes).then(function (themes) {}, function (e) {});
+    // var themes = [ {theme_name: "London", image_name: "london.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Borabora", image_name: "borabora.jpg", logo_color: "#F4FCFA", active: 1}, {theme_name: "Bubbles", image_name: "bubbles.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Road", image_name: "road.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Squares", image_name: "150305-cinqAA_by_Pierre_Cante.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Snow", image_name: "11220682974_9d296080f3_k.jpg", logo_color: "##E7E8EB", active: 1}, {theme_name: "Sunlight", image_name: "11416120446_76a5ae1b18_k.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Boat", image_name: "12591084605_c926ed2c7d_k.jpg", logo_color: "#FFF", active: 1}, {theme_name: "Balloons", image_name: "12735618625_bbe342c702_k.jpg", logo_color: "#587065", active: 1}, {theme_name: "Christmas Lights", image_name: "Christmas_Lights_by_RaDu_GaLaN.jpg", logo_color: "#FFF", active: 1} ];
+    // db.theme.bulkCreate(themes).then(function (themes) {}, function (e) {});
 
     app.listen(PORT, function() {
         console.log('Cronometrei API Server Started Successfully on port '+ PORT +'!');
