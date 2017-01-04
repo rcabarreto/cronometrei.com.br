@@ -6,9 +6,213 @@
  * Copyright 2014-2015 R3 Web Solutions
  * ======================================================================== */
 
+var User = function () {
+
+    this.isLogged = false;
+    this.authToken = "";
+    this.id = "";
+    this.user_id = "";
+    this.email = "";
+    this.first_name = "";
+    this.last_name = "";
+    this.gender = "";
+    this.link = "";
+    this.locale = "";
+    this.name = "";
+    this.timezone = 0;
+    this.updated_time = "";
+    this.verified = false;
+    this.themeId = 1;
+
+    this.login = function () {};
+    this.logout = function () {};
+
+    this.load = function () {};
+    this.update = function () {};
+
+    return this;
+};
+
+
+
+
+
 
 
 var app = {
+
+    settings: {
+        debug: false,
+        forceDebug: false,
+        fbAppID: '387506448107274',
+        apiSettings: {
+            apiProtocol: 'http', // https
+            apiHost: 'localhost', // arcane-lake-28395.herokuapp.com
+            apiPort: ':3000',
+            apiPath: 'api'
+        },
+        needToConfirm: false,
+        pageTitle: 'Cronometrei',
+        titleSep: ' - ',
+        homeTitleFull: 'O tempo sob controle',
+        startButton: 'Iniciar',
+        pauseButton: 'Pausar',
+        continueButton: 'Continuar',
+        clearButton: 'Limpar',
+        startInstruction: 'Barra de Espaço',
+        clearInstruction: 'Esc',
+        exitMessage: 'Seu cronometro será perdido, deseja mesmo sair?',
+        clearMessage: 'Deseja mesmo zerar seu cronometro?'
+    },
+    currentTimer: undefined,
+
+    init: function(){
+		console.log('Bem vindo!');
+
+        $('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
+        $('#btnLogin > a').click(function(e){ e.preventDefault(); app.callFacebookLogin(); });
+        $('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
+        $('#btnUserData > a').click(function(e){ e.preventDefault(); app.showUserDataScreen(); });
+        $('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
+        $('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
+
+        document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
+        $('h1#appTitle').html(app.settings.pageTitle);
+        $('#startStopLabel').html(app.settings.startButton);
+        $('#startStopInstruction').html(app.settings.startInstruction);
+        $('#clearLapLabel').html(app.settings.clearButton);
+        $('#clearLapInstruction').html(app.settings.clearInstruction);
+
+        $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).html('100%');
+        $('#progressbar').addClass('opaque');
+        $('#application').removeClass('opaque');
+        $('header > nav').removeClass('opaque');
+        $('#appFooter').removeClass('opaque');
+
+        this.hookDocumentEvents();
+
+        return true;
+
+    },
+
+    startStopTimer: function () {
+
+    	if(typeof this.currentTimer == 'undefined'){
+            this.currentTimer = new Timer();
+            console.log('New Timer object created!');
+        }
+
+        var currentTimer = this.currentTimer;
+
+        if (currentTimer.isWorking){
+            currentTimer.stop();
+        } else {
+            app.settings.needToConfirm = true;
+            currentTimer.start();
+        }
+
+    },
+
+    clearLapTimer: function(){
+
+        if(typeof this.currentTimer == 'undefined')
+            return false;
+
+        if (this.currentTimer.isWorking){
+            this.currentTimer.lap();
+		} else {
+            this.currentTimer.clear();
+            console.log('Destroing timer object!');
+            app.settings.needToConfirm = false;
+        	this.currentTimer = undefined;
+		}
+
+        // if(this.currentTimer.time !== 0){
+        //     bootbox.confirm(app.settings.clearMessage, function(result) {
+        //         if(result){
+        //         	currentTimer.stop();
+        //         }
+        //     });
+        // }
+
+    },
+
+    confirmExit: function(){
+        if(app.settings.needToConfirm)
+            return app.settings.exitMessage;
+    },
+
+    hookDocumentEvents: function(){
+        window.onbeforeunload = app.confirmExit;
+        $(document).keydown(function(event){
+            if ( !$('div.bootbox').hasClass('in') ) {
+                app.keyDefaults( event );
+            }
+        }).keyup(function(event){
+            if ( !$('div.bootbox').hasClass('in') ) {
+                app.keyHandler( event );
+            }
+        });
+
+    },
+
+    keyDefaults: function(event){
+        switch(event.keyCode) {
+            case 32:
+                event.preventDefault();
+                break;
+            case 27:
+                event.preventDefault();
+                break;
+            default:
+                return false;
+        }
+    },
+
+    keyHandler: function(event){
+        switch(event.keyCode) {
+            case 32:
+                app.startStopTimer();
+                break;
+            case 27:
+                app.clearLapTimer();
+                break;
+            default:
+                return false;
+        }
+    }
+
+};
+
+
+$(document).ready(function(){
+    app.init();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var cronometrei = {
 	doing: false,
 	time: 0,
 	timers: [],
@@ -56,8 +260,7 @@ var app = {
 		updated_time: "",
 		verified: false,
 		themeId: 1,
-		load: function(){},
-		persist: function(){}
+		load: function(){}
 	},
 	timerInfo: {
 		start: "",
@@ -604,21 +807,6 @@ var app = {
 
 	},
 
-	createAppElements: function(){
-		$('#application').append('<div id="titleRow" class="row"></div>').append('<div id="controlRow" class="row"></div>');
-		$('#titleRow').append('<h1 id="appTitle"></h1><div id="timer" class="col-md-8 col-md-offset-2"></div>');
-		$('#controlRow').append('<div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();"><div id="startStopLabel"></div><div id="startStopInstruction" class="instructions"></div></div>').append('<div id="clear" class="button col-md-2 col-md-offset-2" onclick="app.clearTimer();"><div id="clearLabel"></div><div id="clearInstruction" class="instructions"></div></div>');
-
-		this.stepProgress(10);
-
-        $('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
-        $('#btnLogin > a').click(function(e){ e.preventDefault(); app.callFacebookLogin(); });
-        $('#btnLogout > a').click(function(e){ e.preventDefault(); app.appLogout(); });
-        $('#btnUserData > a').click(function(e){ e.preventDefault(); app.showUserDataScreen(); });
-        $('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
-        $('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
-        this.stepProgress(10);
-	},
 
 	setPageTitle: function(){
 		this.stepProgress(10);
@@ -818,6 +1006,7 @@ var app = {
 		return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 	},
 
+
 	hookDocumentEvents: function(){
 		window.onbeforeunload = app.confirmExit;
 		$(document).keydown(function(event){
@@ -860,6 +1049,6 @@ var app = {
 
 
 // START THE APP
-$(document).ready(function(){
-	app.init();
-});
+// $(document).ready(function(){
+// 	app.init();
+// });

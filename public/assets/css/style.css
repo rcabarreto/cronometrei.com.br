@@ -62,7 +62,7 @@ div#progressbar div.loading{
 
 div#timer,
 div#startStop,
-div#clear{
+div#clearLap{
 	font-family: 'Titillium Web', sans-serif;
 	font-weight: bold;
 	color: #333;
@@ -99,7 +99,7 @@ div#startStop{
 	color: #EFEFEF;
 }
 
-div#clear{
+div#clearLap{
 	/*background: rgba(177,0,0,0.9);*/
 	color: #EFEFEF;
 }
