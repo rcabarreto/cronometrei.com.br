@@ -24,7 +24,7 @@ app.all('*', function(req, res, next) {
     res.header('Access-Control-Allow-Credentials', true);
     next();
 });
-
+logger
 
 app.get('/', function (req, res) {
     res.send('Todo API Root');
@@ -285,6 +285,10 @@ app.get('/api/theme/:themeid', middleware.requireAuthentication, function(req, r
 app.get('*', function(req, res){
     res.status(404).send();
 });
+
+
+
+
 
 
 db.sequelize.sync().then(function() {
