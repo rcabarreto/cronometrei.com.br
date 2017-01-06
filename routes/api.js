@@ -258,6 +258,11 @@ module.exports = function (db, middleware) {
     });
 
 
+    router.all('*', function(req, res){
+        res.status(404).send();
+    });
+
+
     return router;
 
 };
