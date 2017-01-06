@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 var db = require('./db.js');
 var middleware = require('./middleware.js')(db);
 
-
 var index = require('./routes/index');
 var users = require('./routes/users');
 var api = require('./routes/api')(db, middleware);
