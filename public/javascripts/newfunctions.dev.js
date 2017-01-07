@@ -59,6 +59,7 @@ var app = {
         pauseButton: 'Pausar',
         continueButton: 'Continuar',
         clearButton: 'Limpar',
+		lapButton: 'Volta',
         startInstruction: 'Barra de Espaço',
         clearInstruction: 'Esc',
         exitMessage: 'Seu cronometro será perdido, deseja mesmo sair?',
