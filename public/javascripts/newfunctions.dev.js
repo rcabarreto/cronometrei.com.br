@@ -66,6 +66,18 @@ var app = {
         clearMessage: 'Deseja mesmo zerar seu cronometro?'
     },
     currentTimer: undefined,
+    theme: {
+        backgroundImage: "london.jpg",
+        appTitleColor: "#FFF",
+        startStopButtonColor: "rgba(0,158,31,0.9)",
+        clearButtonColor: "rgba(177,0,0,0.9)",
+        setTheme: function(){
+            $('body').css('background-image', 'url("images/background/'+this.backgroundImage+'")');
+            $('#appTitle').css('color', this.appTitleColor);
+            $('#startStop').css('background', this.startStopButtonColor);
+            $('#clearLap').css('background', this.clearButtonColor);
+        }
+    },
 
     init: function(){
 		console.log('Bem vindo!');
@@ -91,6 +103,7 @@ var app = {
         $('#appFooter').removeClass('opaque');
 
         this.hookDocumentEvents();
+		this.theme.setTheme();
 
         return true;
 

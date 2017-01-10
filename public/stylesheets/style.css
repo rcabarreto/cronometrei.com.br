@@ -124,9 +124,7 @@ div#timer {
   text-shadow: 2px 2px #999;
   background: rgba(239, 239, 239, 0.9); }
   div#timer div#totaltimer {
-    text-align: right;
-    font-size: 3.5rem;
-    padding-right: 105px; }
+    font-size: 3.5rem; }
 
 #totaltimer {
   -webkit-transition: max-height .3s ease, opacity .3s ease 0s;
@@ -149,8 +147,7 @@ div#timer {
   div#timer {
     font-size: 8.5rem; }
     div#timer div#totaltimer {
-      font-size: 3.5rem;
-      padding-right: 80px; } }
+      font-size: 3.5rem; } }
 
 @media only screen and (max-width: 990px) {
   div#startStop, div#clearLap {
@@ -158,8 +155,7 @@ div#timer {
   div#timer {
     font-size: 8.5rem; }
     div#timer div#totaltimer {
-      font-size: 3.5rem;
-      padding-right: 130px; } }
+      font-size: 3.5rem; } }
 
 @media only screen and (max-width: 800px) {
   #totaltimer {
@@ -174,8 +170,7 @@ div#timer {
   div#timer {
     font-size: 6.5rem; }
     div#timer div#totaltimer {
-      font-size: 2.5rem;
-      padding-right: 70px; } }
+      font-size: 2.5rem; } }
 
 @media only screen and (max-width: 414px) {
   h1#appTitle {
@@ -183,8 +178,7 @@ div#timer {
   div#timer {
     font-size: 5.5rem; }
     div#timer div#totaltimer {
-      font-size: 2rem;
-      padding-right: 50px; } }
+      font-size: 2rem; } }
 
 @media only screen and (max-width: 400px) {
   h1#appTitle {
@@ -192,8 +186,7 @@ div#timer {
   div#timer {
     font-size: 4.5rem; }
     div#timer div#totaltimer {
-      font-size: 2rem;
-      padding-right: 56px; } }
+      font-size: 2rem; } }
 
 @media only screen and (max-width: 320px) {
   h1#appTitle {
@@ -201,7 +194,6 @@ div#timer {
   div#timer {
     font-size: 4.5rem; }
     div#timer div#totaltimer {
-      font-size: 2rem;
-      padding-right: 35px; } }
+      font-size: 2rem; } }
 
 /*# sourceMappingURL=style.css.map */
