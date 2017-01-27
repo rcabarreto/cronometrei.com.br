@@ -12,11 +12,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/rcabarreto/cronometrei.com.br.git"
+    "url": "git+ssh://git@github.com/rcabarreto/cronometrei.com.br.git"
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/rcabarreto/cronometrei.com.br#readme",
+  "homepage": "https://github.com/rcabarreto/cronometrei.com.br#readme",
   "dependencies": {
     "angular": "^1.6.1",
     "bcrypt": "^1.0.1",
