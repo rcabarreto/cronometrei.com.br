@@ -27,12 +27,12 @@ app.all('*', function(req, res, next) {
 
 
 app.get('/', function (req, res) {
-    res.send('Todo API Root');
+    res.send('Cronometrei!');
 });
 
 
 app.get('/api', function(req, res){
-    res.send('Welcome to Contability API!');
+    res.send('Welcome to Cronometrei API!');
 });
 
 
