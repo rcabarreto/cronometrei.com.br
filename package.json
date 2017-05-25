@@ -7,24 +7,33 @@
     "doc": "docs"
   },
   "scripts": {
+    "start": "node ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/rcabarreto/cronometrei.com.br.git"
+    "url": "git+ssh://git@github.com/rcabarreto/cronometrei.com.br.git"
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/rcabarreto/cronometrei.com.br#readme",
+  "homepage": "https://github.com/rcabarreto/cronometrei.com.br#readme",
   "dependencies": {
     "bcrypt": "^1.0.1",
     "body-parser": "^1.13.3",
-    "crypto-js": "^3.1.5",
+    "cookie-parser": "^1.4.3",
+    "crypto-js": "^3.1.8",
+    "debug": "^2.2.0",
     "express": "^4.13.2",
-    "jsonwebtoken": "^5.0.5",
-    "pg": "^4.4.1",
+    "hbs": "~4.0.1",
+    "helmet": "^3.3.0",
+    "jsonwebtoken": "^7.4.1",
+    "knockout": "^3.4.1",
+    "morgan": "~1.8.2",
+    "node-sass-middleware": "^0.11.0",
+    "pg": "^6.2.3",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.5.1",
+    "serve-favicon": "~2.4.3",
     "sqlite3": "^3.1.8",
     "underscore": "^1.8.3"
   }

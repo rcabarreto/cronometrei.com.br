@@ -1,0 +1,261 @@
+@import url(http://fonts.googleapis.com/css?family=Lobster|Titillium+Web)
+
+=transition($transition)
+  -webkit-transition: $transition
+  -moz-transition:    $transition
+  -o-transition:      $transition
+  -ms-transition:     $transition
+  transition:         $transition
+
+=border-radius($radius)
+  -webkit-border-radius: $radius
+  -moz-border-radius:    $radius
+  -ms-border-radius:     $radius
+  border-radius:         $radius
+
+$primary-font: 'Lobster', cursive
+$secondary-font: 'Titillium Web', sans-serif
+$white: #FFF
+$off-white: #EFEFEF
+
+body
+  background:
+    repeat: no-repeat
+    position: center center
+    attachment: fixed
+    size: cover
+    color: $white
+
+  -webkit-background-size: cover
+  -moz-background-size: cover
+  -o-background-size: cover
+
+.h1, .h2, .h3, h1, h2, h3
+  margin:
+    top: 0px
+    bottom: 10px
+
+header
+
+  div.social
+    float: left
+    margin-right: 3px
+
+header > nav, div#application, footer
+  +transition(opacity .8s ease 1s)
+
+div#progressbar
+  +transition(opacity .3s ease .8s)
+
+
+div#application
+  margin-bottom: 20px
+
+.opaque
+  opacity: 0
+
+.hideTotalTimer
+  opacity: 0
+  max-height: 0px !important
+
+div#progressbar
+  position: absolute
+  width: 100%
+
+div#progressbar div.loading
+  font:
+    family: $primary-font
+    size: 5rem
+  text:
+    shadow: 1px 1px 10px #666
+    align: center
+  color: $white
+  margin-bottom: 10px
+
+.row
+  margin-top: 20px
+
+div#timer,
+div#startStop,
+div#clearLap
+  font:
+    family: $secondary-font
+    weight: bold
+  color: #333
+  border: solid 1px #666
+  padding: 20px 0
+  -webkit-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75)
+  -moz-box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75)
+  box-shadow: 5px 5px 15px -4px rgba(0,0,0,0.75)
+
+h1#appTitle
+  font:
+    family: $primary-font
+    size: 12rem
+  text:
+    shadow: 1px 1px #666
+    align: center
+  color: $white
+
+
+div.button
+  font-size: 35px
+  text-align: center
+
+div#startStop
+  color: $off-white
+
+
+div#clearLap
+  @extend div#startStop
+
+
+.button
+  cursor: pointer
+
+
+.instructions
+  font-size: 12px
+
+div#ad
+  text-align: center
+
+
+div.sitead
+  text-align: center
+
+
+.socialdiv
+  position: relative
+  overflow: visible
+  top: 15px
+  float: left
+
+
+.navbar-default
+  background-color: rgba(255, 255, 255, 0.8)
+  border-color: #e7e7e7
+
+
+.navbar
+  border-radius: 0px
+  border: 0px
+
+
+.navbar-toggle
+  background-color: #ddd
+
+
+.navbar-default
+  .navbar-nav>li>a
+    color: #333
+    text-shadow: 1px 1px #666
+    font-family: $primary-font
+    font-size: 20px
+
+
+
+div#timer
+  font:
+    size: 10rem
+  text:
+    align: center
+    shadow: 2px 2px #999
+  background: rgba(239,239,239,0.9)
+
+  div#totaltimer
+    //text:
+      //align: right
+    font-size: 3.5rem
+    //padding-right: 105px
+
+#totaltimer
+  -webkit-transition: max-height .3s ease, opacity .3s ease 0s
+  -moz-transition: max-height .3s ease, opacity .3s ease 0s
+  -o-transition: max-height .3s ease, opacity .3s ease 0s
+  -ms-transition: max-height .3s ease, opacity .3s ease 0s
+  transition: max-height .3s ease, opacity .3s ease 0s
+  max-height: 100px
+
+
+@media only screen and (max-width: 1100px)
+
+  #totaltimer
+    -webkit-transition: max-height .3s ease, opacity .3s ease 0s
+    -moz-transition: max-height .3s ease, opacity .3s ease 0s
+    -o-transition: max-height .3s ease, opacity .3s ease 0s
+    -ms-transition: max-height .3s ease, opacity .3s ease 0s
+    transition: max-height .3s ease, opacity .3s ease 0s
+    max-height: 100px
+
+  h1#appTitle
+    font-size: 10rem
+
+  div#timer
+    font-size: 8.5rem
+    div#totaltimer
+      font-size: 3.5rem
+      //padding-right: 80px
+
+@media only screen and (max-width: 990px)
+
+  div#startStop
+    margin-bottom: 20px
+
+  div#timer
+    font-size: 8.5rem
+    div#totaltimer
+      font-size: 3.5rem
+      //padding-right: 130px
+
+
+@media only screen and (max-width: 800px)
+
+  #totaltimer
+    -webkit-transition: max-height .5s ease, opacity .5s ease 0s
+    -moz-transition: max-height .5s ease, opacity .5s ease 0s
+    -o-transition: max-height .5s ease, opacity .5s ease 0s
+    -ms-transition: max-height .5s ease, opacity .5s ease 0s
+    transition: max-height .5s ease, opacity .5s ease 0s
+    max-height: 50px
+
+  h1#appTitle
+    font-size: 8rem
+  div#timer
+    font-size: 6.5rem
+    div#totaltimer
+      font-size: 2.5rem
+      //padding-right: 70px
+
+
+@media only screen and (max-width: 414px)
+
+  h1#appTitle
+    font-size: 6rem
+  div#timer
+    font-size: 5.5rem
+    div#totaltimer
+      font-size: 2rem
+      //padding-right: 50px
+
+
+@media only screen and (max-width: 400px)
+
+  h1#appTitle
+    font-size: 6rem
+  div#timer
+    font-size: 4.5rem
+    div#totaltimer
+      font-size: 2rem
+      //padding-right: 56px
+
+
+@media only screen and (max-width: 320px)
+
+  h1#appTitle
+    font-size: 6rem
+  div#timer
+    font-size: 4.5rem
+    div#totaltimer
+      font-size: 2rem
+      //padding-right: 35px
