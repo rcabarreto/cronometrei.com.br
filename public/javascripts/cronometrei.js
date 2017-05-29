@@ -48,7 +48,6 @@ var app = {
     },
 
     init: function(){
-        console.log('Bem vindo!');
 
         $('#btnFeedback > a').click(function(e){ e.preventDefault(); app.showFeedbackForm(); });
         $('#btnLogin > a').click(function(e){ e.preventDefault(); app.callFacebookLogin(); });
@@ -57,24 +56,20 @@ var app = {
         $('#btnSobre > a').click(function(e){ e.preventDefault(); app.showAboutScreen(); });
         $('#btnTempos > a').click(function(e){ e.preventDefault(); app.showMyTimers(); });
 
-        document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
-        $('h1#appTitle').html(app.settings.pageTitle);
-        $('#startStopLabel').html(app.settings.startButton);
-        $('#startStopInstruction').html(app.settings.startInstruction);
-        $('#clearLapLabel').html(app.settings.clearButton);
-        $('#clearLapInstruction').html(app.settings.clearInstruction);
-
-        $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100).html('100%');
-        $('#progressbar').addClass('opaque');
         $('#application').removeClass('opaque');
         $('header > nav').removeClass('opaque');
         $('#appFooter').removeClass('opaque');
 
+        this.setPageTitle();
         this.hookDocumentEvents();
         this.theme.setTheme();
 
         return true;
 
+    },
+
+    setPageTitle: function () {
+        document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
     },
 
     startStopTimer: function () {
@@ -107,17 +102,8 @@ var app = {
             console.log('Destroing timer object!');
             app.settings.needToConfirm = false;
             this.currentTimer = undefined;
-            document.title = app.settings.pageTitle + app.settings.titleSep + app.settings.homeTitleFull;
+            this.setPageTitle();
         }
-
-
-        // if(this.currentTimer.time !== 0){
-        //     bootbox.confirm(app.settings.clearMessage, function(result) {
-        //         if(result){
-        //         	currentTimer.stop();
-        //         }
-        //     });
-        // }
 
     },
 

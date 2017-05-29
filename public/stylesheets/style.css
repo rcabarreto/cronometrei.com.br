@@ -18,18 +18,11 @@ header div.social {
   margin-right: 3px; }
 
 header > nav, div#application, footer {
-  -webkit-transition: opacity 0.8s ease 1s;
-  -moz-transition: opacity 0.8s ease 1s;
-  -o-transition: opacity 0.8s ease 1s;
-  -ms-transition: opacity 0.8s ease 1s;
-  transition: opacity 0.8s ease 1s; }
-
-div#progressbar {
-  -webkit-transition: opacity 0.3s ease 0.8s;
-  -moz-transition: opacity 0.3s ease 0.8s;
-  -o-transition: opacity 0.3s ease 0.8s;
-  -ms-transition: opacity 0.3s ease 0.8s;
-  transition: opacity 0.3s ease 0.8s; }
+  -webkit-transition: opacity 0.3s ease 0.5s;
+  -moz-transition: opacity 0.3s ease 0.5s;
+  -o-transition: opacity 0.3s ease 0.5s;
+  -ms-transition: opacity 0.3s ease 0.5s;
+  transition: opacity 0.3s ease 0.5s; }
 
 div#application {
   margin-bottom: 20px; }
@@ -171,6 +164,12 @@ div#timer {
     font-size: 6.5rem; }
     div#timer div#totaltimer {
       font-size: 2.5rem; } }
+
+@media only screen and (max-width: 736px) {
+  #startStopInstruction {
+    display: none; }
+  #clearLapInstruction {
+    display: none; } }
 
 @media only screen and (max-width: 414px) {
   h1#appTitle {

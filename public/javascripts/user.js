@@ -1,6 +1,7 @@
 /**
  * Created by barreto on 23/01/17.
  */
+"use strict";
 
 var User = function () {
 

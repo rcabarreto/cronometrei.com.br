@@ -1,12 +1,13 @@
 /**
  * Created by barreto on 04/01/17.
  */
+"use strict";
 
 var Timer = function () {
 
     this.isWorking = false;
     this.loop = '';
-    this.currentTimer = undefined; // Controle de pause/restart de timer
+    this.currentTimer = undefined;
     this.startTime = 0;
     this.finalTime = 0;
     this.startLapTime = 0;
@@ -15,16 +16,13 @@ var Timer = function () {
     this.laps = [];
 
     this.start = function () {
-        console.log("starting timer!");
         this.isWorking = true;
-
         if (this.startTime===0) {
             this.startTime = new Date().getTime();
             this.startLapTime = this.startTime;
         } else {
             this.startLapTime = new Date().getTime();
         }
-
         // unpause test
         if(typeof(this.currentTimer) == 'undefined'){
             this.startTime = new Date().getTime();
@@ -33,67 +31,43 @@ var Timer = function () {
             this.startTime = (new Date().getTime() - this.currentTotalTimer);
             this.startLapTime = (new Date().getTime() - this.currentTimer);
         }
-
         this.loop = window.setInterval("app.currentTimer.update()", 10);
-
         $('#startStopLabel').html(app.settings.pauseButton);
         $('#clearLapLabel').html(app.settings.lapButton);
-
     };
 
 
     this.stop = function () {
-
         if(this.isWorking){
-
-            console.log('Stopping timer!');
             this.isWorking = false;
-
             clearInterval(this.loop);
             this.currentTimer = this.getTime();
             this.currentTotalTimer = this.getTotalTime();
-
             this.output(this.getTime(), this.getTotalTime());
-
             $('#startStopLabel').html(app.settings.continueButton);
             $('#clearLapLabel').html(app.settings.clearButton);
-
             this.finalTime = new Date().getTime();
-
-            timerInfo = {
+            var timerInfo = {
                 start: this.format_date(this.startTime, 'full'),
                 end: this.format_date(this.finalTime, 'full'),
                 timer: this.format_seconds(this.currentTimer, 'full')
             };
-
-        } else {
-            console.log('Already stoped!');
         }
-
     };
 
     this.clear = function () {
-        console.log('CLEAR timer called!');
-
         this.createLap(this.currentTimer);
-
         this.startTime = new Date().getTime();
         this.startLapTime = this.startTime;
-
         this.output(this.getTime(), this.getTotalTime());
-
         $('#totaltimer').addClass('hideTotalTimer');
         $('#startStopLabel').html(app.settings.startButton);
     };
 
     this.lap = function () {
-        console.log('LAP timer called!');
         $('#totaltimer').removeClass('hideTotalTimer');
-
         this.createLap(this.getTime());
-
         this.startLapTime = new Date().getTime();
-
     };
 
     this.createLap = function (lapTimer) {
@@ -101,10 +75,7 @@ var Timer = function () {
             lapNumber: this.lapCount++,
             lapTime: this.format_seconds(lapTimer, 'full')
         };
-
         this.laps.push(currentLap);
-
-        console.log(JSON.stringify(this.laps));
     };
 
     this.update = function(){
@@ -114,7 +85,6 @@ var Timer = function () {
     this.output = function(lapTime, totalTime){
         lapTime = this.format_seconds(lapTime, 'full');
         totalTime = this.format_seconds(totalTime, 'total');
-
         $('#maintimer').text(lapTime);
         $('#totaltimer').text(totalTime);
     };
@@ -132,7 +102,6 @@ var Timer = function () {
     };
 
     this.format_date = function(dateVar){
-
         var dt = new Date(dateVar);
         var dtstring = dt.getFullYear()
             + '-' + this.pad2(dt.getMonth()+1)
@@ -140,9 +109,7 @@ var Timer = function () {
             + ' ' + this.pad2(dt.getHours())
             + ':' + this.pad2(dt.getMinutes())
             + ':' + this.pad2(dt.getSeconds());
-
         return dtstring;
-
     };
 
     this.format_seconds = function(second, output){
@@ -172,7 +139,6 @@ var Timer = function () {
         }
 
     };
-
 
     return this;
 };

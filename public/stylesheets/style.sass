@@ -42,11 +42,7 @@ header
     margin-right: 3px
 
 header > nav, div#application, footer
-  +transition(opacity .8s ease 1s)
-
-div#progressbar
-  +transition(opacity .3s ease .8s)
-
+  +transition(opacity .3s ease .5s)
 
 div#application
   margin-bottom: 20px
@@ -227,6 +223,13 @@ div#timer
       font-size: 2.5rem
       //padding-right: 70px
 
+
+@media only screen and (max-width: 736px)
+  #startStopInstruction
+    display: none
+
+  #clearLapInstruction
+    display: none
 
 @media only screen and (max-width: 414px)
 

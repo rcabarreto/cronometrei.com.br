@@ -1,8 +1,9 @@
 
 <!-- app container -->
+{{#with text}}
 <div id="application" class="container opaque">
     <div id="titleRow" class="row">
-        <h1 id="appTitle">{{title}}</h1>
+        <h1 id="appTitle">{{pageTitle}}</h1>
         <div id="timer" class="col-md-8 col-md-offset-2">
             <div id="maintimer">00:00:00:000</div>
             <div id="totaltimer" class="hideTotalTimer">00:00:00</div>
@@ -11,13 +12,14 @@
 
     <div id="controlRow" class="row">
         <div id="startStop" class="button col-md-2 col-md-offset-3" onclick="app.startStopTimer();">
-            <div id="startStopLabel"></div>
-            <div id="startStopInstruction" class="instructions"></div>
+            <div id="startStopLabel">{{startButton}}</div>
+            <div id="startStopInstruction" class="instructions">{{startInstruction}}</div>
         </div>
         <div id="clearLap" class="button col-md-2 col-md-offset-2" onclick="app.clearLapTimer();">
-            <div id="clearLapLabel"></div>
-            <div id="clearLapInstruction" class="instructions"></div>
+            <div id="clearLapLabel">{{clearButton}}</div>
+            <div id="clearLapInstruction" class="instructions">{{clearInstruction}}</div>
         </div>
     </div>
 
 </div>
+{{/with}}
