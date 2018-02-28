@@ -39,27 +39,44 @@ var Timer = function () {
     if(this.isWorking){
       this.isWorking = false;
       clearInterval(this.loop);
+
       this.currentTimer = this.getTime();
       this.currentTotalTimer = this.getTotalTime();
+
       this.output(this.getTime(), this.getTotalTime());
+
       $('#startStopLabel').html(app.settings.continueButton);
       $('#clearLapLabel').html(app.settings.clearButton);
+
       this.finalTime = new Date().getTime();
-      var timerInfo = {
-        start: this.format_date(this.startTime, 'full'),
-        end: this.format_date(this.finalTime, 'full'),
-        timer: this.format_seconds(this.currentTimer, 'full')
-      };
+
+
     }
   };
 
   this.clear = function () {
+
     this.createLap(this.currentTimer);
+
     this.startTime = new Date().getTime();
     this.startLapTime = this.startTime;
+
+    // this.currentTimer = this.getTime();
+    // this.currentTotalTimer = this.getTotalTime();
+
     this.output(this.getTime(), this.getTotalTime());
+
     $('#totaltimer').addClass('hideTotalTimer');
     $('#startStopLabel').html(app.settings.startButton);
+
+    var timerInfo = {
+      start: this.format_date(this.startTime, 'full'),
+      end: this.format_date(this.finalTime, 'full'),
+      timer: this.format_seconds(this.currentTotalTimer, 'full')
+    };
+
+    console.log('Total timer info:', timerInfo);
+
   };
 
   this.lap = function () {

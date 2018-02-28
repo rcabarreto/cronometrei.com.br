@@ -100,6 +100,23 @@ var app = {
     } else {
       self.currentTimer.clear();
       console.log('Destroing timer object!');
+
+      console.log('Starting time', self.currentTimer.startTime);
+      console.log('Final time', self.currentTimer.finalTime);
+      console.log('Number of laps', self.currentTimer.lapCount);
+
+      console.log(self.currentTimer.laps);
+
+      // isWorking
+      // loop
+      // currentTimer
+      // startTime
+      // finalTime
+      // startLapTime
+      // endLapTime
+      // lapCount
+      // laps
+
       self.settings.needToConfirm = false;
       self.currentTimer = undefined;
       self.setPageTitle();
