@@ -8,36 +8,46 @@ var Timer = function () {
   this.startTime = 0;
   this.finalTime = 0;
   this.startLapTime = 0;
-  this.endLapTime = 0;
   this.lapCount = 0;
+  this.totalTime = '';
   this.laps = [];
 
+  this.controlTimer = 0;
+
   this.start = function () {
+
     this.isWorking = true;
-    if (this.startTime===0) {
-      this.startTime = new Date().getTime();
-      this.startLapTime = this.startTime;
+
+    if (this.controlTimer === 0) {
+      this.controlTimer = new Date().getTime();
+      this.startTime = this.controlTimer;
+      this.startLapTime = this.controlTimer;
     } else {
       this.startLapTime = new Date().getTime();
     }
+
     // unpause test
     if(typeof(this.currentTimer) == 'undefined'){
-      this.startTime = new Date().getTime();
-      this.startLapTime = new Date().getTime();
+      this.controlTimer = new Date().getTime();
+      this.startLapTime = this.controlTimer;
     }else{
-      this.startTime = (new Date().getTime() - this.currentTotalTimer);
+      this.controlTimer = (new Date().getTime() - this.currentTotalTimer);
       this.startLapTime = (new Date().getTime() - this.currentTimer);
     }
 
     this.loop = window.setInterval("app.currentTimer.update()", 10);
+
     $('#startStopLabel').html(app.settings.pauseButton);
     $('#clearLapLabel').html(app.settings.lapButton);
+
   };
 
 
   this.stop = function () {
     if(this.isWorking){
+
       this.isWorking = false;
+
       clearInterval(this.loop);
 
       this.currentTimer = this.getTime();
@@ -50,7 +60,6 @@ var Timer = function () {
 
       this.finalTime = new Date().getTime();
 
-
     }
   };
 
@@ -58,24 +67,17 @@ var Timer = function () {
 
     this.createLap(this.currentTimer);
 
-    this.startTime = new Date().getTime();
-    this.startLapTime = this.startTime;
-
-    // this.currentTimer = this.getTime();
-    // this.currentTotalTimer = this.getTotalTime();
+    this.controlTimer = new Date().getTime();
+    this.startLapTime = this.controlTimer;
 
     this.output(this.getTime(), this.getTotalTime());
 
     $('#totaltimer').addClass('hideTotalTimer');
     $('#startStopLabel').html(app.settings.startButton);
 
-    var timerInfo = {
-      start: this.format_date(this.startTime, 'full'),
-      end: this.format_date(this.finalTime, 'full'),
-      timer: this.format_seconds(this.currentTotalTimer, 'full')
-    };
-
-    console.log('Total timer info:', timerInfo);
+    this.startTime = this.format_date(this.startTime, 'full');
+    this.finalTime = this.format_date(this.finalTime, 'full');
+    this.totalTime = this.format_seconds(this.currentTotalTimer, 'full');
 
   };
 
@@ -109,7 +111,7 @@ var Timer = function () {
   };
 
   this.getTotalTime = function () {
-    return (new Date().getTime() - this.startTime);
+    return (new Date().getTime() - this.controlTimer);
   };
 
   this.pad2 = function(number) {
@@ -146,7 +148,7 @@ var Timer = function () {
     else if (milliseconds < 100)
       milliseconds = "0" + milliseconds;
 
-    if (output == 'full'){
+    if (output === 'full'){
       document.title = hours + ":" + minutes + ":" + seconds + app.settings.titleSep + app.settings.pageTitle;
       return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
     } else {
@@ -154,8 +156,6 @@ var Timer = function () {
     }
 
   };
-
-  console.log(this);
 
   return this;
 };

@@ -6,44 +6,6 @@ It's pure vanilla Js, using jQuery and bootstrap. The app runs on Node/Express.
 
 You can see it running on [cronometrei.com.br](http://cronometrei.com.br)
 
-### Prerequisites
-
-You need to have Node installed to run this project, 
-
-````
-$ cd ~
-$ curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
-$ sudo apt-get install nodejs
-````
-
-Check installation
-
-````
-$ node -v
-````
-
-````
-Output
-v6.0.0
-````
-
-### Installing
-
-First, download the project, then cd into the project, install dependencies and start the application.
-
-````
-$ git glone https://github.com/rcabarreto/cronometrei.com.br.git cronometrei.com.br/
-$ cd forumApp/
-$ npm install
-$ npm start
-````
-
-After the app starts, you can access it on your web browser.
-
-````
-http://localhost:3000
-````
-
 ## Built With
 
 * [Node.js](https://nodejs.org/en/about/)

@@ -73,9 +73,8 @@ var app = {
 
   startStopTimer: function () {
 
-    if(typeof this.currentTimer == 'undefined'){
+    if(typeof this.currentTimer === 'undefined'){
       this.currentTimer = new Timer();
-      console.log('New Timer object created!');
     }
 
     var currentTimer = this.currentTimer;
@@ -92,30 +91,23 @@ var app = {
 
     var self = this;
 
-    if(typeof this.currentTimer == 'undefined')
+    if(typeof this.currentTimer === 'undefined')
       return false;
 
     if (this.currentTimer.isWorking){
       self.currentTimer.lap();
     } else {
       self.currentTimer.clear();
-      console.log('Destroing timer object!');
 
       console.log('Starting time', self.currentTimer.startTime);
       console.log('Final time', self.currentTimer.finalTime);
       console.log('Number of laps', self.currentTimer.lapCount);
 
+      console.log('Destroing timer object!');
+
       console.log(self.currentTimer.laps);
 
-      // isWorking
-      // loop
-      // currentTimer
-      // startTime
-      // finalTime
-      // startLapTime
-      // endLapTime
-      // lapCount
-      // laps
+      console.log('Total timer:', self.currentTimer.totalTime);
 
       self.settings.needToConfirm = false;
       self.currentTimer = undefined;
